@@ -7,8 +7,7 @@
 - 다시 보았을 때 불편함이 없도록 명료하게 작성한다.
 # Categories
 ### Coursera : IBM Machine Learning
-- W1-M1. Introduction, History
-- W1-M2. Retrieving Data, Data Cleaning, EDA, Feature Engineering
-(W:Week, M:Module)
-
+- Week#1-Module#1. Introduction, History
+- Week#1-Module#2. Retrieving Data, Data Cleaning, EDA, Feature Engineering
+- 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
