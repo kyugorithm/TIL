@@ -55,3 +55,34 @@ Google과 Waze는 이러한 모든 요소를 통합하여 최적의 경로 추�
 우리는 짐이 방치된 시간을 자동으로 감지할 수 있고, 이것은 잠재적으로 생명을 구할 수도 있음  
 
 다음 비디오 :  일반적인 기계 학습 워크플로우와 어휘
+
+### Machine Learning Workflow
+1) 기본적인 개념
+2) 기본 배경과 도구
+3)  일반적인 기계 학습 워크플로우
+4)  기본적인 기계 학습 어휘 검토
+
+이 모든 것은 EDA, data cleaning 및 기본 통계적 추론을 논의할 때 적용될 것이다.   
+파이썬 라이브러리, Numpy, Jupyter, 확률, 모멘트계산, 베이즈룰, 선형대수 등의 사전지식이 필요하다.  
+
+일반적인 ML 워크플로우  
+1. Problem Statement : 풀고자 하는 문제는 무엇인가?  
+:e.x., 다양한 개와같은 종들을 분류하는 문제  
+2. Data Collection : 데이터 수집
+:e.x., 종류별 사진 한 장 이상이 필요하고, 모든 것이 올바르게 표시된 다른 각도에서 다른 조명의 사진에 대한 라벨링된 데이터의 톤이 필요하다. 
+
+3.  Data Exploration & Preprocessing : 모델학습을 위해 데이터를 clean하는 방법  
+e.x., 데이터 픽셀과 관련하여 가장 밀집된 지점의 heatmap을 본다. 각 색상에 대한 척도가 주어진 다차원 배열로 픽셀을 변환한다. 
+
+4. Modeling : 문제해결을 위한 모델을 만들기  
+
+5. Validation : 문제가 실제로 해결됐는지 확인한다.
+: 홀드아웃 세트를 이용한다. 이를위해 모델을 훈련시키지 않은 사진들을 이용한다.
+
+6. Decision Making & Deployment : 이해관계자에게 전달하거나 생산에 적용한다.
+
+#### MAchine Learning Vocabulary 
+Target : Category or value that we are trying to predict 
+
+<img src="https://github.com/kyugorithm/TIL/blob/main/sources/spreadsheet.png" width="300" height="150">
+요소 : target/features/Observation, Example/Label (target과 label 구분하기)
