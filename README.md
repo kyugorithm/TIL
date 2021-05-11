@@ -12,8 +12,8 @@
 
 
 # 학습할 논문
-### Image Generation
-### Generative Adversarial Nets(2014)
+### GAN 계열
+#### Generative Adversarial Nets(2014)
 #### A Neural Algorithm of Artistic Style(2015)
 ##### Content image와 style image를 이용하여 이미지를 생성 / [논문링크][j_link001]
 #### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
