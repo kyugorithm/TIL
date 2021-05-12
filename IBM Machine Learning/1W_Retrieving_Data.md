@@ -1,3 +1,6 @@
+### 데이터 가져오기
+CSV, JSON, SQL, NoSQL
+
 #### Reading CSV Files
 CSV는 ','로 분류된 데이터 행으로 구성되어있다.  
 Pandas에서, CSV파일은 몇줄의 코드만으로 읽어들일 수 있다.  
@@ -81,7 +84,7 @@ con = MongClient()
 # Choose DB (con.list_database_names()를 통해 가용 리스트를 볼 수 있다.)
 db = con.database_name
 # Create a cursor object using a query
-cursor = db.collection_name.find(query)
+cursor = db.collection_name.find(query) # 여기서 query는 MongoDB query형태나 {}를 이용해야 한다.
 # Expand cursor and construct DataFrame
 df = pd.DataFrame(list(cursor))
 ```
