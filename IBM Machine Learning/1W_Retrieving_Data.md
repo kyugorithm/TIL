@@ -66,4 +66,23 @@ data = pd.read_sql(query, con)
 
 
 #### NoSQL Databases
-비관계형이며 구조상 더 다르다. application에 따라 더빠르거나 기술적 오버해드를 줄인다. 대부분 JSON 형태로 저장된다.
+비관계형이며 구조상 더 다르다. application에 따라 더빠르거나 기술적 오버헤드를 줄인다. 대부분 JSON 형태로 저장된다.  
+문서DB : mongoDB, couchDB  
+key-value stores : Riak, Voldemort, Redis  
+Graph DB : Neo4j, HyperGraph  
+Wide-column stores : Cassandra, HBase
+
+
+```python
+# SQL Data Imports
+import pymongo import MongoClient
+# Create a Mongo connection
+con = MongClient()
+# Choose DB (con.list_database_names()를 통해 가용 리스트를 볼 수 있다.)
+db = con.database_name
+# Create a cursor object using a query
+cursor = db.collection_name.find(query)
+# Expand cursor and construct DataFrame
+df = pd.DataFrame(list(cursor))
+```
+**NoSQL은 별로 해보질 않아서 확실하게 와닿지 않으므로 해봐야할것 같다.**
