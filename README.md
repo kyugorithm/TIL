@@ -22,10 +22,14 @@
 ### Anomaly Detection
 #### 1. DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series(2018)
 ##### CNN 구조 time series predictor와 error threshold 기반 anomaly detector를 이용하여 여러 형태의 anomaly 탐지 / [논문링크][j_link002]
+
+# 그외의 이론및 모델
+
+[Graphical Model?][b_link001] : 상태를 가지는 모델에서 directed/indirected graphical model의 개념이 자주 등장한다.
  
 [j_link001]: <https://arxiv.org/pdf/1508.06576.pd>
 [j_link002]: <https://ieeexplore.ieee.org/document/8581424>
-
+[b_link001]: <https://medium.com/@chullino/graphical-model%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%EC%9A%94-2d34980e6d1f>
 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 
