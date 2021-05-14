@@ -33,3 +33,35 @@ print(sample.iloc[:,-3:])
 또한 결과 변수의 비율이 실제 비율과 같도록 지켜져야 한다. 예를들어 질병관련 데이터 세트를 가지는 경우 실제 질병샘플은 1%미안의 샘플비율을 가질 수 있다. 이 때 동일한 비율을 가지도록 표본을 추출해서 사용해야한다.    
 혹여나 더욱더 낮은 비율로 샘플이 얻어진다면 이는 해당 질병의 통계적 분포를 왜곡하는것일 수 있다. 그래서 이것이 stratified sampling이라고 정의하는 것이다.  
 위 코드를 보면 매우 쉽게 데이터를 랜덤 샘플링 할 수 있는데 replace 명령어는 복원추출 여부이다.(false는 비복원추출)  
+
+### EDA - Part 2
+
+```python
+# Pandas DataFrame approach # plot을 하기위한 library로 matplotlib.pyplot을 사용
+import matplotlib.pytplot as plt
+plt.plot(data.sepal_length,
+data.sepal_width,
+ls = '', marker='o')
+# plot method에서 x, y 을 순서로 입력하고 ls (line style), marker를 정의
+```
+
+```python
+# Pandas DataFrame approach # plot을 하기위한 library로 matplotlib.pyplot을 사용
+import matplotlib.pytplot as plt
+plt.plot(data.sepal_length,
+data.sepal_width,
+ls = '', marker='o')
+# plot method에서 x, y 을 순서로 입력하고 ls (line style), marker, label을 optional argument로 사용
+
+# Pandas DataFrame approach
+plt.hist(data.sepal_length, bins=25)
+
+# matplotlib syntax
+fig, ax = plt.subplots()
+ax.barh(np.arrange(10),data.sepal_width.iloc[:10])
+
+# Set position of ticks and tick labels
+ax.set_yticks(np.arange(0.4, 10.4, 1.0))
+ax.set_yticklabels(np.arange(1,11))
+ax.set(xlabel='xlabel', ylabel='ylabel', title='Title')
+```
