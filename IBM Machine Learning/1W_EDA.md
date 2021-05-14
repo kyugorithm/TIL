@@ -48,9 +48,7 @@ ls = '', marker='o')
 ```python
 # Pandas DataFrame approach # plot을 하기위한 library로 matplotlib.pyplot을 사용
 import matplotlib.pytplot as plt
-plt.plot(data.sepal_length,
-data.sepal_width,
-ls = '', marker='o')
+plt.plot(data.sepal_length, data.sepal_width, ls = '', marker='o')
 # plot method에서 x, y 을 순서로 입력하고 ls (line style), marker, label을 optional argument로 사용
 
 # Pandas DataFrame approach
@@ -59,9 +57,40 @@ plt.hist(data.sepal_length, bins=25)
 # matplotlib syntax
 fig, ax = plt.subplots()
 ax.barh(np.arrange(10),data.sepal_width.iloc[:10])
+```
 
+```python
 # Set position of ticks and tick labels
 ax.set_yticks(np.arange(0.4, 10.4, 1.0))
 ax.set_yticklabels(np.arange(1,11))
 ax.set(xlabel='xlabel', ylabel='ylabel', title='Title')
+# 기존의 plt. 를 이용하는것과는 달리 ax를 만들어 오브젝트를 상속받아 plt와 같은 method를 사용할 수 있게 한다.
+# xlabel, ylabel, title 등의 기능은 set으로 이용하고 대부분의 일반적인 style 관련 method는 yticks, yticklabels 등을 가짐
+```
+```python
+# Pandas DataFrame approach 
+data.groupby('species').mean().plot(color=['red','blue','black','green'], fontsize=10.0, figsize=(4,4))
+# Pandas Frame은 groupby method가 있는데 데이터중 species로 나누어 각 평균값을 얻는것을 의미하는데 또 pandas df는
+# plot 메서드를 이용할 수 있다.
+```
+
+```python
+# Seaborn plot, feature correlations
+sns.pairplot(data, hue='species', size=3)
+```
+
+```python
+# Seaborn hexbin polot
+sns.jointplot(x=data['sepal_length'], y=data['sepal_width'],kind='hex')
+```
+
+
+```python
+# Seaborn plot, Facet Grid
+# First plot statement
+plot = sns.FacetGrid(data, col='species', margin_titles=True)
+plot.map(plt.hist, 'sepal_width', color='green')
+#Second plot statement
+plot = sns.FacetGrid(data, col='species', margin_titles=True)
+plot.map(plt.hist, 'sepal_length', color='blue')
 ```
