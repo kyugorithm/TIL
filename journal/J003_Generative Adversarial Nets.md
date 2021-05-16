@@ -48,7 +48,7 @@ BP를 통해 생성모델을 학습시키는 더 최근의 예로는 AE 변형 �
 Directed graphic model  : graph model 은 rbm에서 자주 등장하므로 rbm을 보자
 Denoising AE, contractive AE  
 NCE(noise-contrastive estimation)  
-DBN  
+RBM > DBN  
 Generative stochastic network  
 Noise distribution  
 GSN(generative stochastic network)  
