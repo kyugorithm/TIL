@@ -27,7 +27,7 @@
 
 [Graphical Model?][b_link001] : 상태를 가지는 모델에서 directed/indirected graphical model의 개념이 자주 등장한다.  
 [Restricted Boltzmann Machine][b_link002] : 깊은 신경망에서 학습이 잘 되지 않는 문제를 해결하기 위해 Geoffrey Hinton 교수님이 제안하신 방법론  
-gradient vanishing을 사전학습 풀어낸다. 이를 통해 DL이 다시 활기를 되찾았다. Generative 계열을 이해하기 위해서는 이해 필수
+Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다시 활기를 되찾았다. Generative 계열을 이해하기 위해서는 이해 필수
 [MCMC(Monte Carlo Markov Chain)][b_link003] : 샘플링 방법론
 
  
@@ -37,5 +37,3 @@ gradient vanishing을 사전학습 풀어낸다. 이를 통해 DL이 다시 활�
 [b_link002]: <https://github.com/kyugorithm/TIL/blob/main/Theory/RestrictedBoltzmannMachine.md>
 [b_link003]: <https://github.com/kyugorithm/TIL/blob/main/Theory/MCMC.md>
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
-
-[dal]: <https://dillinger.io/>
