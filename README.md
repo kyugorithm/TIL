@@ -34,6 +34,7 @@ gradient vanishing 문제를 사전학습 방식으로 풀어내려고 하였다
 [j_link001]: <https://arxiv.org/pdf/1508.06576.pd>
 [j_link002]: <https://ieeexplore.ieee.org/document/8581424>
 [b_link001]: <https://medium.com/@chullino/graphical-model%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%EC%9A%94-2d34980e6d1f>
+[b_link003]: <https://github.com/kyugorithm/TIL/blob/main/Theory/RestrictedBoltzmannMachine.md>
 [b_link003]: <https://github.com/kyugorithm/TIL/blob/main/Theory/MCMC.md>
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 
