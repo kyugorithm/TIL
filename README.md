@@ -30,10 +30,14 @@
 Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다시 활기를 되찾았다. Generative 계열을 이해하기 위해서는 이해 필수
 [MCMC(Monte Carlo Markov Chain)][b_link003] : 샘플링 방법론
 
+ # Text book 
+ [Machine Learning : A Probabilistic Perspective][t_link001] : ML의 바이블이라고 생각하는 책이다. 언젠간 보고 정리해야겠다고 생각했는데, 언제 다볼 수 있을지... 
+ 
  
 [j_link001]: <https://arxiv.org/pdf/1508.06576.pd>
 [j_link002]: <https://ieeexplore.ieee.org/document/8581424>
 [b_link001]: <https://medium.com/@chullino/graphical-model%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%EC%9A%94-2d34980e6d1f>
 [b_link002]: <https://github.com/kyugorithm/TIL/blob/main/Theory/RestrictedBoltzmannMachine.md>
 [b_link003]: <https://github.com/kyugorithm/TIL/blob/main/Theory/MCMC.md>
+[b_link003]: <https://github.com/kyugorithm/TIL/blob/main/ML_APP.md>
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
