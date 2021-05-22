@@ -40,3 +40,36 @@
 
 ### Outlier : 다른 대부분의 관측값들과는 거리가 떨어져 있는 관측치
 
+Oulier는 보통 관찰은 수차이며 모델으로 설명하려는 현상의 정확도를 흐린다. 
+10~50사이의 가치가 지속되는 가운데 3000의 값이 포함되어있는경우를 생각해보자. 데이터 샘플이 적은경우 값을 평균화하면 200~300까지 원하지 않는 큰 값이 얻어질 수 있다. 이를 피하기 위해 값을 버릴 수 있다. 이경우 데이터를 처리하지 않으면 원하지 않는 모델 결과를 얻게 될 수 있다.  
+그러나 일부의 outlier는 데이터에 대한 통찰력을 제공할 수 도 있다. 3000의 값이 발생한 이유를 파악하고 실제 세계에서 발생할 수 있는 경우 유용할 수 있다. 이러한 경우에는 plot, boxplot을 이용하여 발견할 수 있다.
+
+####  Detecting Outliers : Statistics
+```python
+# Plot a histogram and density plot
+sns.displot(data, bins=20);
+# plaot a box plot
+sns.boxplot(data);
+
+q25, q50, q75 = np.percentile(data,[25,50,75])
+iqr = q75-q25 # interquartile range
+min = q25-1.5*(iqr) # 최대 oulier 기준값 설정
+max = q25-1.5*(iqr) # 최소 oulier 기준값 설정
+print(min,q25,q50,q75, max)
+```
+
+####  Detecting Outliers : Residuals(실제값과 예측값 간의 차이)는 모델의 실패정도를 나타낸다.
+
+- Standardized : 해당에러/표준에러  
+- Deleted      :해당 관측치를 제외한 모든 데이터에 대해 학습된 모델로부터의 잔차
+- Studentized  : 해당에러 /residal 표준에러(전체데이터 혹은 현 관측치를 제외한 전체 데이터 기반)
+
+#### Policies for Outliers
+Outlier를 탐색한 후에 할 일은?  
+Remove : 해당 샘플을 제거한다. : 단, 해당 값에 관련한 전체 데이터를 잃게 된다. 
+Assign : 다른 값을 한다. : 이상치가 모델에 미치는 영향을 걱정하지 않아도 되지만 예측할수 없는 다른 결과를 만들어 낼 수 있다. 
+Transform : 열을 변환 : log화하면 더이상 이상값이 아니게 될 수 있다.
+Predict : 예측모델을 적용 : 유사관측값을 적용하여 해당 outlier가 원래 어떤 값이었을지 예측함(이 경우 더 많은 노력을 필요로 할 수 있음)
+
+
+이상치로 작업하는 다른 방법보다 훨씬 많은 작업이 필요합니다. 마지막으로 그 가치를 유지할 수 있습니다. 이상치에 강한 모델을 사용하고 싶을 것입니다. 우리는 이후 과정에서 모델링에 들어가면서 그 중 일부를 나중에 논의 할 것입니다.
