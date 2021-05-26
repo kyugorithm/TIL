@@ -41,16 +41,16 @@ ML에서 전체 분포에 관심이 있거나 평균의 포인트 추정값을 �
 **barplot**   
 y : 이탈가능성 x : 여러 결제 유형에 대해 살펴보자.  
 막대 그래프에 신뢰 구간을 추가하지는 않는다. credit card를 사용하는 사람들이 큰 인출 지불이나 우편 수표를 사용하는 사람들보다 이탈 가능성이 훨씬 적다는 것을 알 수 있다.  
-![image](https://user-images.githubusercontent.com/40943064/119674707-62a07280-be77-11eb-95be-19cdb2a70272.png)
+![image](https://user-images.githubusercontent.com/40943064/119674707-62a07280-be77-11eb-95be-19cdb2a70272.png)  
 유지 months로 이탈 가치를 볼 수도 있다(pd.cut).  
 막대 그림을 만들 때마다 x 축이 categorical 변수가되는것이 좋다. 유지 기간이 짧은 경우 이탈 가능성이 훨씬 더 높다.
-![image](https://user-images.githubusercontent.com/40943064/119675586-24f01980-be78-11eb-8e29-f742168f0645.png)
+![image](https://user-images.githubusercontent.com/40943064/119675586-24f01980-be78-11eb-8e29-f742168f0645.png)  
 
 **pair plot**  
 유지월수, features(고객으로 보유한 개월 수, 월당 기가 바이트 사용), 고객 평생 가치(CLTD), 고객이 가져온 총 수익이며, 이탈 가치를이용하여 본다.
 pair plot을 이용하여 각 변수 간의 관계를 확인한 다음 이를 분할 한다. hue는 이탈율로 설정한다.   
 파란색 미이탈, 녹색은 이탈이다. 변수간 관계와 각변수 분포를 볼 수 있다.
-![image](https://user-images.githubusercontent.com/40943064/119674661-587e7400-be77-11eb-91bd-fa913ed8b54a.png)
+![image](https://user-images.githubusercontent.com/40943064/119674661-587e7400-be77-11eb-91bd-fa913ed8b54a.png)  
 
 **hexbin**   
 유지 월수 vs 월별 지출으로 본다. 더 많이 청구되는지, 그들이 머무를 가능성이 더 높은지, 아니면 더 비싼 고객이 머무를 가능성이 적거나 더 높은지 확인 할 수 있다.  
@@ -58,4 +58,4 @@ pair plot을 이용하여 각 변수 간의 관계를 확인한 다음 이를 �
 오른쪽 상단 모서리에 밀도가 표시된다. 즉, 더 긴 임기 개월과 더 높은 월 요금을 가진 사람들이 더 많이 있다는 것을 알 수 있다.  
 그러나 스펙트럼의 다른 쪽 끝에서도 몇 달 동안 임기가 낮은 사람들을 볼 수 있다. 
 또한 월별 요금이 평균보다 높으며,이 두 값 사이에서 밀도가 훨씬 낮다는 것을 알 수 있다.  
-![image](https://user-images.githubusercontent.com/40943064/119674605-4c92b200-be77-11eb-8176-cb5f0b21e623.png)
+![image](https://user-images.githubusercontent.com/40943064/119674605-4c92b200-be77-11eb-8176-cb5f0b21e623.png)  
