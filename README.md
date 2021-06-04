@@ -13,10 +13,15 @@
 
 # 학습할 논문
 ### GAN 계열
-#### Generative Adversarial Nets(2014)
-#### A Neural Algorithm of Artistic Style(2015)
+#### Generative Adversarial Nets (2014)
+#### Conditional Generative Adversarial Nets (2014)
+#### A Neural Algorithm of Artistic Style (2015)
 ###### : Content image와 style image를 이용하여 이미지를 생성 / [논문링크][j_link001]
+#### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019)
+#### StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN (2019)
 #### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
+
+
 ### 손금분석
 #### Palmistry using Machine Learning and OpenCV [논문링크][j_link003]
 #### A SYSTEM FOR PALM COLOR ANALYSIS IN HEALTHCARE [논문링크][j_link004]
