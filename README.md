@@ -17,6 +17,7 @@
 #### Conditional Generative Adversarial Nets (2014)
 #### A Neural Algorithm of Artistic Style (2015)
 ###### : Content image와 style image를 이용하여 이미지를 생성 / [논문링크][j_link001]
+#### Improved training of wasserstein gans (2017)
 #### Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization (2017)
 #### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019)
 #### StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN (2019)
