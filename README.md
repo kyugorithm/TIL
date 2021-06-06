@@ -19,7 +19,6 @@
 ###### : Content image와 style image를 이용하여 이미지를 생성 / [논문링크][j_link001]
 #### Improved training of wasserstein gans (2017)
 #### Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization (2017)
-#### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [논문링크][j_link007]
 #### StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN (2019)
 #### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
 
@@ -37,6 +36,9 @@
 ### Anomaly Detection
 #### 1. DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series(2018)
 ##### CNN 구조 time series predictor와 error threshold 기반 anomaly detector를 이용하여 여러 형태의 anomaly 탐지 / [논문링크][j_link002]
+
+### GAN
+#### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
 
 # 그외의 이론및 모델
 
