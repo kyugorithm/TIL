@@ -22,7 +22,7 @@
 #### StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN (2019)
 #### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
 #### PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
-
+#### StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
 
 
 ### 손금분석
@@ -59,6 +59,7 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [j_link006]: <https://arxiv.org/abs/1711.04322>
 [j_link007]: <https://github.com/kyugorithm/TIL/blob/main/journal/PG_GAN.md>
 [j_link008]: <https://dl.acm.org/doi/abs/10.1145/3414685.3417803>
+[j_link009]: <https://arxiv.org/pdf/2004.00121.pdf>
 [b_link001]: <https://medium.com/@chullino/graphical-model%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%EC%9A%94-2d34980e6d1f>
 [b_link002]: <https://github.com/kyugorithm/TIL/blob/main/Theory/RestrictedBoltzmannMachine.md>
 [b_link003]: <https://github.com/kyugorithm/TIL/blob/main/Theory/MCMC.md>
