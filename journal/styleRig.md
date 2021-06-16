@@ -57,6 +57,45 @@ S와 V가 210k개의 차원을 가진다고 했기 때문에 해당 vector에 �
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122221217-09fb4d00-ceec-11eb-8375-4fe8475c12ae.png" alt="factorio thumbnail" width=500 />
   </p>
    
+### Facial Attributes
+앞서 소개한 shape와 texture에 대한 정보는 보통의 표현에 대응되지 않는다. 사실 표현가능한 특성들은 여성적인 얼굴이나  
+뼈의 두께와 같은것이 있으며 이는 명확한 숫자로 표현하는 것은 어려우면서 필요한 일이다.  
+이번에는 손수 특성을 라벨링한 얼굴 집합으로 정의한 얼굴 속성을  morphable한 모델의 파라미터공간으로 매핑하는 방법을 설명한다.  
+얼굴 공간의 각 위치에서, 얼굴에서 추가하거나 얼굴에서 뺄 때, 다른 속성은 유지하면서 원하는 속성만 조작하는 shape 및 texture 벡터를 정의한다.  
+
+얼굴 속성의 예를 들자면, 마르거나 통통한 특징, facial femininity 등이 있다. 이러한 속성들을 morphable model의 파라미터 공간에 매핑하는 방법을 설명한다. 여기서 속성들은 hand-labeled set of example faces에 의해 정의된다. 얼굴 표정은 다른 표정를 가진 한 개인의 두 스캔을 기록함으로써 얻어낼 수 있다. 어떠한 표정을 가진 shape vector를 라 하고 중립적인(neural) 얼굴에 대한 shape vector를 이라 할 때, 이 둘을 빼면 해당 얼굴 표정에 대한 shape의 표현을 얻을 수 있다.
+
+얼굴 표현은 동일인물의 서로다른 표정의 샘플을 통해서 전달될 수 있다. 무표정의 사진과 표정이 있는 사진의 차이를 다른 사진에  
+추가하는 방식으로 가능하다. 
+  
+<p align="center" style="color:gray">
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122228500-dcfe6880-cef2-11eb-9520-102f65638b3a.png" alt="factorio thumbnail" width=500 />
+  </p>
+  
+위의 얼굴 표정과는 달리 개인의 불변적 특성을 분리하여 delta로 표현하는것은 훨씬 어렵다.  
+아래 소개하는 방식을 통해 성별, 얼굴의 가득함, 눈썹의진함, 이중턱, 화살코와 오목코의 차이등의  
+얼굴 특성을 모델링하는것이 가능하다. 
+  
+<p align="center" style="color:gray">
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122229428-af65ef00-cef3-11eb-9e71-536e86888fdd.png" alt="factorio thumbnail" width=500 />
+  </p>
+직접 라벨링한 mu_i(특성의 markedness)와 함께 얼굴의 세트 (Si, Ti)를 가지고 우리는 아래 수식의 가중합을 구한다.  
+  
+![image](https://user-images.githubusercontent.com/40943064/122230262-711cff80-cef4-11eb-9df1-e113d8e68158.png)  
+  
+개별 얼굴에 대해 여러개의 (△S, △T)를 더하거나 뺄 수 있다.  
+성별과같은 0/1 특성에 대해서는 우리는 모든 m개의 요소 mu에 대하여 상수값을 할당한다. 
+
+위에 소개한 방식에 대한 정당화를 위해 u(S, T) 한 얼굴(S, T)에 특성의 markedness를 설명하는 전반함수가 되도록 한다.  
+(세부내용 pass : 다음에 정리)
+
+  
+
+
+
+
+
+
 
   
  블로그 참조 :  
