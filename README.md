@@ -12,7 +12,8 @@
 
 
 # 학습할 논문
-### GAN 계열
+### Image Generation and etc.
+
 #### Generative Adversarial Nets (2014)
 #### Conditional Generative Adversarial Nets (2014)
 #### A Neural Algorithm of Artistic Style (2015)
@@ -25,19 +26,12 @@
 #### StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
 
 
-### 손금분석
-#### Palmistry using Machine Learning and OpenCV [논문링크][j_link003]
-#### A SYSTEM FOR PALM COLOR ANALYSIS IN HEALTHCARE [논문링크][j_link004]
-#### Discrete finger and palmar feature extraction for personal authentication [논문링크][j_link005]
-#### 11K Hands_Gender recognition and biometric identification using a large dataset of hand images [논문링크][j_link006]
-
-
 # 학습완료 논문
 ### Anomaly Detection
 #### 1. DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series(2018)
 ##### CNN 구조 time series predictor와 error threshold 기반 anomaly detector를 이용하여 여러 형태의 anomaly 탐지 / [논문링크][j_link002]
 
-### GAN
+### Image Generation and etc.
 #### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
 #### MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction (2017)
 
