@@ -39,6 +39,8 @@
 
 ### GAN
 #### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
+#### MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction (2017)
+
 
 # 그외의 이론및 모델
 
