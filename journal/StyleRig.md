@@ -62,6 +62,7 @@ MoFA에서 소개한 3DMM parameter set, 모델에서는 PCA를 통해 alpha, be
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122593641-e88f9200-d0a0-11eb-9b8d-93be7d11886d.png" alt="factorio thumbnail" width=450 />
 </p>
 styleGAN을 이용하여 200k개의 (w, Iw) 셋 생성, l = 18 X 512 / 2 X 512 per each resolution level, self-supervised manner  
+
 **self-supervised learning**  
 다량의 레이블이 없는 원데이터로부터 데이터 부분들의 관계를 통해 레이블을 자동으로 생성하여 지도학습에 이용
 
