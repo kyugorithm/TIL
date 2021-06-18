@@ -66,5 +66,43 @@ styleGAN을 이용하여 200k개의 (w, Iw) 셋 생성, l = 18 X 512 / 2 X 512 p
 **self-supervised learning**  
 다량의 레이블이 없는 원데이터로부터 데이터 부분들의 관계를 통해 레이블을 자동으로 생성하여 지도학습에 이용
 
+### 6. Network Architecture
 
+<p align="center" style="color:gray">
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122595937-217d3600-d0a4-11eb-89fb-e05ac843a69d.png" alt="factorio thumbnail" width=450 />
+</p>
+p : semantic control parameters, what = Rignet(w, p) & I_what = StyleGAN(what) ; p의 제어를 따른다.  
+RigNet을 여러 제어모드에 대해 학습할때 분리하여 학습시킨다.  
+Differentiable Face Recnstruction 과 2방향 cycle consistency losses를 이용하여 self-supervised 학습을 수행한다.  
+  
+    
+    
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122597411-45417b80-d0a6-11eb-87bb-73b98b261b7d.png" width=450 /></p>    
+  DFR:W를 p로 mapping하는 함수(W에 존재하는 이미지 에대한 정보를 p벡터로 표현하도록 mapping)  
+  학습을 위해서는 differentiable render layer R 필요(MoFA소개;미분가능 rendering function)  
+  
+  
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122597450-55595b00-d0a6-11eb-8e9f-b78fbdc97ac1.png" width=750 /></p>  
+M은 face mesh 존재하는 값만 살려주는 역할  
+Lphoto : 실제 이미지와 Rendering 차이의 2-norm  
+Lland : 학습전에 수동으로 설정한 66개의 landmark 포인트에 대하여 집중하여 loss 계산  
+MoFA에서는 face관련 파라미터 (alpha, beta, delta)에 대하여 regularization 수행하며 필요시 적용  
+(너무 커지면 원래 parameter가 가지는 범위를 벗어남)  
+  
+  
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122598494-e2e97a80-d0a7-11eb-8c32-fe41b4062e68.png" width=450 /></p>  
+encoder : W vector를 512에서 32로 차원축소  
+decoder : 입력받은 semantic control parameter와 l를 w와 합하여 W정보에 p정보를 합친 새로운 vector 생성 
 
+### 7. Self-supervised Training
+  
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599127-cd288500-d0a8-11eb-9e0c-81f6f59881db.png" width=450 /></p>  
+  
+  
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599331-2690b400-d0a9-11eb-9687-72d004e54df7.png" width=450 /></p>  
+  
+
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599368-39a38400-d0a9-11eb-84e4-2157c6f9e0b2.png" width=750 /></p>  
+  
+
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599434-55a72580-d0a9-11eb-9411-171a810f61d3.png" width=450 /></p>  
