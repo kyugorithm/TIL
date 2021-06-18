@@ -97,12 +97,29 @@ decoder : 입력받은 semantic control parameter와 l를 w와 합하여 W정보
 ### 7. Self-supervised Training
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599127-cd288500-d0a8-11eb-9e0c-81f6f59881db.png" width=450 /></p>  
+원하는 학습-pair가 없으므로 self-supervised 방식으로 cycleGAN과 같은 cycle-consistent editing과 consistency loss를 사용한다.  
   
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599331-2690b400-d0a9-11eb-9687-72d004e54df7.png" width=450 /></p>  
+  cycleGAN에서 추가로 적용하는 identity loss와 같은데 갈때와 돌아올때 동일한 input이 되도록 하면 성능 향상에 도움이 된다고 하여 적용
+  본 논문의 저자는 latent space에서 anchor 하는 역할이라고 설명하였으며 이 항이 없으면 이미지 성능이 떨어진다고 소개함  
   
-
+  
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599368-39a38400-d0a9-11eb-84e4-2157c6f9e0b2.png" width=750 /></p>  
   
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122602012-1a0e5a80-d0ad-11eb-9352-621111513011.png" width=450 /></p>  
+v 벡터는 control만 적용할 target image로 rigNet에 의해 변환된 what에 semantic control 정보가 전달됐을것이라고 보고 phat=F(what)이 pv와 같도록 학습하면 된다.  
+다만 perceptual loss를 적용하면 좋아지는 다른 논문과는 달리 본 문제에서는 약간의 latent vector의 변화가 큰 영향을 주므로 이와같은 loss 설정은 하지 않는다.  
+대신, pv에 phat의 control value만 대체하여 Iv와 rendering된 이미지의 차이를 loss로 설정하면(pedit) 유사한 개념으로 학습방향을 설정할 수 있다.
+  
+  
+
+
+
 
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599434-55a72580-d0a9-11eb-9411-171a810f61d3.png" width=450 /></p>  
+  
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122602073-31e5de80-d0ad-11eb-9cca-2433c9a4c56d.png" width=450 /></p>  
+위 case처럼 pw에 phat의 control value이외의 값들을 모두 대체하여 Iw와 rendering된 이미지의 차이를 loss로 설정하면(pconsist) 유사한 개념으로 학습방향을 설정할 수 있다.
+  
+  
