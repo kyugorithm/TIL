@@ -36,27 +36,34 @@ StyleGAN은 style transfer 문헌의 아이디어를 사용하고 다양한 얼�
 이 방법은 제어 가능한 파라메트릭 특성과 styleGAN의 높은 사진 현실성 두 가지 모두의 장점을 제공한다.  
 사전학습된고정 styleGAN을 사용한다. 학습에 추가 데이터가 필요하지 않다.  
 우리의 관심은 의미론적 매개 변수에 대한 컴퓨터 그래픽 스타일 rig-like 제어를 제공하는 것이다.  
-훈련 절차는 Face Reconstruction Network와 differentiable renderer의 결합에 의해 활성화되는 self-supervised 2-way-consistency loss를 기반으로 한다.  
+훈련 절차는 Face Reconstruction Network와 differentiable renderer의 결합에 의해 활성화되는  
+self-supervised 2-way-consistency loss를 기반으로 한다.  
 이를 통해 image domain에서 광도 재렌더링 오류를 측정할 수 있으며 고품질 결과를 얻을 수 있다.  
 우리는 스타일에 대한 interactive 제어를 포함하여 우리의 방법의 설득력 있는 결과를 보여준다.  
 GAN은 잘 정의된 semantic parameter에 따라 조절된 이미지 합성뿐만 아니라 이미지를 생성했다.  
 
 ### 3. Overview
-
-![image](https://user-images.githubusercontent.com/40943064/122589553-5b960a00-d09b-11eb-9a4f-a48d5152ef79.png)  
+<p align="center" style="color:gray">
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122589553-5b960a00-d09b-11eb-9a4f-a48d5152ef79.png" alt="factorio thumbnail" width=450 />
+</p>
+  
 **StyleGAN as function from w : latent code to Iw : latent code의 output image**
 
 ### 4. Semantic Rig Parameters
-![image](https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png)
+<p align="center" style="color:gray">
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png" alt="factorio thumbnail" width=450 />
+</p>
 MoFA에서 소개한 3DMM parameter set, 모델에서는 PCA를 통해 alpha, beta, delta를 저차원으로 다룬다.  
 200명의 얼굴을 조합하여 PC 성분을 추출하였으며 원 데이터 셋의 99%의 분산 분포를 cover하도록 PC를 선택했다.  
 
 ### 5. Training Corpus
 
-![image](https://user-images.githubusercontent.com/40943064/122593641-e88f9200-d0a0-11eb-9b8d-93be7d11886d.png)
+<p align="center" style="color:gray">
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122593641-e88f9200-d0a0-11eb-9b8d-93be7d11886d.png" alt="factorio thumbnail" width=450 />
+</p>
 styleGAN을 이용하여 200k개의 (w, Iw) 셋 생성, l = 18 X 512 / 2 X 512 per each resolution level, self-supervised manner  
-
-
+**self-supervised learning**  
+다량의 레이블이 없는 원데이터로부터 데이터 부분들의 관계를 통해 레이블을 자동으로 생성하여 지도학습에 이용
 
 
 
