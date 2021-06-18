@@ -47,7 +47,7 @@ GAN은 잘 정의된 semantic parameter에 따라 조절된 이미지 합성뿐�
 **StyleGAN as function from w : latent code to Iw : latent code의 output image**
 
 ### 4. Semantic Rig Parameters
-![image](https://user-images.githubusercontent.com/40943064/122592002-b5e49a00-d09e-11eb-90c6-07b05f1fa6c2.png)
+![image](https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png)
 MoFA에서 소개한 3DMM parameter set, 모델에서는 PCA를 통해 alpha, beta, delta를 저차원으로 다룬다.  
 200명의 얼굴을 조합하여 PC 성분을 추출하였으며 원 데이터 셋의 99%의 분산 분포를 cover하도록 PC를 선택했다.  
 
