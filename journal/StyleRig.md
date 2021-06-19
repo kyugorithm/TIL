@@ -95,8 +95,8 @@ Differentiable Face Recnstruction 과 2방향 cycle consistency losses를 이용
   DFR:W를 p로 mapping하는 함수(W에 존재하는 이미지 에대한 정보를 p벡터로 표현하도록 mapping)  
   학습을 위해서는 differentiable render layer R 필요(MoFA소개;미분가능 rendering function)  
   
-  
-<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122597450-55595b00-d0a6-11eb-8e9f-b78fbdc97ac1.png" width=750 /></p>  
+
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122629706-f0c7eb80-d0f9-11eb-9383-79fa550a7608.png" width=750 /></p>  
 M은 face mesh 존재하는 값만 살려주는 역할  
 Lphoto : 실제 이미지와 Rendering 차이의 2-norm  
 Lland : 학습전에 수동으로 설정한 66개의 landmark 포인트에 대하여 집중하여 loss 계산  
