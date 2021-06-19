@@ -134,7 +134,10 @@ v 벡터는 control만 적용할 target image로 rigNet에 의해 변환된 what
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122602073-31e5de80-d0ad-11eb-9cca-2433c9a4c56d.png" width=450 /></p>  
 위 case처럼 pw에 phat의 control value이외의 값들을 모두 대체하여 Iw와 rendering된 이미지의 차이를 loss로 설정하면(pconsist) 유사한 개념으로 학습방향을 설정할 수 있다.
 
-<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122628784-346b2700-d0f3-11eb-826e-06fae3283a55.png" width=1024 /></p>  
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122629054-25857400-d0f5-11eb-95ea-aad84e65db95.png" width=1024 /></p>  
+
+
+
 
 
   ***
