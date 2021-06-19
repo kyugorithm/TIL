@@ -121,8 +121,8 @@ decoder : 입력받은 semantic control parameter와 l를 w와 합하여 W정보
   본 논문의 저자는 latent space에서 anchor 하는 역할이라고 설명하였으며 이 항이 없으면 이미지 성능이 떨어진다고 소개함  
   
   ***
-  
-<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599368-39a38400-d0a9-11eb-84e4-2157c6f9e0b2.png" width=750 /></p>  
+
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122629973-962f8f00-d0fb-11eb-8ca3-379c81784a1f.png" width=750 /></p>  
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122602012-1a0e5a80-d0ad-11eb-9352-621111513011.png" width=450 /></p>  
 v 벡터는 control만 적용할 target image로 rigNet에 의해 변환된 what에 semantic control 정보가 전달됐을것이라고 보고 phat=F(what)이 pv와 같도록 학습하면 된다.  
