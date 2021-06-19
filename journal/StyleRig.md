@@ -8,9 +8,8 @@
 그러나 rendering 시 **사실성이 부족**하며 **얼굴 내부만 모델링** 할 수 있다.  
 우리는 3DMM과 사전 훈련되고 고정된 StyleGAN에 대해 rig 제어를 제공하는 첫 번째 방법을 제시한다.  
 새로운 연결 네트워크인 RigNet은 3DMM의 semantic parameter와 StyleGAN input 사이에서 훈련된다.  
-네트워크는 지도학습 없이 selp-superviced 감독 방식으로 훈련된다.  
-테스트 시, 우리의 방법은 스타일의 광학적 사실성으로 초상화 이미지를 생성한다.GAN 및 얼굴의 3D 의미 매개변수에 대한 명시적 제어를 제공한다.  
-
+학습은 self-supervised 방식으로 훈련된다.  
+테스트에서 제안방법은 styleGAN으로 photorealistic 초상화 이미지를 생성하고 얼굴의 3D semantic parameter에 대한 명시적 제어를 제공한다.  
 
 ## Introduction  
   
