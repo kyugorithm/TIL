@@ -1,4 +1,6 @@
-### Abstract
+# StyleRig: Rigging StyleGAN for 3D Control over Portrait Images
+
+## Abstract
 
 **StyleGAN**은 눈, 치아, 머리카락, 맥락(목, 어깨, 배경)을 가진 얼굴의 **사실적인 초상화 이미지**를 생성한다.  
 그러나 얼굴 포즈, 표현 및 장면 조명과 같은 3D로 해석 가능한 **의미론적 얼굴 매개변수에 대한 리그와 같은 제어가 부족**하다.  
@@ -9,7 +11,8 @@
 네트워크는 지도학습 없이 selp-superviced 감독 방식으로 훈련된다.  
 테스트 시, 우리의 방법은 스타일의 광학적 사실성으로 초상화 이미지를 생성한다.GAN 및 얼굴의 3D 의미 매개변수에 대한 명시적 제어를 제공한다.  
 
-### Introduction  
+
+## Introduction  
   
 **3DMM**  
 얼굴의 사실적인 합성은 특수 효과, 가상 현실이나 차세대 통신을 포함한 여러 분야에서 적용될 수 있다.  
@@ -42,21 +45,25 @@ self-supervised 2-way-consistency loss를 기반으로 한다.
 우리는 스타일에 대한 interactive 제어를 포함하여 우리의 방법의 설득력 있는 결과를 보여준다.  
 GAN은 잘 정의된 semantic parameter에 따라 조절된 이미지 합성뿐만 아니라 이미지를 생성했다.  
 
-### 3. Overview
+## 3. Overview
 <p align="center" style="color:gray">
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122589553-5b960a00-d09b-11eb-9a4f-a48d5152ef79.png" alt="factorio thumbnail" width=450 />
 </p>
   
-**StyleGAN as function from w : latent code to Iw : latent code의 output image**
+**StyleGAN as function from w : latent code to Iw : latent code의 output image**  
 
-### 4. Semantic Rig Parameters
+  ***
+  
+## 4. Semantic Rig Parameters
 <p align="center" style="color:gray">
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png" alt="factorio thumbnail" width=450 />
 </p>
 MoFA에서 소개한 3DMM parameter set, 모델에서는 PCA를 통해 alpha, beta, delta를 저차원으로 다룬다.  
 200명의 얼굴을 조합하여 PC 성분을 추출하였으며 원 데이터 셋의 99%의 분산 분포를 cover하도록 PC를 선택했다.  
 
-### 5. Training Corpus
+  ***
+  
+## 5. Training Corpus
 
 <p align="center" style="color:gray">
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122593641-e88f9200-d0a0-11eb-9b8d-93be7d11886d.png" alt="factorio thumbnail" width=450 />
@@ -65,8 +72,9 @@ styleGAN을 이용하여 200k개의 (w, Iw) 셋 생성, l = 18 X 512 / 2 X 512 p
 
 **self-supervised learning**  
 다량의 레이블이 없는 원데이터로부터 데이터 부분들의 관계를 통해 레이블을 자동으로 생성하여 지도학습에 이용
-
-### 6. Network Architecture
+  ***
+  
+## 6. Network Architecture
 
 <p align="center" style="color:gray">
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122595937-217d3600-d0a4-11eb-89fb-e05ac843a69d.png" alt="factorio thumbnail" width=450 />
@@ -92,9 +100,11 @@ MoFA에서는 face관련 파라미터 (alpha, beta, delta)에 대하여 regulari
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122598494-e2e97a80-d0a7-11eb-8c32-fe41b4062e68.png" width=450 /></p>  
 encoder : W vector를 512에서 32로 차원축소  
-decoder : 입력받은 semantic control parameter와 l를 w와 합하여 W정보에 p정보를 합친 새로운 vector 생성 
-
-### 7. Self-supervised Training
+decoder : 입력받은 semantic control parameter와 l를 w와 합하여 W정보에 p정보를 합친 새로운 vector 생성  
+  
+  ***
+  
+## 7. Self-supervised Training
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599127-cd288500-d0a8-11eb-9e0c-81f6f59881db.png" width=450 /></p>  
 원하는 학습-pair가 없으므로 self-supervised 방식으로 cycleGAN과 같은 cycle-consistent editing과 consistency loss를 사용한다.  
@@ -104,6 +114,7 @@ decoder : 입력받은 semantic control parameter와 l를 w와 합하여 W정보
   cycleGAN에서 추가로 적용하는 identity loss와 같은데 갈때와 돌아올때 동일한 input이 되도록 하면 성능 향상에 도움이 된다고 하여 적용
   본 논문의 저자는 latent space에서 anchor 하는 역할이라고 설명하였으며 이 항이 없으면 이미지 성능이 떨어진다고 소개함  
   
+  ***
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599368-39a38400-d0a9-11eb-84e4-2157c6f9e0b2.png" width=750 /></p>  
   
@@ -116,10 +127,66 @@ v 벡터는 control만 적용할 target image로 rigNet에 의해 변환된 what
 
 
 
-
+  ***
+  
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122599434-55a72580-d0a9-11eb-9411-171a810f61d3.png" width=450 /></p>  
   
 <p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122602073-31e5de80-d0ad-11eb-9cca-2433c9a4c56d.png" width=450 /></p>  
 위 case처럼 pw에 phat의 control value이외의 값들을 모두 대체하여 Iw와 rendering된 이미지의 차이를 loss로 설정하면(pconsist) 유사한 개념으로 학습방향을 설정할 수 있다.
   
+  ***
   
+## 8. Results
+테스트시 StyleRig는 포즈, 표현 및 조명 파라미터를 제어할 수 있다.  
+다음 세 가지 응용 프로그램을 통해 접근 방식의 효과를 입증한다.  
+**스타일 혼합(8.1), 대화형 리그 제어(8.2) 및 조건부 이미지 생성(8.3)**  
+### 8.1. StyleMixing
+StyleGAN 벡터는 서로다른 resolution 스타일에 따라 다른 벡터가 대응된다.  
+stylemixing을 적용하기 위해 특정 resolution의 latent code를 source에서 target으로 복사함으로써 새 이미지가 생성된다.  
+그림 5에서 볼 수 있듯이 각 스타일은 다음의 정보를 포함한다.
+1. coarse style : ID & pose
+2. middle style : 표정 & 헤어스타일 & 조명
+3. fine style   : source의 색상 구조  
+
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122627193-ff59d700-d0e8-11eb-99ed-a1f612469e72.png" width=850 /></p>  
+
+styleRig 방법은 유사한 기능을 가지면서 semantic parameter에 대한 훨씬 더 완전한 제어를 보여준다.  
+대상 ID로 이미지를 생성하기 위해 face-rig의 source latent를 target latent로 전송(pv->pw)하여 아래 포즈, 표정, 조도 이미지를 생성한다.  
+styleGAN의 경우 여러 벡터를 결합하는경우 semantic dimension끼리 entangle되어 styleRig와 같은 rig-like control이 불가능하다.  
+
+<p align="center" style="color:gray"><img src="https://user-images.githubusercontent.com/40943064/122627212-113b7a00-d0e9-11eb-9665-52e401115a28.png" width=850 /></p>  
+
+
+그림 4에서, StyleRig에 의해 StyleGAN의 latent code가 전달되는지를 분석한다.  
+2500개 이상의 혼합 결과를 계산하여 모든 해상도에서 StyleGAN 잠재 벡터의 평균(l2-norm) 변화와 분산을 보여준다.  
+예상대로, coarse latent 코드 벡터는 주로 rotation을 담당한다. 표정은 coarse 레벨과 middle 레벨의 latent code로 제어된다.  
+빛의 방향은 대부분 중간 해상도 벡터에 의해 제어된다. 그러나 fine latent code는 이미지의 전역 색상표를 제어하는 데 중요한 역할을 한다.  
+StyleRig는 변경할 벡터를 지정해야 하는 대신 semi-supervised 방식으로 이 mapping을 복구한다.  
+그림 5와 같이, styleRig는 배경, 헤어 스타일, 액세서리 같은 장면 컨텍스트를 더 잘 보존할 수 있다.
+  
+### 8.2. Interactive Rig Control  
+3DMM의 매개 변수도 독립적으로 제어할 수 있기 때문에 StyleRig는 스타일을 명시적으로 의미적으로 제어할 수 있다.GAN에서 이미지를 생성했습니다. 우리는 사용자가 포즈, 표현 및 장면 조명 파라미터를 대화식으로 변경하여 얼굴 망사와 상호 작용할 수 있는 사용자 인터페이스를 개발한다. 그런 다음 업데이트된 매개 변수를 RigNet에 공급하여 대화형 프레임률(_ 5fps)로 새 이미지를 생성합니다. 그림 6: 교육 데이터의 얼굴 모델 매개 변수 분포 x-축은 회전, 식 및 조명에 대한 좌측-우측 얼굴 모델 파라미터를 나타냅니다. y-축은 20k 이상의 훈련 샘플에서 계산된 모수의 평균과 분산을 나타냅니다.
+  
+StyleRig 분석 대화형 편집기를 사용하면 훈련된 네트워크를 쉽게 검사할 수 있다. 우리는 네트워크가 대부분의 제어에서 좋은 작업을 수행하지만, 3D 매개 변수 얼굴 모델의 일부 표현성은 손실된다는 것을 관찰한다. 즉, RigNet은 모든 파라메트릭 제어 모드를 스타일에서 유사한 변경으로 전송할 수 없습니다.GAN에서 이미지를 생성했습니다. 예를 들어, 면 망사의 평면 내 회전이 무시됩니다. 마찬가지로, 얼굴 망사의 많은 표현은 생성된 영상으로 잘 변환되지 않는다. 우리는 이러한 문제를 이미지의 편향으로 돌린다. 스타일GAN이 교육을 받았습니다. 이러한 모드를 분석하기 위해, 우리는 StyleGAN에서 생성된 훈련 데이터에서 얼굴 모델 매개 변수의 분포를 살펴본다. 그림 6을 참조한다. 우리는 평면 내 회전(Z 축 주위의 회전)이 데이터에 거의 존재하지 않는다는 것을 안다. 사실, 대부분의 변동은 Y 축 주위에만 있습니다. 스타일 때문일 수 있습니다.GAN은 Flickr-HQ 데이터 세트에 대해 훈련된다. 그러한 데이터 세트에 포함된 대부분의 얼굴의 정적 이미지에는 평면 내 회전이 포함되지 않는다. 대부분의 생성된 이미지가 중립 또는 미소/웃는 얼굴로 구성된 표현에도 동일한 추론을 적용할 수 있다. 이러한 식은 최대 3개의 혼합 모양을 사용하여 캡처할 수 있습니다. 안면 리그에는 64개의 벡터가 포함되어 있지만, 우리는 훈련 데이터의 분포에 대한 편견 때문에 벡터를 잘 제어할 수 없다. 마찬가지로 조명 조건도 데이터 집합에서 제한된다. 우리는 다른 차원에 비해 전역 색상과 방위 치수에 더 큰 변화가 있다는 점에 주목한다. 우리의 접근 방식은 StyleRig뿐만 아니라 StyleGAN에 존재하는 편견도 검사할 수 있는 직관적이고 대화형 사용자 인터페이스를 제공한다.
+
+### 8.3. Conditional Image Generation
+사전 훈련된 생성 모델에 대한 명시적이고 암시적인 제어를 통해 조건부 생성 모델로 전환할 수 있다. 지정된 매개 변수에 해당하는 이미지를 생성하기 위해 RigNet에 포즈, 표현 또는 조명 입력을 간단히 수정할 수 있습니다(그림 7 참조). 이것은 무조건적인 생성 모델을 조건부 모델로 변환하는 직선적인 방법이며, 고해상도 광실현적 결과를 생성할 수 있다. 또한 StyleRig를 교육하는 데 24시간 미만이 소요되기 때문에 매우 효율적이며, 조건부 생성 모델을 처음부터 교육하는 데는 41일 이상 소요되는 StyleGAN만큼 많은 시간이 필요하다(두 번호 모두 NVIDIA Volta GPU용).
+
+### 8.4. Comparisons to Baseline Approaches
+다음에서는 우리의 접근 방식을 몇 가지 기준 접근법과 비교한다.
+
+잠재 벡터 "스티어링" 자하니아 등에 의해 영감을 받아, 우리는 매개 변수의 변화를 기반으로 StyleGAN 잠재 벡터를 조향하려고 하는 네트워크 아키텍처를 설계한다. 이 네트워크 아키텍처는 잠복 벡터를 입력으로 사용하지 않으므로 인코더를 요구하지 않는다. 네트워크에 대한 입력은 얼굴 모델 파라미터의 델타이며, 출력은 잠재 벡터의 델타입니다. 우리의 설정에서, 그러한 구조는 네트워크가 얼굴의 형상을 변형할 수 없는 상황에서 바람직한 결과를 이끌어내지 못한다. 그림 8을 참조한다. 따라서 잠재 공간의 의미론적 델타도 대상 매개 변수 외에 잠재 벡터에 조건부여야 한다.
+Eq. 2에서 설명한 바와 같이, 우리의 손실 함수는 세 개의 항으로 구성되어 있다. 첫 번째 기준선의 경우 재구성 손실 스위치를 끕니다. 이는 StyleGAN 잠재 코드의 공간에서 이탈하는 출력 잠재 벡터로 이어질 수 있으며, 따라서 비대면 영상이 생성될 수 있다. 다음으로, 일관성 손실의 스위치를 끕니다. 이 손실 항은 변경되는 매개 변수를 제외한 모든 얼굴 모델 매개 변수의 일관성을 적용합니다. 이 용어를 사용하지 않고 조명과 같은 한 차원을 변경하면 헤드 포즈와 같은 다른 차원도 변경됩니다. 우리의 최종 모델은 일관된 ID와 장면 정보로 원하는 편집을 보장한다. 편집 손실의 전원을 끄면 생성기에 대한 제어가 추가되지 않으므로 좋은 기준선이 아닙니다.
+  
+### 8.5. Simultaneous Parameter Control
+다른 매개 변수를 독립적으로 제어할 수 있을 뿐만 아니라 동시에 제어할 수도 있습니다. 이를 위해, 우리는 RigNet을 훈련시켜 목표 포즈, 표현 및 조명 파라미터를 입력으로 수신한다. 모든 (w; v) 훈련 코드 벡터 쌍에 대해, 우리는 세 가지 훈련 샘플을 샘플링한다. 여기에서는 세 개의 파라미터(포즈, 식 또는 조명) 중 한 개가 각 샘플에서 변경됩니다. 그런 다음 각 표본에 대해 Eq. 2에 정의된 손실 함수를 사용한다. 따라서, RigNet은 제어 공간의 각 차원을 독립적으로 편집하는 동시에 동일한 네트워크를 사용하여 편집을 결합할 수 있는 방법을 학습한다. 그림 9는 포즈, 표현 및 조명 매개변수가 소스 이미지에서 대상 이미지로 전송되는 혼합 결과를 보여준다.
+
+***
+  
+## 9. Limitations
+StyleGAN에서 생성된 얼굴 이미지에 대한 고품질 의미 제어를 입증했지만, 우리의 접근 방식은 여전히 후속 작업에서 해결할 수 있는 몇 가지 제한에 노출되어 있다. 분석 섹션에서는 StyleRig가 매개 변수 얼굴 모델의 전체 표현성을 이용할 수 없다는 점에 대해 이미 논의하였다. 이것은 StlyeGAN의 내부 작업에 대한 멋진 통찰력을 제공하고 그것이 학습한 편견을 성찰할 수 있게 한다. 미래에는, 이것이 더 나은 생성 모델을 설계하는 방법을 이끌 수 있다. 우리의 접근 방식은 또한 채택된 차별화 가능한 얼굴 재구성 네트워크의 품질에 의해 제한된다. 현재 이 모델은 미세 스케일 디테일을 재구성할 수 없으므로 명시적으로 제어할 수 없다. 마지막으로, 매개 변수 얼굴 모델(예: 배경 또는 헤어 스타일)에 의해 설명되지 않는 장면의 일부를 보존하려고 하는 명시적 제약 조건은 없다. 따라서 이러한 부품은 제어할 수 없으며 매개 변수를 편집할 때 변경될 수 있습니다.
+  
+***
+  
+## 10. Conclusion
+우리는 사전 훈련되고 고정된 스타일-GAN 네트워크에 대해 얼굴 리그와 같은 제어를 제공하는 새로운 접근 방식인 스타일 리그를 제안했다. 우리의 네트워크는 자체 감독 방식으로 훈련되며 추가 이미지 또는 수동 주석이 필요하지 않다. 테스트 시간에, 우리의 방법은 일련의 의미 제어 매개 변수 세트에 대한 명시적인 제어를 제공하면서 StyleGAN의 광학적 사실성으로 얼굴 이미지를 생성한다. 우리는 컴퓨터 그래픽 제어와 심층 생성 모델의 결합이 많은 흥미로운 편집 응용 프로그램을 가능하게 하고 생성 모델의 내부 작동에 대한 통찰력을 제공하며 후속 작업에 영감을 줄 것이라고 믿는다.
