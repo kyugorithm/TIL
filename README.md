@@ -34,6 +34,7 @@
 ### Image Generation and etc.
 #### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
 #### MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction (2017)
+#### Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
 
 
 # 그외의 이론및 모델
@@ -54,6 +55,7 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [j_link005]: <https://ieeexplore.ieee.org/document/1542519>
 [j_link006]: <https://arxiv.org/abs/1711.04322>
 [j_link007]: <https://github.com/kyugorithm/TIL/blob/main/journal/PG_GAN.md>
+[j_link008]: <https://github.com/kyugorithm/TIL/blob/main/journal/J006_cycleGAN.md>
 [j_link008]: <https://dl.acm.org/doi/abs/10.1145/3414685.3417803>
 [j_link009]: <https://arxiv.org/pdf/2004.00121.pdf>
 [b_link001]: <https://medium.com/@chullino/graphical-model%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%EC%9A%94-2d34980e6d1f>
