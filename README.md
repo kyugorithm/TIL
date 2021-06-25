@@ -23,7 +23,7 @@
 #### StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN (2019)
 #### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
 #### PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
-#### StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
+
 
 
 # 학습완료 논문
@@ -34,7 +34,8 @@
 ### Image Generation and etc.
 #### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
 #### MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction (2017)
-#### Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
+#### StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
+#### CycleGAN : Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
 
 
 # 그외의 이론및 모델
