@@ -44,7 +44,7 @@
 [Restricted Boltzmann Machine][b_link002] : 깊은 신경망에서 학습이 잘 되지 않는 문제를 해결하기 위해 Geoffrey Hinton 교수님이 제안하신 방법론  
 Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다시 활기를 되찾았다. Generative 계열을 이해하기 위해서는 이해 필수
 [MCMC(Monte Carlo Markov Chain)][b_link003] : 샘플링 방법론
-
+[Pytorch Manual][b_link004] : 파이토치 사용매뉴얼
  # Text book 
  [Machine Learning : A Probabilistic Perspective][t_link001] : ML의 바이블이라고 생각하는 책이다. 언젠간 보고 정리해야겠다고 생각했는데, 언제 다볼 수 있을지... 
  
@@ -63,4 +63,6 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [b_link002]: <https://github.com/kyugorithm/TIL/blob/main/Theory/RestrictedBoltzmannMachine.md>
 [b_link003]: <https://github.com/kyugorithm/TIL/blob/main/Theory/MCMC.md>
 [b_link003]: <https://github.com/kyugorithm/TIL/blob/main/ML_APP.md>
+[b_link004]: <https://pytorch.org/tutorials/beginner/pytorch_with_examples.html#nn-module>
+
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
