@@ -25,7 +25,7 @@
 #### PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
 #### U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
 #### DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
-
+#### RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors
 
 # 학습완료 논문
 ### Anomaly Detection
