@@ -24,8 +24,8 @@
 #### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
 #### PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
 #### U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
-#### DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
-#### RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
+
+
 
 # 학습완료 논문
 ### Anomaly Detection
@@ -37,6 +37,8 @@
 #### MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction (2017)
 #### StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
 #### CycleGAN : Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
+#### RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
+#### DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
 
 
 # 그외의 이론및 모델
