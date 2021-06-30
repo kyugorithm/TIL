@@ -9,11 +9,11 @@
 ### Coursera : IBM Machine Learning
 - Week#1-Module#1. Introduction, History
 - Week#1-Module#2. Retrieving Data, Data Cleaning, EDA, Feature Engineering
-
-
+  
+  
 # 학습할 논문
 ### Image Generation and etc.
-
+  
 #### Generative Adversarial Nets (2014)
 #### Conditional Generative Adversarial Nets (2014)
 #### A Neural Algorithm of Artistic Style (2015)
@@ -40,7 +40,7 @@
 #### RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
 #### DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
 
-
+  
 # 그외의 이론및 모델
 
 [Graphical Model?][b_link001] : 상태를 가지는 모델에서 directed/indirected graphical model의 개념이 자주 등장한다.  
@@ -50,8 +50,8 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [Pytorch Manual][b_link004] : 파이토치 사용매뉴얼
  # Text book 
  [Machine Learning : A Probabilistic Perspective][t_link001] : ML의 바이블이라고 생각하는 책이다. 언젠간 보고 정리해야겠다고 생각했는데, 언제 다볼 수 있을지... 
- 
- 
+   
+   
 [j_link001]: <https://arxiv.org/pdf/1508.06576.pd>
 [j_link002]: <https://ieeexplore.ieee.org/document/8581424>
 [j_link003]: <https://ieeexplore.ieee.org/document/9171158>
