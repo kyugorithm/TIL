@@ -27,7 +27,7 @@
     ```
 * **2017**
     ```
-    Improved training of wasserstein gans
+    Wasserstein GAN
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
     ```
 * **2015**
