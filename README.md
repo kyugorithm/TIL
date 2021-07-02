@@ -3,41 +3,76 @@
 # Principles
 - 양이 적더라도 매일 업데이트 하려고 노력하자. 꾸준함이 중요하다.  
 - 다시 보았을 때 불편함이 없도록 명료하게 작성한다.
-# Categories
-### Coursera : IBM Machine Learning
+
+
+# 1. Coursera : IBM Machine Learning
 - Week#1-Module#1. Introduction, History
 - Week#1-Module#2. Retrieving Data, Data Cleaning, EDA, Feature Engineering
   
   
-# 학습할 논문
-### Image Generation and etc.
-  
-#### Generative Adversarial Nets (2014)
-#### Conditional Generative Adversarial Nets (2014)
-#### A Neural Algorithm of Artistic Style (2015)
-###### : Content image와 style image를 이용하여 이미지를 생성 / [논문링크][j_link001]
-#### Improved training of wasserstein gans (2017)
-#### Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization (2017)
-#### StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN (2019)
-#### StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing
-#### PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
-#### U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
+# 2. 학습할 논문
+## 2.1. Image Generation and etc.
+* **2021**
+    ```
+    StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing  
+    ```
+* **2020**
+    ```
+    PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
+    ```
+* **2019**
+    ```
+    StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN
+    U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
+    ```
+* **2017**
+    ```
+    Improved training of wasserstein gans
+    Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
+    ```
+* **2015**
+    ```
+    A Neural Algorithm of Artistic Style 
+    ```
+* **2014**
+    ```
+    Generative Adversarial Nets 
+    Conditional Generative Adversarial Nets [논문링크][j_link001]
+    ```
 
-# 학습완료 논문
-### Anomaly Detection
-#### 1. DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series(2018)
-##### CNN 구조 time series predictor와 error threshold 기반 anomaly detector를 이용하여 여러 형태의 anomaly 탐지 / [논문링크][j_link002]
 
-### Image Generation and etc.
-#### StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
-#### MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction (2017)
-#### StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
-#### CycleGAN : Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
-#### RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
-#### DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
-#### CAM : Learning Deep Features for Discriminative Localization
+# 3. 학습완료 논문
+## 3.1. Anomaly Detection
+* **2018**
+    ```
+    DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series [논문링크][j_link002]
+    ```
+## 3.2. Image Generation and etc.
+* **2020**
+    ```
+    StyleRig: Rigging StyleGAN for 3D Control over Portrait Images [논문링크][j_link009]
+    ```
+* **2019**
+    ```
+    DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
+    ```
+* **2018**
+    ```
+    StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
+    ```
+* **2017**
+    ```
+    [2017/05/CVPR]RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
+    [2017/03/ICCV] MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction
+    [2017/03/CVPR] CycleGAN : Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
+    ```
+* **2015**
+    ```
+    CAM : Learning Deep Features for Discriminative Localization
+    ```
+
   
-# 그외의 이론및 모델
+# 4. 그외 이론및 모델
 
 [Graphical Model?][b_link001] : 상태를 가지는 모델에서 directed/indirected graphical model의 개념이 자주 등장한다.  
 [Restricted Boltzmann Machine][b_link002] : 깊은 신경망에서 학습이 잘 되지 않는 문제를 해결하기 위해 Geoffrey Hinton 교수님이 제안하신 방법론  
