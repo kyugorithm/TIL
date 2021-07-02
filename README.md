@@ -62,9 +62,9 @@
     ```
 * **2017**
     ```
-    [2017/05/CVPR]RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
-    [2017/03/ICCV] MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction
-    [2017/03/CVPR] CycleGAN : Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
+    RTUG : Real-Time User-Guided Image Colorization with Learned Deep Priors[논문링크][j_link010]
+    MoFA: Model-based Deep Convolutional Face Autoencoder for Unsupervised Monocular Reconstruction
+    CycleGAN : Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks [정리][j_link008]
     ```
 * **2015**
     ```
