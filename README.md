@@ -24,6 +24,7 @@
     ```
     StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN
     U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
+    Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis
     ```
 * **2017**
     ```
