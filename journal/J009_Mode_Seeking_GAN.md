@@ -55,12 +55,58 @@ F1은 현존하는 모델에 대하여 정규화 방식의 효율성을 보여�
 3) 다양한 task에 대해 현존하는 모델에 대한 정규화 항 적용은 생성이미지 품질에 대한 희생 없이 더나은 다양성을 달성하도록 함을 보여준다.
 
 # 2. Related Work
-- cGAN
-- Reducing mode collapse
+- **cGAN**
+GAN은 영상 합성에 널리 사용되어 왔다. adversarial training을 통해 G는 실제 이미지 분포를 포착하도록 권장된다.  
+cGAN은 GAN을 기반으로 다양한 컨텍스트를 기반으로 영상을 합성한다.  
+e.x.,  
+1) low-resolution -> high-resolution  
+2) I2I translation  
+3) styled 영상 생성  
+4) TTI(text-to-image)  
+  
+cGAN은 다양한 애플리케이션에서 성공을 거두었지만 모드 축소 문제로 어려움을 겪는다. conditional 컨텍스트는 출력 이미지에 대한  
+강력한 구조적 prior information을 제공하고 입력 noise 벡터보다 high-dimension이기 때문에 G는 생성된 영상의 변화를 일으키는  
+입력 noise 벡터를 무시하는 경향이 있다. 따라서 G가 유사한 모양의 영상을 생성하게 된다.  
+본 논문에서는 cGAN의 mode collapse 문제를 해결하는 것을 목표로 한다.  
+
+- **Reducing mode collapse**
+일부 방법은 학습을 안정화하기 위해 상이한 최적화 프로세스와 divergence metrics[1, 19]를 가진 D에 초점을 맞춘다.  
+미니 배치 discrimination[26]을 통해 D는 개별 샘플이 아닌 전체 미니 배치 샘플을 구별할 수 있다.  
+다른 방법에서는 모드 축소 문제를 완화하기 위해 auxiliary network를 사용한다.  
+ModeGAN 및 VEEGAN은 입력 노이즈 벡터와 추가 인코더 네트워크를 사용하여 생성된 이미지 사이의 bijection mapping을 적용한다.  
+multiple G와 weight 공유 G[18]는 더 많은 분포의 mode를 포착하기 위해 개발되었다.  
+그러나, 이러한 접근법은 computing overhead를 수반하거나 network 구조수정이 필요하며, cGAN에 쉽게 적용되지 않을 수 있다.  
+
+cGAN 분야에서는 최근 I2I transition task의 mode-collapse 문제를 해결하기 위해 몇 가지 방법이 제시되었다.  
+Mode GAN 및 VEGAN과 유사하게, 생성된 이미지와 입력 noise 벡터 사이에 bijection constraint를 제공하기 위해 추가 encoder가 적용되었다.  
+그러나 이러한 접근법은 다른 작업별 네트워크와 객관적 기능을 필요로 한다. 추가 구성 요소로 인해 방법의 일반화 가능성이 낮아지고  
+학습에 추가적인 연산 부하가 발생합니다. 대조적으로, 우리는 학습 오버헤드를 없이 네트워크 구조의 수정을 필요로 하지 않는  
+단순한 정규화 항을 제안한다. 따라서 제안된 방법은 다양한 조건부 생성 task에 쉽게 적용할 수 있다.  
+최근, 동시 작업도 cGAN에 대한 모드 붕괴를 줄이기 위한 작업과 유사한 손실 조건을 채택하고 있다.  
 
 # 3. Diverse Conditional Image Synthesis
 ## 3.1. Preliminaries
+
+GAN 학습 과정은 min-max 문제로 공식화할 수 있다.  
+D : 실제 데이터에 높은값을, 생성 데이터에 낮은값을 할당하여 분류능력을 향상한다.  
+G : 그럴듯한 이미지를 합성하여 D를 속인다.  
+
+적대적 학습을 통해 D의 gradient는 G가 실제 이미지 분포와 유사한 분포의 샘플을 생성하도록 가이드한다.  
+GANs의 mode-collapse 문제는 잘 알려져 있다. 여러 방법은 이 문제가 발생할 때 penalty 부족이 missing 모드를 원인으로 삼는다.  
+모든 모드는 대개 유사한 차별적 값을 가지므로 gradient descent에 기반한 학습 과정을 통해 다수샘플의 mode를 선호할 수 있다.  
+반면, 소수샘플 mode에서는 샘플생성이 어렵다. cGAN에서 모드 누락 문제가 더 극적으로 발생한다.  
+일반적으로, conditional context는 noise 벡터와 대조적으로 고차원적이고 구조화되어 있다.(예: 영상 및 문장).  
+따라서 G는 context에 초점을 맞추고 다양성을 설명하는 noise 벡터를 무시할 가능성이 있다.  
+
 ## 3.2. Mode Seeking GANs
+본 연구에서는 missing mode 문제를 G 관점에서 완화할 것을 제안한다. 그림 2는 본 방식의 주요 아이디어를 보여준다.  
+![image](https://user-images.githubusercontent.com/40943064/124373239-869f7100-dccb-11eb-80c9-46cdfb556317.png)
+
+latent code space Z의 latent verctor z가 이미지 space I에 mapping되도록 한다. mode collapse가 발생하면  
+mapping 이미지가 몇 가지 모드로 축소된다. 또한 두 개의 잠재 코드 z1과 z2가 가까울 경우 mapping 이미지 I1 = G(c, z1)와 I2 = G(c, z2)가  
+동일한 모드로 축소될 가능성이 높다. 이 문제를 해결하기 위해 z1과 z2 사이의 거리에 대한 G(c, z1)와 G(c, z2) 사이의 거리 비율을  
+직접적으로 최대화하기 위해 regularization term을 찾는 모드를 제안한다.  
+![image](https://user-images.githubusercontent.com/40943064/124373279-e007a000-dccb-11eb-942e-62a1fcefce23.png)
 
 # 4. Experiments
 ## 4.1. Evaluation Metrics
