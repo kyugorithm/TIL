@@ -47,8 +47,8 @@ I2I 변환작업에서 다양성을 향상시키기 위해 여러 연구가 수�
 추가로 현실성을 희생하고 다양성을 얻지 못함을 검증하기 위해 품질에 metric으로써 FID를 가지고 검증한다.  
 실험결과는 제안 정규화 방법론이 현존모델에 대해 여러 task에 대해 품질 손실 없이 나은 다양성을 달성함을 보여준다.  
 F1은 현존하는 모델에 대하여 정규화 방식의 효율성을 보여준다.(모드붕괴 없이 다양한 품질의 이미지가 생성됨)  
-![image](https://user-images.githubusercontent.com/40943064/124359308-55895700-dc5f-11eb-8cbd-adac6843a9ec.png)
 
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124359308-55895700-dc5f-11eb-8cbd-adac6843a9ec.png" width=800 /></p>  
 ### main contribution
 1) cGAN에서 mode collapse를 해결하기 위해 단순하지만 효과적인 mode seeking regularization 제안 : marginal training overheads and modifications에 잘 확장된다.  
 2) 3가지 조건부 생성 task에 대한 제안한 정규화의 일반화를 보인다. : categorical  generation,  I2I translation, and text-to-image synthesis
@@ -100,14 +100,14 @@ GANs의 mode-collapse 문제는 잘 알려져 있다. 여러 방법은 이 문�
 
 ## 3.2. Mode Seeking GANs
 본 연구에서는 missing mode 문제를 G 관점에서 완화할 것을 제안한다. 그림 2는 본 방식의 주요 아이디어를 보여준다.  
-![image](https://user-images.githubusercontent.com/40943064/124373239-869f7100-dccb-11eb-80c9-46cdfb556317.png)
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373239-869f7100-dccb-11eb-80c9-46cdfb556317.png" width=800 /></p>  
 
 latent code space Z의 latent verctor z가 이미지 space I에 mapping되도록 한다. mode collapse가 발생하면  
 mapping 이미지가 몇 가지 모드로 축소된다. 또한 두 개의 잠재 코드 z1과 z2가 가까울 경우 mapping 이미지 I1 = G(c, z1)와 I2 = G(c, z2)가  
 동일한 모드로 축소될 가능성이 높다. 이 문제를 해결하기 위해 z1과 z2 사이의 거리에 대한 G(c, z1)와 G(c, z2) 사이의 거리 비율을  
 직접적으로 최대화하기 위해 regularization term을 찾는 모드를 제안한다.  
-![image](https://user-images.githubusercontent.com/40943064/124373279-e007a000-dccb-11eb-942e-62a1fcefce23.png)
 
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373279-e007a000-dccb-11eb-942e-62a1fcefce23.png" width=400 /></p>  
 # 4. Experiments
 ## 4.1. Evaluation Metrics
 ## 4.2. Conditioned on Class Label
