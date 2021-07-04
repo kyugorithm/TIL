@@ -107,13 +107,79 @@ mapping 이미지가 몇 가지 모드로 축소된다. 또한 두 개의 잠재
 동일한 모드로 축소될 가능성이 높다. 이 문제를 해결하기 위해 z1과 z2 사이의 거리에 대한 G(c, z1)와 G(c, z2) 사이의 거리 비율을  
 직접적으로 최대화하기 위해 regularization term을 찾는 모드를 제안한다.  
 
-<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373279-e007a000-dccb-11eb-942e-62a1fcefce23.png" width=400 /></p>  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373279-e007a000-dccb-11eb-942e-62a1fcefce23.png" width=450 /></p>  
+
+regularization 항은 cGAN 학습을 위한 선순환 구조를 제공한다. 이 항은 G가 image 공간을 탐색하도록 유도하고  
+소수 모드의 샘플을 생성할 수 있는 기회를 향상시킨다. 반면에 D는 소수샘플 모드에서 생성된 샘플에 주의를 기울여야 한다.  
+그림 2는 두 개의 가까운 샘플인 z1과 z2가 동일한 모드 M2에 매핑되는 mode-collapse 상황을 보여준다.  
+그러나 제안된 정규화 조건을 사용하여 z1은 탐색되지 않은 모드 M1에 속하는 I1에 mapping되고 G는 다음의  
+훈련에서 M1의 샘플을 생성할 수 있는 더 나은 기회를 갖게 된다.
+  
+F3에서 보는것처럼 제안한 정규화항은 기존 목적함수에 통합함으로써 cGAN에 쉽게 통합될 수 있다.  
+여기서 Lori 는 기존의 loss항이고 Lambda_ms는 정규화 항의 중요도제어weight이다.  
+3번 수식 : 일반 cGAN의 loss term이며 c, y, z는 각각 class label, 실제 이미지, noise vectord다.  
+4번 수식 : I2I tranlation 문제이기 때문에 y도메인 사진과 생성 사진간 차이에 대한 loss항이 추가 된다.  
+제안한 방법을 Mode Seeking GANs(MSGANs)라고 명명한다. 
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373506-bb142c80-dccd-11eb-8de9-bd54034d2b41.png" width=450 /></p>  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373376-db8fb700-dccc-11eb-97a3-f63cce03c5a3.png" width=450 /></p>  
+
+
 # 4. Experiments
 ## 4.1. Evaluation Metrics
+- FID : Inception Network에 입력하여 얻어진 latent code간 분포 차이를 비교
+- LPIPS : 생성 샘플간 평균 거리를 통해 다양성을 측정(높은값이 다양함을 나타냄)
+- NDB and JSD : bin-based metrics, mode-missng을 평가  
+- 실제 데이터 분포의 modes라 여기는 학습 샘플을 K-means로 군집을 분할하고  
+- 생성 샘플의 가장 가까운 이웃의 빈에 할당  
+- 그후 학습샘플과 생성샘플간 bin의 분포 차이를 비교하여 유사도를 측정  
+- 낮은 NDB와 JSD는 분포가 유사함을 뜻함  
 ## 4.2. Conditioned on Class Label
+**Categorical image generation + DCGAN + CIFAR-10(32x32) + LPIP 제외**
+table을 보면 다양성과 품질 모두 향상된다.  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373672-47731f00-dccf-11eb-8599-a4986e419cd2.png" width=800 /></p>  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373674-4b06a600-dccf-11eb-9197-4484d1c94836.png" width=450 /></p>  
+
 ## 4.3. Conditioned on Image
+**I2I translation + Pix2Pix(unimodal) and DRIT(multimodal)**
 ### 4.3.1  Conditioned on Paired Images
+Pix2Pix(baseline), MSGAN vs BicycleGAN(paired image 셋에 diverse image 생성)  
+dataset : facades, maps  
+추가 구조를 필요로하는 MSGAN은 BicycleGAN과 동등하며 Pix2Pix보다는 훨씬 다양성이 있음  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124373925-97eb7c00-dcd1-11eb-8ded-defc62e859df.png" width=800 /></p> 
+
 ### 4.3.2  Conditioned on Unpaired Images
+DRIT(baseline) : unpaired dataset에 대한 훌륭한 성능을 보이지만 mode-collapse 존재(e.g., cats to dogs).  
+양 데이터셋에서 모든 meric에서 DRIT에 비해 나은 성능을 보임 (Table 4.)  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124374082-32988a80-dcd3-11eb-801a-0c5d7dd7e548.png" width=800 /></p> 
+
+Figure6. dog to cat 변환에 대한 bin 비율을 보여주며 DRIT은 mode 분포가 매우 불균일한것을 확인할 수 있음   
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124374345-860bd800-dcd5-11eb-9e70-3a963a383cbc.png" width=600 /></p> 
+
+정성적 평가로, Figure5는 MSGAN이 더 많은 mode들을 시각적 품질저하 없이 보여준다.  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124374382-c9fedd00-dcd5-11eb-8e40-49f23bfe938d.png" width=600 /></p> 
+
+
 ## 4.4. Conditioned on Text
+
+**TTI 합성 + StackGAN++에 정규화항 추가 + CUB-200-2011 데이터 **
+StackGAN++는 diversity 향상을 위해 Conditioning Augmentation module을 도입하여 텍스트 설명을 가우시안 분포의 text code에 re-parameterize 한다. semantically 의미있는 text code에 정규화항을 적용하는것 대신, prior 분포에서 latent code를 무작위로 뽑아 이용하는것에 집중한다. 정당한 평가를 위하여 다음 두개의 설정에 대해 MSGAN과 StackGAN++를 비교한다.  
+1) 텍스트 설명에 대한 text code를 수정하지 않고 생성을 수행 : 이경우 text code는 출력이미지에 대한 다양성을 제공한다.  
+2) 고정된 text 코드를 가지고 생성을 수행 : text code의 효과를 제거한다.
+
+ 테이블을 보면 text가 고정된 경우와 고정되지않은 경우 모두 다양성과 mode-collapse에 있어서의 성능향상을 확인 할 수 있다.  
+ 그림을 통해 더 이해를 할 수 있다.  
+ <p align="center"><img src="https://user-images.githubusercontent.com/40943064/124374574-5f4ea100-dcd7-11eb-8a32-573e6f2969f0.png" width=750 /></p> 
+
 ## 4.5. Interpolation of Latent Space in MSGANs
+2개의 Latent 사이를 interpolation 하는 경우 이미지가 부드럽게 변화하는것을 확인할 수 있다.  
+mode-seeking이 발생한다면 latent 값의 차이에도 불구하고 이미지의 변화가 없을 것이다.  
+
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/124374690-7346d280-dcd8-11eb-89ef-67ddac307df1.png" width=750 /></p> 
+
+
 # 5. Conclusions
+cGAN의 mode-collapse를 다루기 위하여 단순하지만 효과적인 mode seeking 정규화항을 G에 포함하는것을 제안한다.  
+latent code 거리에 대한 이미지의 거리를 취대로 함으로써 정규화항은 G가 더 minor한 영역을 탐색하도록 한다.  
+제안한 정규화항은 학습 오버헤드나 네트워크 구조의 수정 없이 현존하는 cGAN 방식에 대해 잘 통합될 수 있다.  
+3가지 조건부 생성 작업(categorical 생성, I2I 변환,TTI 생성)에 대하여 제안 방식의 일반화 성능을 보여준다.  
+양질의 결과는 정규화항을 통해 baseline framework으로 하여금 성능을 잃지 않으며 다양성을 향상시킴을 보여준다.  
