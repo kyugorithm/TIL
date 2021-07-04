@@ -43,7 +43,7 @@ I2I 변환작업에서 다양성을 향상시키기 위해 여러 연구가 수�
 그러나 diversity metric 하나만으로 생성 이미지 분포와 실제 이미지 분포 사이 유사성을 보장할 수는 없다.  
 그러므로 두가지 bin 기반 metric을 제안한다.  
 - *theNumber  ofStatistically-Different Bins(NDB) metric* : 실제 데이터에 의해 사전 결정된 클러스터들로 배정된 샘플의 상대적 비율  
-- *ensen-Shannon  Diver-gence(JSD)  distance* : bin 분포 사이 유사성을 측정  
+- *Jensen-Shannon  Diver-gence(JSD)  distance* : bin 분포 사이 유사성을 측정  
 추가로 현실성을 희생하고 다양성을 얻지 못함을 검증하기 위해 품질에 metric으로써 FID를 가지고 검증한다.  
 실험결과는 제안 정규화 방법론이 현존모델에 대해 여러 task에 대해 품질 손실 없이 나은 다양성을 달성함을 보여준다.  
 F1은 현존하는 모델에 대하여 정규화 방식의 효율성을 보여준다.(모드붕괴 없이 다양한 품질의 이미지가 생성됨)  
