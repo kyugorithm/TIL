@@ -26,6 +26,11 @@
     U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
     Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis
     ```
+* **2018**
+    ```    
+    ArcFace: Additive Angular Margin Loss for Deep Face Recognition
+    ```
+    
 * **2017**
     ```
     Wasserstein GAN
