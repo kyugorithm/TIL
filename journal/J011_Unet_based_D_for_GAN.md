@@ -51,7 +51,7 @@ per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 re
 
 128×128 / CelebA : FID : 4.55 -> 2.95
 128×128 / COO : FID : 16.37 -> 13.73 (동물 cGAN task)
-![image](https://user-images.githubusercontent.com/40943064/125024527-e88d1b80-e0bb-11eb-98c5-2d8663ce1d71.png)
+![image](https://user-images.githubusercontent.com/40943064/125024527-e88d1b80-e0bb-11eb-98c5-2d8663ce1d71.png)  
 
 ## 2. Related Work 
 ### 2.1 GAN
@@ -89,6 +89,12 @@ per-pixel 분류를 수행하여 Encoder에서 x의 원래 이미지 분류와 �
 
 ![image](https://user-images.githubusercontent.com/40943064/125060600-7d593e80-e0e7-11eb-9e0e-77ad8b7580ad.png)  
 여기서 기본 GAN loss function과 유사하게 L DU enc는 DU end의 scalar 출력으로부터 계산된다.  
+![image](https://user-images.githubusercontent.com/40943064/125064310-7b917a00-e0eb-11eb-8c11-5038912ac140.png)  
+Decoder의 per-pixel 출력은 병목현상으로부터의 upsampling 프로세스를 통해 활성화된 global 정보와 Encoder  
+중간 계층으로부터의 skip-connection을 통해 조정되는 low-level feature의 local 정보를 기반으로 한다.  
+동일하게 G도 아래와 같이 정의 되며 더 강력한 식별자 DU를 속이기 위해 이미지를 합성하면서 global 구조와  
+local 세부 정보에 모두 집중하도록 장려한다.  
+![image](https://user-images.githubusercontent.com/40943064/125065042-4e919700-e0ec-11eb-9c38-32622f79bda6.png)  
 
 
 
