@@ -90,15 +90,34 @@ per-pixel 분류를 수행하여 Encoder에서 x의 원래 이미지 분류와 �
 ![image](https://user-images.githubusercontent.com/40943064/125060600-7d593e80-e0e7-11eb-9e0e-77ad8b7580ad.png)  
 여기서 기본 GAN loss function과 유사하게 L DU enc는 DU end의 scalar 출력으로부터 계산된다.  
 ![image](https://user-images.githubusercontent.com/40943064/125064310-7b917a00-e0eb-11eb-8c11-5038912ac140.png)  
-Decoder의 per-pixel 출력은 병목현상으로부터의 upsampling 프로세스를 통해 활성화된 global 정보와 Encoder  
+Decoder의 per-pixel 출력은 bottleneck으로부터의 upsampling 프로세스를 통해 활성화된 global 정보와 Encoder  
 중간 계층으로부터의 skip-connection을 통해 조정되는 low-level feature의 local 정보를 기반으로 한다.  
-동일하게 G도 아래와 같이 정의 되며 더 강력한 식별자 DU를 속이기 위해 이미지를 합성하면서 global 구조와  
-local 세부 정보에 모두 집중하도록 장려한다.  
+  
+G도 더 강력한 DU를 속이기 위해 이미지를 합성하면서 global 구조와 local 세부 정보에 모두 집중하도록 장려한다.  
 ![image](https://user-images.githubusercontent.com/40943064/125065042-4e919700-e0ec-11eb-9c38-32622f79bda6.png)  
 
 
 
 ### 3.2. Consistency Regularization
+잘 훈련된 DU의 per-pixel 결정은 이미지의 클래스 도메인 변환에서 동일해야 한다. 그러나 이 속성은 명시적으로 보장하지 않는다.  
+이를 가능하게 하기 위해 D는 실제/가짜 샘플 사이의 의미와 구조적인 변화에 집중하고 임의 class-domain 보존 perturbation에  
+덜 관심을 기울이도록 정규화되어야 한다.  
+따라서, 우리는 DU 판별기의 일관성 정규화를 제안하며, DUdec가 Real/Fake 샘플의 CutMix 변환 하에서 같은 예측값을 출력하도록  
+명시적으로 유도한다.  
+CutMix는 원래 클래스 도메인을 보존하는 것과 대조적으로 혼합에 사용되는 실제 및 가짜 이미지 패치를 변경하지 않으며  
+가능한 다양한 출력을 제공하기 때문에 선택한다.
+x와 G(x) in R^(WxHxC)의 혼합으로 DU에 대하여 Mask M을 통해 새로운 샘플 x~를 생성한다. (M in {0, 1}^(WxH) : binary mask)
+![image](https://user-images.githubusercontent.com/40943064/125068085-06747380-e0f0-11eb-8fee-3c8a101d1091.png)
+DU enc가 생성샘플을 globally하게 학습하여 artifact를 만들 수 있기 때문에 cutmix sample class는 fake(c=0)로 정의한다.  
+생성된 x~, c, M은 DU의 모듈 encoder, decoder에 대한 GT이다.  
+이때, D의 목적함수에 g the consistency regularization loss를 추가하여 consistent per-pixel 예측이 되도록 학습한다.  
+![image](https://user-images.githubusercontent.com/40943064/125068852-e7c2ac80-e0f0-11eb-98fc-67266cf3e0cc.png)
+이는 DU dec(CutMix(x,G(z))) == CutMix(DU(x,G(z)))가 되도록 한다.  
+그에 따라 아래와 같이 항을 추가한다.  
+![image](https://user-images.githubusercontent.com/40943064/125069548-d3cb7a80-e0f1-11eb-9551-8a1490c434e5.png)
+G loss는 변경되지 않는다. Consistency Regularization 외에도, DU의 encoder/decoder 모듈 모두를 학습하기 위해  
+CutMix 샘플을 사용한다. U-Net GAN의 경우 포화 상태가 아닌 GAN objective formula를 사용한다.  
+
 ### 3.3. Implementation
 - U-Net based discriminat
 - Consistency regularization
