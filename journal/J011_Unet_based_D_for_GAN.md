@@ -61,9 +61,37 @@ per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 re
 'vanila' GAN은 G, D 2개의 네트워크에 대하여 아래 목적함수를 교대로 최소화하도록 구성한다.  
 ![image](https://user-images.githubusercontent.com/40943064/125053005-880fd580-e0df-11eb-948e-213298f11d94.png)
 G는 tent variable z ~ p(z)를 사전확률분포에서 진짜같아보이는 이미지로 mapping한다.  
-밤
+D는 실제이미지와 실제 이미지 x와 가짜 이미지 G(z)를 구분하는것을 목표로한다.  
+일반적으로 G, D는 decoder encoder CNN 구조로 모델된다.  
+GAN은 다양한 목적함수와 구조를 가진 변이 버전이 있다. 본 논문에서는 D를 향상하는데 집중한다.  
+기존 classification net에서 기본 encoder 파트 구조는 유지하며 encoder-decoder U-net 구조로 변경한다.  
+제안한 D는 global/local 데이터 표현을 유지하도록 하여 G에 더욱 정보가 되는 feedback을 제공한다.  
+U-Net decoder의 local per-pixel feedback에 힘입어 실제와 모조 이미지의 CutMix 변환 하에서 per-pixel inconsistent한  
+D에 대한 예측에 불이익을 주는 consistency regularization 기술을 제안한다.  
+U-Net 판별기의 localization 품질을 높이고 실제/모조 사이 의미/구조 변화에 관심을 갖도록 유도하는 데 도움이 된다.
 
 ### 3.1. U-Net Based Discriminator
+
+Encoder-Decoder Network는 조밀한 예측을 위한 강력한 방법을 구성한다.  
+여기서 이미지분류 network와 유사하게 encoder는 점진적으로 입력을 downsample하며 global 이미지를 포착한다.  
+Decoder는 점진적으로 upsampling을 수행하여 입력에 대한 출력 해상도를 맞추고 그에따라 정확한 localization을 수행한다. 
+Skip connection은 두 모듈의 일치해상도 간에 데이터를 보낼수 있도록 하여 네트워크의 세부 정보를 정확하게 segment할 수  
+있는 기능을 더욱 향상시킨다.
+
+이와 유사하게, 본 연구에서는, 원래 D분류 네트워크의 빌딩 블록을 Encoder 부품으로 재사용하고 G 빌딩 블록을 decoder로  
+사용함으로써, D를 U-Net로 확장할 것을 제안한다.  
+다시 말해, D는 원래의 downsampling 네트워크와 새로운 upsampling 네트워크로 구성된다.  
+위 두 모듈은 **bottleneck**과 encoder feauture맵을 decoder 모듈과 복사/concatenate 하는 **skip-connection**으로 연결된다.
+이 식별자를 DU라고 부른다. 원본 D(x)는 입력 이미지 x를 진짜 or 가짜로 분류하지만, U-Net 판별기 DU(x)는  
+per-pixel 분류를 수행하여 Encoder에서 x의 원래 이미지 분류와 함께 이미지 x를 실제 및 가짜 영역으로 segment한다.  
+이를 통해 DU는 real/fake 이미지 global/local 차이를 모두 학습할 수 있다.
+이후 D의 원래 Encoder 모듈을 DU enc라고 하고 도입된 Decoder 모듈을 DU dec라 한다.  
+
+![image](https://user-images.githubusercontent.com/40943064/125060600-7d593e80-e0e7-11eb-9e0e-77ad8b7580ad.png)  
+여기서 기본 GAN loss function과 유사하게 L DU enc는 DU end의 scalar 출력으로부터 계산된다.  
+
+
+
 ### 3.2. Consistency Regularization
 ### 3.3. Implementation
 - U-Net based discriminat
