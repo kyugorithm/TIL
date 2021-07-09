@@ -11,7 +11,33 @@
   
   
 # 2. 학습할 논문
-## 2.1. Image Generation and etc.
+
+
+## 2.1. Anomaly Detection
+* **2020**
+    ```
+    LSTM-Based VAE-GAN for Time-Series Anomaly Detection
+    ```
+* **2018**
+    ```
+    Detecting spacecraft anomalies using lstms and nonparametric dynamic thresholding
+    ```
+* **2017**
+    ```
+    Collective anomaly detection based on long short-term memory recurrent neural networks
+    ```
+* **2015**
+    ```
+    Anomaly detection in ECG time signals via deep long short-term memory networks
+    Long short term memory networks for anomaly detection in time series
+    ```
+
+
+
+
+
+
+## 2.2. Image Generation and etc.
 * **2021**
     ```
     StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing  
@@ -45,7 +71,6 @@
     Generative Adversarial Nets 
     Conditional Generative Adversarial Nets [논문링크][j_link001]
     ```
-
 
 # 3. 학습완료 논문
 ## 3.1. Anomaly Detection
