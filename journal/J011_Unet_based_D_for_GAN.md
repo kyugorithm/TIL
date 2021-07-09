@@ -106,7 +106,7 @@ G도 더 강력한 DU를 속이기 위해 이미지를 합성하면서 global �
 명시적으로 유도한다.  
 CutMix는 원래 클래스 도메인을 보존하는 것과 대조적으로 혼합에 사용되는 실제 및 가짜 이미지 패치를 변경하지 않으며  
 가능한 다양한 출력을 제공하기 때문에 선택한다.
-x와 G(x) in R^(WxHxC)의 혼합으로 DU에 대하여 Mask M을 통해 새로운 샘플 x\~를 생성한다. (M in {0, 1}^(WxH) : binary mask)
+x와 G(x) in R^(WxHxC)의 혼합으로 DU에 대하여 Mask M을 통해 새로운 샘플 x\~를 생성한다. (M in {0, 1}^(WxH) : binary mask)  
 ![image](https://user-images.githubusercontent.com/40943064/125068085-06747380-e0f0-11eb-8fee-3c8a101d1091.png)  
 DU enc가 생성샘플을 globally하게 학습하여 artifact를 만들 수 있기 때문에 cutmix sample class는 fake(c=0)로 정의한다.  
 생성된 x~, c, M은 DU의 모듈 encoder, decoder에 대한 GT이다.  
