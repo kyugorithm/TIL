@@ -58,8 +58,8 @@ per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 re
 ### 2.2 Mix&Cut regularizations
 
 ## 3. U-Net GAN Model
-'vanila' GAN은 G, D 2개의 네트워크에 대하여 아래 목적함수를 교대로 최소화하도록 구성한다.  
-![image](https://user-images.githubusercontent.com/40943064/125053005-880fd580-e0df-11eb-948e-213298f11d94.png)
+'vanila' GAN은 G, D 2개의 네트워크에 대하여 아래 목적함수를 교대로 최소화하도록 구성한다.   
+![image](https://user-images.githubusercontent.com/40943064/125053005-880fd580-e0df-11eb-948e-213298f11d94.png)  
 G는 tent variable z ~ p(z)를 사전확률분포에서 진짜같아보이는 이미지로 mapping한다.  
 D는 실제이미지와 실제 이미지 x와 가짜 이미지 G(z)를 구분하는것을 목표로한다.  
 일반적으로 G, D는 decoder encoder CNN 구조로 모델된다.  
@@ -106,15 +106,15 @@ G도 더 강력한 DU를 속이기 위해 이미지를 합성하면서 global �
 명시적으로 유도한다.  
 CutMix는 원래 클래스 도메인을 보존하는 것과 대조적으로 혼합에 사용되는 실제 및 가짜 이미지 패치를 변경하지 않으며  
 가능한 다양한 출력을 제공하기 때문에 선택한다.
-x와 G(x) in R^(WxHxC)의 혼합으로 DU에 대하여 Mask M을 통해 새로운 샘플 x~를 생성한다. (M in {0, 1}^(WxH) : binary mask)
-![image](https://user-images.githubusercontent.com/40943064/125068085-06747380-e0f0-11eb-8fee-3c8a101d1091.png)
+x와 G(x) in R^(WxHxC)의 혼합으로 DU에 대하여 Mask M을 통해 새로운 샘플 x\~를 생성한다. (M in {0, 1}^(WxH) : binary mask)
+![image](https://user-images.githubusercontent.com/40943064/125068085-06747380-e0f0-11eb-8fee-3c8a101d1091.png)  
 DU enc가 생성샘플을 globally하게 학습하여 artifact를 만들 수 있기 때문에 cutmix sample class는 fake(c=0)로 정의한다.  
 생성된 x~, c, M은 DU의 모듈 encoder, decoder에 대한 GT이다.  
 이때, D의 목적함수에 g the consistency regularization loss를 추가하여 consistent per-pixel 예측이 되도록 학습한다.  
-![image](https://user-images.githubusercontent.com/40943064/125068852-e7c2ac80-e0f0-11eb-98fc-67266cf3e0cc.png)
+![image](https://user-images.githubusercontent.com/40943064/125068852-e7c2ac80-e0f0-11eb-98fc-67266cf3e0cc.png)  
 이는 DU dec(CutMix(x,G(z))) == CutMix(DU(x,G(z)))가 되도록 한다.  
 그에 따라 아래와 같이 항을 추가한다.  
-![image](https://user-images.githubusercontent.com/40943064/125069548-d3cb7a80-e0f1-11eb-9551-8a1490c434e5.png)
+![image](https://user-images.githubusercontent.com/40943064/125069548-d3cb7a80-e0f1-11eb-9551-8a1490c434e5.png)  
 G loss는 변경되지 않는다. Consistency Regularization 외에도, DU의 encoder/decoder 모듈 모두를 학습하기 위해  
 CutMix 샘플을 사용한다. U-Net GAN의 경우 포화 상태가 아닌 GAN objective formula를 사용한다.  
 
