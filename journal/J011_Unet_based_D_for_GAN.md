@@ -9,7 +9,7 @@ U-Net 판별기가 실제와 가짜가 이미지 사이의 semantic하고 구조
 이는 생성기가 전역적이고 지역적인 현실성을 유지한채로 변화하는 구조, 외모, 디테일 수준을 가진 이미지를 합성할 수 있도록 한다.  
 BigGAN baseline과 비교하여 우리는 평균 2.7FID 향상을 얻었다.  
 
-## Introduction
+## 1. Introduction
 
 Large-scale 학습, 구조변경, 정규 기법적용으로 향상된 학습 안정성등은 GAN의 품질 향상에 기여했으나   
 1)전체 semantic 일관성, 2)long-range structure, 3) 디테일 정확성의 문제로 학습 한계가 있어왔다.  
@@ -23,11 +23,43 @@ D가 non-stationary 환경에서 학습을 해야함에 따라 이 문제가 증
 이는 때로 합성 이미지가 일관적이지 않고 부분적으로 얼룩덜룩하게 되도록 하거나 기하적이고 구조적 패턴이 일관적이지 않게 된다.  
 
 전술한 문제를 해결하기 위해 우리는 global/local 결정을 동시에 출력하는 대안의 D 구조를 제안한다.  
-![image](https://user-images.githubusercontent.com/40943064/125013911-a1952b00-e0a7-11eb-96c5-15f3a8fab7b0.png)
+![image](https://user-images.githubusercontent.com/40943064/125013911-a1952b00-e0a7-11eb-96c5-15f3a8fab7b0.png)  
 
 sementation 분야로부터 아이디어를 얻어, 우리는 D의 역할을 classifier와 segmenter 두개 부여하도록 재설계한다.
 D를 U-net으로 설정하며 encoder는 이미지에 대한 분류, decoder는 perpixel 분류역할을 부여한다.  
+![image](https://user-images.githubusercontent.com/40943064/125020204-6698f480-e0b3-11eb-8c33-3f2ca4ec50f7.png)  
 
+이러한 아키텍처 변화는 더 강력한 D로 이어지며, 이는 보다 강력한 데이터 표현을 유지하도록 장려되어, D를 속이는 것을 더 어렵게 만들고,  
+따라서 생성된 샘플의 품질을 향상시키는 G의 작업을 가능하게 한다.  
+우리는 G를 어떤 식으로든 수정하지 않으며, G의 아키텍처 변화, 발산측정, 정규화등에 대한 지속적인 연구와 독립적이다.
 
+제안된 D는  디코더의 2차원 출력 공간에서의 consistency-regularization을 위해 D에 효과적인 CutMix augmentaion을 채택한다.  
 
-This architectural change leads to a stronger discriminator, which is encouraged to maintain a more powerful data representation, making the generator task of fooling the discriminator more challenging and thus improving the quality of generated samples (as also reflected in the generator and discriminator loss behavior in Figure 8). Note that we do not modify the generator in any way, and our work is orthogonal to the ongoing research on architectural changes of the generator [20, 27], divergence measures [25, 1, 37], and regularizations [40, 15, 34]. The proposed U-Net based discriminator allows to employ the recently introduced CutMix [47] augmentation, which is shown to be effective for classification networks, for consistency regularization in the two-dimensional output space of the decoder. Inspired by [47], we cut and mix the patches from real and synthetic images together, where the ground truth label maps are spatially combined with respect to the real and fake patch class for the segmenter (U-Net decoder) and the class labels are set to fake for the classifier (U-Net encoder), as globally the CutMix image should be recognized as fake, see Figure 3. Empowered by per-pixel feedback of the U-Net discriminator, we further employ these CutMix images for consistency regularization, penalizing per-pixel inconsistent predictions of the discriminator under the CutMix transformations. This fosters the discriminator to focus more on semantic and structural changes between real and fake images and to attend less to domain-preserving perturbations. Moreover, it also helps to improve the localization ability of the decoder. Employing the proposed consistency regularization leads to a stronger generator, which pays more attention to local and global image realism. We call our model U-Net GAN. We evaluate the proposed U-Net GAN model across several datasets using the state-of-the-art BigGAN model [5] as a baseline and observe an improved quality of the generated samples in terms of the FID and IS metrics. For unconditional image synthesis on FFHQ [20] at resolution 256 × 256, our U-Net GAN model improves 4 FID points over the BigGAN model, synthesizing high quality human faces (see Figure 4). On CelebA [29] at resolution 128×128 we achieve 1.6 point FID gain, yielding to the best of our knowledge the lowest known FID score of 2.95. For class-conditional image synthesis on the introduced COCOAnimals dataset [28, 24] at resolution 128×128 we observe an improvement in FID from 16.37 to 13.73, synthesizing diverse images of different animal classes (see Figure 5).
+Segmenter(U-Net 디코더)의 real/fake pathch class와 관련하여 GT label map이 공간적으로 결합되고  
+classifier(U-Net Encoder)에 대해 Fake로 설정한다. 이는 CutMix 이미지가 golbally fake로 인식되어야 하기 때문이다.   
+![image](https://user-images.githubusercontent.com/40943064/125020507-ecb53b00-e0b3-11eb-981c-adf5e6e7d8e6.png)  
+
+U-Net 식별자의 픽셀당 피드백으로 이러한 CutMix 이미지를 사용하여 consistency-regularization을 수행하고 CutMix 변환 시  
+per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 real/fake 이미지사이의 semantic 및 structural 변화에  
+더 집중하고 도메인을 보존하는 perturbation에 덜 집중할 수 있도록 한다.  
+또한 디코더의 localization 능력 향상에 도움이 된다.  
+제안된 consistency regularization을 통해 G가 강화되므로 local/global 이미지 사실성에 더욱 주의를 기울인다.  
+
+최첨단 BigGAN 모델을 baseline로 하여 여러 데이터셋에 걸쳐 제안된 U-Net GAN 모델을 평가하고 FID/IS 지표 측면에서 품질을 관찰한다.  
+256×256의 FFHQ unconditional 영상 합성에서 U-Net GAN은 BigGAN 모델보다 4개의 FID 포인트를 개선하여 고품질 얼굴을 합성한다.
+![image](https://user-images.githubusercontent.com/40943064/125024379-98ae5480-e0bb-11eb-8fa5-1e5dfb290698.png)
+
+128×128 / CelebA : FID : 4.55 -> 2.95
+128×128 / COO : FID : 16.37 -> 13.73 (동물 cGAN task)
+![image](https://user-images.githubusercontent.com/40943064/125024527-e88d1b80-e0bb-11eb-98c5-2d8663ce1d71.png)
+
+## 2. Related Work 
+### 2.1 GAN
+### 2.2 Mix&Cut regularizations
+
+## 3. 3. U-Net GAN Model
+### 3.1. U-Net Based Discriminator
+### 3.2. Consistency Regularization
+### 3.3. Implementation
+- U-Net based discriminat
+- Consistency regularization
