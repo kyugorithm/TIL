@@ -57,7 +57,12 @@ per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 re
 ### 2.1 GAN
 ### 2.2 Mix&Cut regularizations
 
-## 3. 3. U-Net GAN Model
+## 3. U-Net GAN Model
+'vanila' GAN은 G, D 2개의 네트워크에 대하여 아래 목적함수를 교대로 최소화하도록 구성한다.  
+![image](https://user-images.githubusercontent.com/40943064/125053005-880fd580-e0df-11eb-948e-213298f11d94.png)
+G는 tent variable z ~ p(z)를 사전확률분포에서 진짜같아보이는 이미지로 mapping한다.  
+밤
+
 ### 3.1. U-Net Based Discriminator
 ### 3.2. Consistency Regularization
 ### 3.3. Implementation
