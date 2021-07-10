@@ -12,34 +12,38 @@ BigGAN baseline과 비교하여 우리는 평균 2.7FID 향상을 얻었다.
 ## 1. Introduction
 
 Large-scale 학습, 구조변경, 정규 기법적용으로 향상된 학습 안정성등은 GAN의 품질 향상에 기여했으나   
-1)전체 semantic 일관성, 2)long-range structure, 3) 디테일 정확성의 문제로 학습 한계가 있어왔다.  
-잠재적 문제중 하나는 D에 있는데, 데이터 분포를 목표로 합성이미지에 대한 학습 신호를 G에 제공하는 loss function의 역할을 한다.  
+1)전체 semantic 일관성  
+2)long-range structure  
+3) 디테일 정확성  
+의 문제로 학습 한계가 있어왔다.  
+  
+잠재적 문제중 하나는 **D**에 있는데, 데이터 분포를 목표로 합성이미지에 대한 학습 신호를 G에 제공하는 loss function의 역할을 한다.  
 D가 강할수록 G의 성능도 향상된다. 현 SOTA GAN 모델에서 D는 단지 실제 이미지와 합성이미지 사이의 가장 분별되는 차이에  
-기반하여 효율적으로 G를 penalize하는 표현만을 배운다. 따라서, D는 때때로 global 혹은 local중 하나에만 집중한다.  
-D가 non-stationary 환경에서 학습을 해야함에 따라 이 문제가 증폭된다. : 
+기반하여 효율적으로 G를 penalize하는 표현만을 배운다. 따라서, **D는 때때로 global 혹은 local중 하나에만 집중**한다.  
+D가 **non-stationary 환경**에서 학습을 해야함에 따라 이 문제가 증폭된다. :  
 학습에 따라 G가 지속적으로 변화하며 합성이미지 샘플 분포는 이동하게 되며 이때문에 과거 task를 까먹게 되기 쉽다.  
-(D학습관점에서 semantic, 구조, 질감등 학습은 다른 task로 여겨질 수있다.)  
+(D 학습관점에서 semantic, 구조, 질감등 학습은 다른 task로 여겨질 수있다. : 집중하지 못하는?)  
 따라서 이러한 D는 더 global, local 이미지 차이를 학습하는 강력한 D를 유지하는데 incentive를 받지 않게 된다.  
 이는 때로 합성 이미지가 일관적이지 않고 부분적으로 얼룩덜룩하게 되도록 하거나 기하적이고 구조적 패턴이 일관적이지 않게 된다.  
 
-전술한 문제를 해결하기 위해 우리는 global/local 결정을 동시에 출력하는 대안의 D 구조를 제안한다.  
+전술한 문제를 해결하기 위해 우리는 **global/local 결정을 동시에 출력하는 대안의 D 구조**를 제안한다.  
 ![image](https://user-images.githubusercontent.com/40943064/125013911-a1952b00-e0a7-11eb-96c5-15f3a8fab7b0.png)  
 
-sementation 분야로부터 아이디어를 얻어, 우리는 D의 역할을 classifier와 segmenter 두개 부여하도록 재설계한다.
-D를 U-net으로 설정하며 encoder는 이미지에 대한 분류, decoder는 perpixel 분류역할을 부여한다.  
+sementation 분야로부터 아이디어를 얻어, 우리는 D의 역할을 **classifier와 segmenter 두개 부여하도록 재설계**한다.
+D를 U-net으로 설정하며 **encoder는 이미지에 대한 분류**, **decoder는 perpixel 분류**역할을 부여한다.  
 ![image](https://user-images.githubusercontent.com/40943064/125020204-6698f480-e0b3-11eb-8c33-3f2ca4ec50f7.png)  
 
 이러한 아키텍처 변화는 더 강력한 D로 이어지며, 이는 보다 강력한 데이터 표현을 유지하도록 장려되어, D를 속이는 것을 더 어렵게 만들고,  
 따라서 생성된 샘플의 품질을 향상시키는 G의 작업을 가능하게 한다.  
 우리는 G를 어떤 식으로든 수정하지 않으며, G의 아키텍처 변화, 발산측정, 정규화등에 대한 지속적인 연구와 독립적이다.
 
-제안된 D는  디코더의 2차원 출력 공간에서의 consistency-regularization을 위해 D에 효과적인 CutMix augmentaion을 채택한다.  
+제안된 D는  디코더의 2차원 출력 공간에서의 **consistency-regularization을 위해 D에 효과적인 CutMix augmentaion을 채택**한다.  
 
-Segmenter(U-Net 디코더)의 real/fake pathch class와 관련하여 GT label map이 공간적으로 결합되고  
+Segmenter(U-Net 디코더)의 real/fake pathch class와 관련하여 Ground truth label map이 공간적으로 결합되고  
 classifier(U-Net Encoder)에 대해 Fake로 설정한다. 이는 CutMix 이미지가 golbally fake로 인식되어야 하기 때문이다.   
 ![image](https://user-images.githubusercontent.com/40943064/125020507-ecb53b00-e0b3-11eb-981c-adf5e6e7d8e6.png)  
 
-U-Net 식별자의 픽셀당 피드백으로 이러한 CutMix 이미지를 사용하여 consistency-regularization을 수행하고 CutMix 변환 시  
+U-Net 식별자의 per-pixel 피드백으로 이러한 CutMix 이미지를 사용하여 consistency-regularization을 수행하고 CutMix 변환 시  
 per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 real/fake 이미지사이의 semantic 및 structural 변화에  
 더 집중하고 도메인을 보존하는 perturbation에 덜 집중할 수 있도록 한다.  
 또한 디코더의 localization 능력 향상에 도움이 된다.  
