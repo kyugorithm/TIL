@@ -1,9 +1,9 @@
 ## Abstract
 실제 이미지와 분간되지 않는 모양과 질감이 전역적이고 지역적으로 일관된 이미지를 합성하기 위한 **capacity**가 GAN의 주요 과제이다.  
 이를 위하여 논문은 segmentation분야의 통찰력을 빌려 대안의 **U-Net기반 Discriminator** 구조를 제안한다.  
-U-Net 구조는 합성이미지에 대한 전역적 feedback를 제공하여 전역적 일관성을 유지하고 생성기에 상세 per-pixel feedback을 전달한다.  
-분별기의 픽셀당 응답에 힘입어 CutMix 데이터 augmentation에 기반한 per-pixel consistency regularization 기법을 사용하며  
-U-Net 판별기가 실제와 가짜가 이미지 사이의 semantic하고 구조적인 변화에 더욱 집중하도록 장려하여  
+U-Net 구조는 합성이미지에 대한 전역적 feedback를 제공하여 전역적 일관성을 유지하고 생성기에 상세 **per-pixel feedback**을 전달한다.  
+분별기의 픽셀당 응답에 힘입어 CutMix 데이터 augmentation에 기반한 **per-pixel consistency regularization 기법**을 사용하며  
+U-Net 판별기가 실제와 가짜가 이미지 사이의 **semantic하고 구조적인 변화에 더욱 집중하도록 장려**하여  
 학습 성능을 향상시키며 생성 샘플들의 이미지 품질을 향상시킨다.  
 새로운 판별기는 SOTA 방법들에 걸쳐 표준분포와 이미지품질 metrics 항목을 향상시킨다.
 이는 생성기가 전역적이고 지역적인 현실성을 유지한채로 변화하는 구조, 외모, 디테일 수준을 가진 이미지를 합성할 수 있도록 한다.  
