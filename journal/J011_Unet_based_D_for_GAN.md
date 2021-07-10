@@ -121,3 +121,8 @@ CutMix 샘플을 사용한다. U-Net GAN의 경우 포화 상태가 아닌 GAN o
 ### 3.3. Implementation
 - U-Net based discriminat
 - Consistency regularization
+
+
+## Appendix
+### U-net
+![image](https://user-images.githubusercontent.com/40943064/125147404-f13a2c00-e165-11eb-8b27-d236b19637bb.png)
