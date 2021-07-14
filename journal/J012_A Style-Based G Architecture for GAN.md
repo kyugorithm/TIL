@@ -2,14 +2,14 @@
 
 ## A. The FFHQ dataset
 연구팀은 1024 해상도의 얼굴 이미지 70k장을 Flickr에서 수집하였다.  
-![image](https://user-images.githubusercontent.com/40943064/125629988-c9162cbc-8c7a-4ded-9aae-05cbc75b6acd.png)  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125629988-c9162cbc-8c7a-4ded-9aae-05cbc75b6acd.png" width=800 /></p>  
 데이터셋은 연령, 인종, 배경등의 관점에서 CELEBA-HQ보다 훨씬 다양하며 안경, 선그라스, 모자등의 악세사리에 대한 다양한 소스가 있다.  
 본 이미지들은 Flickr에서 크롤링(해당 웹사이트의 바이어스를 지닐 수 있다.)하였으며 자동적으로 배열되고 크롭되어있다.  
 라이선스가 허용된 사진만 수집되었다. 세트를 가지치기 하기 위하여 다양한 자동필터를 사용하였으며 Mechanical Turk는  
 일부의 조각상, 그림 또는 사진 사진을 제거할 수 있게 해주었다.  
 그림은 다음 주소에서 얻을 수 있다. : https://github.com/NVlabs/ffhq-dataset  
 
-![image](https://user-images.githubusercontent.com/40943064/125705179-8a0bab76-b66c-43d0-b744-99196576d53d.png)
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125705179-8a0bab76-b66c-43d0-b744-99196576d53d.png" width=600 /></p>  
 
 
 ## B. Truncation trick in W
@@ -18,7 +18,7 @@
 그리는 것은 일정부분의 표현은 사라질지라도 평균이미지 품질은 향상시키는것으로 알려져있다.  
 이와 유사한 전략을 사용할 수 있다. 먼저, W mass의 중심을 계산한다. (wbar = E_z~p(z)[f(z)])  
 FFHQ의 경우 이 지점은 일종의 평균 얼굴을 나타낸다.  
-![image](https://user-images.githubusercontent.com/40943064/125635996-7847711d-643e-4126-ab33-62a0a6bfae33.png)  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125635996-7847711d-643e-4126-ab33-62a0a6bfae33.png" width=500 /></p>  
 w′= ̄w+ψ(w− ̄w) 수식에서 wbar 평균 얼굴 센터로부터 주어진 w의 편차를 sclae할 수 있다. 
 
 Brock은 직교 정규화를 사용하더라도 네트워크의 일부만 이러한 trunccation 작업을 수행할 수 있으며,  
@@ -48,7 +48,9 @@ bias, noise scaling factor는 0으로 초기화한다. (0으로 초기와 하는
 
 ## D. Training convergence  
 그림9는 FID 와 PPL(perceptual path length) metric이 어떻게 B와 F 조합의 FFHQ 학습이 진행되는지를 보여준다.  
-![image](https://user-images.githubusercontent.com/40943064/125643721-f4eb942c-b997-47c8-abaf-bb227f443f18.png)
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125643721-f4eb942c-b997-47c8-abaf-bb227f443f18.png" width=650 /></p>  
+
+
 B, F에서 R1 정규화를 이용하면 학습에 따라 FID도 계속 줄어들며 이 상황이 120만장에서 250만장으로 학습을  
 늘이는데 동기부여하였다.  
 심지어는 1024 해상도에 도달했을때 천천히 PPL이 증가하는것은 FID의 개선은 entanglement를 키우는 희생을 하게됨을 암시한다.  
@@ -67,7 +69,8 @@ BEDOM & CARS / coarse-style : 카메라시점 제어, mid-style : 특정 가구 
 BEDROOM 셋에 대한 결과는 학습 데이터 한계에 도달하기 시작한다고 의심한다.
 CARS는 공간 해상도(2562가 아닌 512 × 384)를 높일 수 있는 훨씬 더 높은 품질의 교육 데이터를 가지고 있으며,  
 CATS는 자세, 줌 수준 및 배경의 본질적인 차이로 인해 여전히 어려운 데이터 세트이다.
-![image](https://user-images.githubusercontent.com/40943064/125647502-c19656f0-d50b-4689-b498-6f39e04e0a46.png)  
-![image](https://user-images.githubusercontent.com/40943064/125647796-8fd087c9-ea0f-4b4f-8efd-376dab6c7a5a.png)  
-![image](https://user-images.githubusercontent.com/40943064/125648027-0e606fda-2d0d-4527-acf9-2816961490a5.png)  
+
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125647502-c19656f0-d50b-4689-b498-6f39e04e0a46.png" width=650 /></p>  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125647796-8fd087c9-ea0f-4b4f-8efd-376dab6c7a5a.png" width=650 /></p>  
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125648027-0e606fda-2d0d-4527-acf9-2816961490a5.png" width=650 /></p>  
   
