@@ -10,7 +10,7 @@
 그림은 다음 주소에서 얻을 수 있다. : https://github.com/NVlabs/ffhq-dataset  
 
 <p align="center"><img src="https://user-images.githubusercontent.com/40943064/125705179-8a0bab76-b66c-43d0-b744-99196576d53d.png" width=600 /></p>  
-
+<p align="center"><img src="https://user-images.githubusercontent.com/40943064/125706431-a14691b6-f5f6-4efd-9a6a-b7d9c2520311.png" width=600 /></p>  
 
 ## B. Truncation trick in W
 학습데이터 분포를 고려하면 저밀도 데이터 영역의 학습 품질은 매우 낮을것이며 G가 학습하기 매우 어려울 것이다.  
