@@ -28,7 +28,7 @@ W 공간의 truncation 작업은 loss 의 변경 없이 안정적으로 작동�
 우리는 PG-GAN의 공식 TensorFlow 구현에 기초하여 대부분의 학습 세부 정보를 상속한다. 원래 설정은 T1-A에 해당한다.  
 특히, 동일한 D 아키텍처, resolution 의존하는 mini-batch 크기, Adam [33] hyperparameter 및 G의 EMA를 사용한다.  
 CelebA-HQ 및 FFHQ의 경우 mirror augmentation을 사용하도록 설정하지만 LSUN의 경우 미러 확장을 사용하지 않도록 설정한다.  
-V100 GPU 8개 학습 시간은 1W 이다. 향상된 기준(T1-B)을 위해 전체 결과 품질을 개선하기 위해 몇 가지 수정을 수행한다.  
+V100 GPU 8개 학습 시간은 약 일주일이다. T1-B에 대해 전체 결과 품질을 개선하기 위해 몇 가지 수정을 수행한다.  
 두 네트워크에서 nearest-neighbor의 up/don sampling을 bilinear 샘플링으로 대체하며, 각 up-sampling layer 이후와  
 각 down-sampling layder 앞에 있는 분리 가능한 2nd order binomial 필터로 activation를 구현한다.  
 우리는 Karras et al.와 같은 방식으로 progressive growing을 구현한다. 그러나 4x4 대신 8x8 이미지에서 시작한다.  
