@@ -9,6 +9,9 @@
 일부의 조각상, 그림 또는 사진 사진을 제거할 수 있게 해주었다.  
 그림은 다음 주소에서 얻을 수 있다. : https://github.com/NVlabs/ffhq-dataset  
 
+![image](https://user-images.githubusercontent.com/40943064/125705179-8a0bab76-b66c-43d0-b744-99196576d53d.png)
+
+
 ## B. Truncation trick in W
 학습데이터 분포를 고려하면 저밀도 데이터 영역의 학습 품질은 매우 낮을것이며 G가 학습하기 매우 어려울 것이다.  
 이는 모든 생성 모델링 기법에 있어 중요한 문제이다. 그러나 잘리거나 수축한 샘플링 공간으로부터 latent vector를  
