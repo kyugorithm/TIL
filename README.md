@@ -50,7 +50,6 @@
     ```
     StyleGAN2  : Analyzing and Improving the Image Quality of StyleGAN
     U-GAT-IT: UNSUPERVISED GENERATIVE ATTENTIONAL NETWORKS WITH ADAPTIVE LAYERINSTANCE NORMALIZATION FOR IMAGE-TO-IMAGE TRANSLATION
-    Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis
     ```
 * **2018**
     ```    
@@ -86,6 +85,7 @@
 * **2019**
     ```
     DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
+    Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis
     ```
 * **2018**
     ```
