@@ -6,6 +6,13 @@ High-level (자세, 얼굴), stochastic 변화(주름, 머리카락)에 대한 *
 마찬가지로 더 나은 **latent factor 다양성 disentanglement**를 이끌어낸다.  
 **interpolation 품질과 disentanglement를 수치화**하기 위해 모든 생성자 구조에 적용가능한 자동화된 2개의 방식을 제안한다.  
 
+## Conclusion
+우리와 Chen의 연구결과를 바탕으로 전통적인 GAN의 G 구조가 모든 면에서 style-based 구조에 비해 열등함이 명확해지고 있다.  
+제안한 품질 척도 관점에서 명확하며 또한 고차원 특성 분리, stochastic effect, 중간 latent 공간의 linearity는  
+GAN 합성에 관한 이해와 제어가능성을 향샹시키는데 유익함을 증명한다.  
+Average path length는 regularizer로 linear separability는 metric으로 사용될 수 있음을 확인했다.  
+일반적으로 우리는 우리는 중간의 latent space를 학습동안 직접적으로 구성하는 방법이 흥미로운 이점을 제공할것  
+으로 예상한다.
 
 
 ## A. The FFHQ dataset
