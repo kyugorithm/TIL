@@ -1,4 +1,12 @@
 ## Abstract
+GAN에 대해 **style transfer** 영역에서 차용하는 새로운 G 방법론  
+High-level (자세, 얼굴), stochastic 변화(주름, 머리카락)에 대한 **비지도적 분리를 자동으로 학습**하고  
+직관적인 이미지 합성에 대한 **scale-specific 제어**를 가능하게 한다.  
+일반적인 metric에 대해 SOTA 성능을 뛰어넘으며 시연 상에서 나은 **interpolation 특성**을 가지고  
+마찬가지로 더 나은 **latent factor 다양성 disentanglement**를 이끌어낸다.  
+**interpolation 품질과 disentanglement를 수치화**하기 위해 모든 생성자 구조에 적용가능한 자동화된 2개의 방식을 제안한다.  
+
+
 
 ## A. The FFHQ dataset
 연구팀은 1024 해상도의 얼굴 이미지 70k장을 Flickr에서 수집하였다.  
