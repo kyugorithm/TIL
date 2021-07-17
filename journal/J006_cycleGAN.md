@@ -9,7 +9,7 @@ F(G(X)) ≈ X, G(F(Y)) ≈ Y를 강제하는 **cycle consistency loss**를 적�
 Qualitative result : 짝을 이룬 학습 데이터가 없는 여러 task(including collection style transfer, object transfiguration, season transfer, photo enhancement, etc)
 Quantitative result : 여러 이전 방법론들과의 비교우위를 제시한다.
 
-## Introduction
+## 1. Introduction
 
 클로드 모네는 1873 년 아름다운 봄날 아르 장 퇴유 근처 센 강둑 옆에 자신의 이젤을 놓았을 때 무엇을 보았을까?  
 ![image](https://user-images.githubusercontent.com/40943064/122921811-eb8acb00-d39d-11eb-86ec-2caf3cc46e72.png)  
@@ -53,7 +53,7 @@ mapping G와 F를 동시에 훈련하고 F (G (x)) ≈ x 및 G (F (y)) ≈ y를 
 우리는 컬렉션 style transfer, object transfiguration, season transfer 및 photo-enhancement를 포함한 많은 활용에 우리 방법을 적용한다.  
 또한 직접정의 style/content 분해나 shared embedding function에 의존하는 이전 접근과 비교하여 능가한다는 것을 보여준다.  
 
-## Related Work
+## 2. Related Work
 
 ### Generative Adversarial Networks (GANs)
 이미지 생성, 편집, 표현 학습에서 인상적인 결과를 얻었다. 최근에는 text2image, image inpainting, 미래 예측과 같은 조건부 이미지 생성 응용 프로그램뿐 아니라 비디오 및 3D 데이터와 같은 다른 영역에도 동일한 아이디어를 적용한다. GAN의 성공의 열쇠는 생성 된 이미지가 원칙적으로 실제 사진과 구별 할 수 없게 만드는 적대적 손실이라는 아이디어입니다. 이 손실은 이미지 생성 작업에 특히 강력하다. 이는 대부분의 컴퓨터 그래픽이 최적화하려는 목표이기 때문이다. 번역 된 이미지가 대상 도메인의 이미지와 구별되지 않도록 mapping을 학습하기 위해 적대적 손실을 채택한다.  
@@ -85,7 +85,7 @@ Image2Image 변환을 수행하는 다른 방법으로, 사전 훈련 된 심층
 반면에 우리의 주요 초점은 더 높은 수준의 외관 구조 간의 일치를 포착하려고 시도하여 두 특정 이미지 사이가 아닌 **이미지 컬렉션 간의 mapping**을 학습하는 것이다.  
 따라서 우리의 방법은 단일 샘플 전송 방법이 잘 수행되지 않는 페인팅 → 사진, 물체 변형 등과 같은 다른 작업에 적용될 수 있다.
 
-## Formulation
+## 3. Formulation
 in one page
 ![image](https://user-images.githubusercontent.com/40943064/122942682-5a255400-d3b1-11eb-9347-b51d8aff90b3.png)
 
@@ -113,3 +113,11 @@ Adam solver를 이용하며 batch size = 1.
 모든 네트워크는 lr = 0.0002을 설정하며 처음부터 학습.  
 100 epoch까지 lr 유지 후 다음 100 epoch동안 선형적으로 0으로 decay하도록 한다.  
 (상세사항(the datasets, architectures, and training procedures) appendix 참조)
+
+## 5. Results
+먼저, 평가를 위해 입출력쌍에 대한 답을 이용할 수 있는 paired 데이터셋에 대해 unpaired I2I 변환에 대해 최근 방법론과 우리의 방법론을 비교한다.  
+그리고 adversarial loss와 cycle consistency loss에 대한 중요성을 공부하고 여러 변이들에 대해 full method를 비교한다.  
+마지막으로, 짝이없는 데이터 셋에 대해 광범위한 적용 사례 우리 알고리즘의 일반성을 보인다.  
+간결성을 위해 우리의 방법을 CycleGAN이라고 표현한다.  
+
+### 5.1. Evaluation
