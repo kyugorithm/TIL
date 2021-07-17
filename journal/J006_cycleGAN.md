@@ -121,3 +121,6 @@ Adam solver를 이용하며 batch size = 1.
 간결성을 위해 우리의 방법을 CycleGAN이라고 표현한다.  
 
 ### 5.1. Evaluation
+pix2pix와 동일 데이터셋과 metrics를 사용함으로써 본 방법론을 여러 baseline과 정성/정량적으로 비교한다.  
+Cityscapes (labels↔photo), Google maps(map↔aerial) 등의 task를 포함한다. full loss에 대한 ablation study도 수행한다. 
+### 5.1.1 Evaluation Metrics
