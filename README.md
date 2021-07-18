@@ -116,6 +116,7 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 # 5. 학습 계획
 
 ## 5.1. cycleGAN + U-net discriminator 개발, 기본 이미지 set과 cats-to-dogs set에 대한 결과 분석
+## 5.2. arcFace 결과 추출
 
 [j_link001]: <https://arxiv.org/pdf/1508.06576.pd>
 [j_link002]: <https://ieeexplore.ieee.org/document/8581424>
