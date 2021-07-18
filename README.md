@@ -114,9 +114,8 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
  [Machine Learning : A Probabilistic Perspective][t_link001] : ML의 바이블이라고 생각하는 책이다. 언젠간 보고 정리해야겠다고 생각했는데, 언제 다볼 수 있을지... 
    
 # 5. 학습 계획
-
-## 5.1. cycleGAN + U-net discriminator 개발, 기본 이미지 set과 cats-to-dogs set에 대한 결과 분석
-## 5.2. arcFace 결과 추출
+1. cycleGAN + U-net discriminator 개발, 기본 이미지 set과 cats-to-dogs set에 대한 결과 분석
+2. arcFace 결과 추출
 
 [j_link001]: <https://arxiv.org/pdf/1508.06576.pd>
 [j_link002]: <https://ieeexplore.ieee.org/document/8581424>
