@@ -25,12 +25,13 @@
 * **2017**
     ```
     Collective anomaly detection based on long short-term memory recurrent neural networks
+    Anogan_Unsupervised Anomaly Detection with Generative Adversarial Networks to Guide Marker Discovery
     ```
 * **2015**
     ```
     Anomaly detection in ECG time signals via deep long short-term memory networks
     Long short term memory networks for anomaly detection in time series
-    Anogan
+
     ```
 
 
