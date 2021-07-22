@@ -30,6 +30,7 @@
     ```
     Anomaly detection in ECG time signals via deep long short-term memory networks
     Long short term memory networks for anomaly detection in time series
+    Anogan
     ```
 
 
