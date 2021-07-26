@@ -11,11 +11,10 @@ BigGAN baseline과 비교하여 우리는 평균 2.7FID 향상을 얻었다.
 
 ## 1. Introduction
 
-Large-scale 학습, 구조변경, 정규 기법적용으로 향상된 학습 안정성등은 GAN의 품질 향상에 기여했으나   
-1)전체 semantic 일관성  
-2)long-range structure  
+Large-scale 학습, 구조변경, regularization 적용으로 향상된 학습 안정성 등이 품질 향상에 기여했으나 아래와 같은 한계가 존재한다.  
+1) 전체 semantic 일관성  
+2) long-range structure  
 3) 디테일 정확성  
-의 문제로 학습 한계가 있어왔다.  
   
 잠재적 문제중 하나는 **D**에 있는데, 데이터 분포를 목표로 합성이미지에 대한 학습 신호를 G에 제공하는 loss function의 역할을 한다.  
 D가 강할수록 G의 성능도 향상된다. 현 SOTA GAN 모델에서 D는 단지 실제 이미지와 합성이미지 사이의 가장 분별되는 차이에  
