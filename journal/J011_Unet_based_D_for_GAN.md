@@ -16,19 +16,19 @@ Large-scale 학습, 구조변경, regularization 적용으로 향상된 학습 �
 2) long-range structure  
 3) 디테일 정확성  
   
-잠재적 문제중 하나는 **D**에 있는데, 데이터 분포를 목표로 합성이미지에 대한 학습 신호를 G에 제공하는 loss function의 역할을 한다.  
+잠재 문제중 하나는 **D**에 있는데, 데이터 분포를 목표로 합성이미지 학습 signal을 **G**에 제공하는 loss function의 역할을 한다.  
 D가 강할수록 G의 성능도 향상된다. 현 SOTA GAN 모델에서 D는 단지 실제 이미지와 합성이미지 사이의 가장 분별되는 차이에  
-기반하여 효율적으로 G를 penalize하는 표현만을 배운다. 따라서, **D는 때때로 global 혹은 local중 하나에만 집중**한다.  
+기반하여 효율적으로 G를 penalize하는 표현만을 배운다. 따라서, **D는 때때로 global 혹은 local 하나에만 집중**한다.  
 D가 **non-stationary 환경**에서 학습을 해야함에 따라 이 문제가 증폭된다. :  
 학습에 따라 G가 지속적으로 변화하며 합성이미지 샘플 분포는 이동하게 되며 이때문에 과거 task를 까먹게 되기 쉽다.  
 (D 학습관점에서 semantic, 구조, 질감등 학습은 다른 task로 여겨질 수있다. : 집중하지 못하는?)  
 따라서 이러한 D는 더 global, local 이미지 차이를 학습하는 강력한 D를 유지하는데 incentive를 받지 않게 된다.  
 이는 때로 합성 이미지가 일관적이지 않고 부분적으로 얼룩덜룩하게 되도록 하거나 기하적이고 구조적 패턴이 일관적이지 않게 된다.  
 
-전술한 문제를 해결하기 위해 우리는 **global/local 결정을 동시에 출력하는 대안의 D 구조**를 제안한다.  
+앞선 문제 해결을 위해 **global/local 결정을 동시에 출력하는 대안의 D 구조**를 제안한다.  
 ![image](https://user-images.githubusercontent.com/40943064/125013911-a1952b00-e0a7-11eb-96c5-15f3a8fab7b0.png)  
 
-sementation 분야로부터 아이디어를 얻어, 우리는 D의 역할을 **classifier와 segmenter 두개 부여하도록 재설계**한다.
+Sementation 분야로부터 아이디어를 얻어, 우리는 D의 역할을 **classifier와 segmenter 두개로 부여하도록 재설계**한다.
 D를 U-net으로 설정하며 **encoder는 이미지에 대한 분류**, **decoder는 perpixel 분류**역할을 부여한다.  
 ![image](https://user-images.githubusercontent.com/40943064/125020204-6698f480-e0b3-11eb-8c33-3f2ca4ec50f7.png)  
 
@@ -38,13 +38,13 @@ D를 U-net으로 설정하며 **encoder는 이미지에 대한 분류**, **decod
 
 제안된 D는  디코더의 2차원 출력 공간에서의 **consistency-regularization을 위해 D에 효과적인 CutMix augmentaion을 채택**한다.  
 
-Segmenter(U-Net 디코더)의 real/fake pathch class와 관련하여 Ground truth label map이 공간적으로 결합되고  
-classifier(U-Net Encoder)에 대해 Fake로 설정한다. 이는 CutMix 이미지가 golbally fake로 인식되어야 하기 때문이다.   
+Segmenter(U-Net 디코더)의 real/fake patch class와 관련하여 ground truth label map이 공간적으로 결합되고  
+classifier(U-Net Encoder)에 대해 Fake로 설정한다. 이는 CutMix 이미지가 golbally fake로 인식되어야 하기 때문이다.  
 ![image](https://user-images.githubusercontent.com/40943064/125020507-ecb53b00-e0b3-11eb-981c-adf5e6e7d8e6.png)  
 
-U-Net 식별자의 per-pixel 피드백으로 이러한 CutMix 이미지를 사용하여 consistency-regularization을 수행하고 CutMix 변환 시  
-per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 real/fake 이미지사이의 semantic 및 structural 변화에  
-더 집중하고 도메인을 보존하는 perturbation에 덜 집중할 수 있도록 한다.  
+U-Net D의 per-pixel 피드백으로 이러한 CutMix 이미지를 사용하여 consistency-regularization을 수행하고 CutMix 변환 시  
+per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 real/fake 이미지 사이의 semantic 및 structural  
+변화에 집중하고 도메인을 보존하는 perturbation에 덜 집중할 수 있도록 한다.  
 또한 디코더의 localization 능력 향상에 도움이 된다.  
 제안된 consistency regularization을 통해 G가 강화되므로 local/global 이미지 사실성에 더욱 주의를 기울인다.  
 
@@ -61,24 +61,24 @@ per-pixel inconsistency D 예측에 penalize 한다. 이는 D를 강화하여 re
 ### 2.2 Mix&Cut regularizations
 
 ## 3. U-Net GAN Model
-'vanila' GAN은 G, D 2개의 네트워크에 대하여 아래 목적함수를 교대로 최소화하도록 구성한다.   
+'vanila' GAN은 G와 D에 대하여 아래 목적함수를 교대로 최소화하도록 구성한다.   
 ![image](https://user-images.githubusercontent.com/40943064/125053005-880fd580-e0df-11eb-948e-213298f11d94.png)  
-G는 tent variable z ~ p(z)를 사전확률분포에서 진짜같아보이는 이미지로 mapping한다.  
-D는 실제이미지와 실제 이미지 x와 가짜 이미지 G(z)를 구분하는것을 목표로한다.  
-일반적으로 G, D는 decoder encoder CNN 구조로 모델된다.  
+G는 latent variable z ~ p(z)를 사전확률분포에서 진짜와 같아보이는 이미지로 mapping한다.  
+D는 실제 이미지 x와 가짜 이미지 G(z)를 구분하는것을 목표로 한다.  
+일반적으로 G, D는 encoder, decoder CNN 구조로 구성한다.  
 GAN은 다양한 목적함수와 구조를 가진 변이 버전이 있다. 본 논문에서는 D를 향상하는데 집중한다.  
 기존 classification net에서 기본 encoder 파트 구조는 유지하며 encoder-decoder U-net 구조로 변경한다.  
 제안한 D는 global/local 데이터 표현을 유지하도록 하여 G에 더욱 정보가 되는 feedback을 제공한다.  
-U-Net decoder의 local per-pixel feedback에 힘입어 실제와 모조 이미지의 CutMix 변환 하에서 per-pixel inconsistent한  
+U-Net decoder의 local per-pixel feedback에 힘입어 실제와 모조 이미지의 cutMix 변환 하에서 per-pixel inconsistent한  
 D에 대한 예측에 불이익을 주는 consistency regularization 기술을 제안한다.  
 U-Net 판별기의 localization 품질을 높이고 실제/모조 사이 의미/구조 변화에 관심을 갖도록 유도하는 데 도움이 된다.
 
 ### 3.1. U-Net Based Discriminator
 
-Encoder-Decoder Network는 조밀한 예측을 위한 강력한 방법을 구성한다.  
+Encoder-Decoder Network는 dense한 예측을 위한 강력한 방법을 구성한다.  
 여기서 이미지분류 network와 유사하게 encoder는 점진적으로 입력을 downsample하며 global 이미지를 포착한다.  
 Decoder는 점진적으로 upsampling을 수행하여 입력에 대한 출력 해상도를 맞추고 그에따라 정확한 localization을 수행한다. 
-Skip connection은 두 모듈의 일치해상도 간에 데이터를 보낼수 있도록 하여 네트워크의 세부 정보를 정확하게 segment할 수  
+Skip connection은 두 모듈의 동일 해상도 간에 데이터를 보낼수 있도록 하여 네트워크의 세부 정보를 정확하게 segment할 수  
 있는 기능을 더욱 향상시킨다.
 
 이와 유사하게, 본 연구에서는, 원래 D분류 네트워크의 빌딩 블록을 Encoder 부품으로 재사용하고 G 빌딩 블록을 decoder로  
