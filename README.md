@@ -55,7 +55,7 @@
     ```
 * **2018**
     ```    
-    ArcFace: Additive Angular Margin Loss for Deep Face Recognition
+    
     ```
     
 * **2017**
@@ -92,6 +92,7 @@
 * **2018**
     ```
     StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
+    ArcFace: Additive Angular Margin Loss for Deep Face Recognition
     ```
 * **2017**
     ```
