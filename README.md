@@ -55,13 +55,15 @@
     ```
 * **2018**
     ```    
-    ArcFace: Additive Angular Margin Loss for Deep Face Recognition
+    StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
+
     ```
     
 * **2017**
     ```
     Wasserstein GAN
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
+    Deformable Convolutional Networks 
     ```
 * **2015**
     ```
@@ -78,6 +80,7 @@
 * **2018**
     ```
     DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series [논문링크][j_link002]
+    ArcFace: Additive Angular Margin Loss for Deep Face Recognition
     ```
 ## 3.2. Image Generation and etc.
 * **2020**
