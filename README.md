@@ -56,11 +56,14 @@
     ```
 * **2018**
     ```    
-    
+    Multimodal Unsupervised Image-to-Image Translation
+    StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
+    StarGAN v2: Diverse Image Synthesis for Multiple Domains
     ```
     
 * **2017**
     ```
+    Unsupervised Image-to-Image Translation Networks
     Wasserstein GAN
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
     ```
