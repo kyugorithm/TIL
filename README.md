@@ -48,6 +48,7 @@
 * **2020**
     ```
     PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
+    StarGAN v2: Diverse Image Synthesis for Multiple Domains
     ```
 * **2019**
     ```
@@ -58,7 +59,6 @@
     ```    
     Multimodal Unsupervised Image-to-Image Translation
     StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
-    StarGAN v2: Diverse Image Synthesis for Multiple Domains
     ```
     
 * **2017**
