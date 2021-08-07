@@ -60,6 +60,7 @@
     ```    
     Multimodal Unsupervised Image-to-Image Translation
     StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
+    Learning Pixel-Level Semantic Affinity With Image-Level Supervision for Weakly Supervised Semantic Segmentation
     ```
     
 * **2017**
