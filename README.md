@@ -68,6 +68,7 @@
     Unsupervised Image-to-Image Translation Networks
     Wasserstein GAN
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
+    Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization
     ```
 * **2015**
     ```
