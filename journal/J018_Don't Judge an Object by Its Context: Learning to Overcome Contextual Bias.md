@@ -132,16 +132,6 @@ p^(i, b)는 이미지 i에 대한 표준 다중 label 분류기를 학습하는�
 이 CAM 기반 접근 방식의 관찰을 기반으로 biased category가 context와 함께 발생할 때 context 공유를 장려하고 단독으로 발생할 때  
 context를 억제하여 feature 공간을 학습하는 두 번째 방법을 제안한다(4.2절).  
 
-## 6. Conclusion
-Biased category가 일반적인 context에서 벗어날 때 표준 분류기가 제대로 작동하지 않는다는 것을 보여줌으로써  
-유명한 obejct 및 attribute 데이터 세트의 contextual bias 문제를 봤다.  
-이 문제를 해결하기 위해 biased category의 feature 표현을 context에서 decorrelate 시키는 간단하면서도 효과적인 두 가지 방법을 제안했다.  
-두 방법 모두 전체 성능을 유지하면서 동시에 발생하는 context에서 발생하는 biased class를 더 잘 인식한다.  
-더 중요한 것은 우리의 방법이 보이지 않는 새로운 데이터 세트로 일반화되고 표준 방법보다 훨씬 더 나은 성능을 발휘한다는 것이다.  
-우리의 현재 프레임워크는 범주 쌍 간의 contextual bias를 다룬다.  
-미래의 노력은 더 많은 이용 가능한(scene 또는 category) 정보와 그들 사이의 모델 관계를 활용해야 한다.  
-제안된 방법을 object detection 및 비디오 동작 인식과 같은 작업으로 확장하는 것은 가치 있는 미래 방향이다.
-
 ### 4.1. CAM as “weak” location annotation
 방법은 다음 전제에서 작동한다. **b**는 거의 항상 **c**와 함께 발생하므로 네트워크는  
 실수로 c에 해당하는 픽셀에 의존하여 b를 예측하는 방법을 학습할 수 있다.  
@@ -161,3 +151,13 @@ CAM은 일반적으로 시각화 기술로 사용되지만 이 작업에서는 �
 **Formulation:**  
 우리의 설정에서, S의 각 biased category 쌍 (b, c)에 대해 우리는 loss함수를 통해 캠들의 최소 overlap을 강제한다.  
 ![image](https://user-images.githubusercontent.com/40943064/129448394-84e0d731-2459-4e7d-93f6-e309f1b8cbdb.png)
+
+## 6. Conclusion
+Biased category가 일반적인 context에서 벗어날 때 표준 분류기가 제대로 작동하지 않는다는 것을 보여줌으로써  
+유명한 obejct 및 attribute 데이터 세트의 contextual bias 문제를 봤다.  
+이 문제를 해결하기 위해 biased category의 feature 표현을 context에서 decorrelate 시키는 간단하면서도 효과적인 두 가지 방법을 제안했다.  
+두 방법 모두 전체 성능을 유지하면서 동시에 발생하는 context에서 발생하는 biased class를 더 잘 인식한다.  
+더 중요한 것은 우리의 방법이 보이지 않는 새로운 데이터 세트로 일반화되고 표준 방법보다 훨씬 더 나은 성능을 발휘한다는 것이다.  
+우리의 현재 프레임워크는 범주 쌍 간의 contextual bias를 다룬다.  
+미래의 노력은 더 많은 이용 가능한(scene 또는 category) 정보와 그들 사이의 모델 관계를 활용해야 한다.  
+제안된 방법을 object detection 및 비디오 동작 인식과 같은 작업으로 확장하는 것은 가치 있는 미래 방향이다.
