@@ -150,7 +150,27 @@ CAM은 일반적으로 시각화 기술로 사용되지만 이 작업에서는 �
 
 **Formulation:**  
 우리의 설정에서, S의 각 biased category 쌍 (b, c)에 대해 우리는 loss함수를 통해 캠들의 최소 overlap을 강제한다.  
-![image](https://user-images.githubusercontent.com/40943064/129448394-84e0d731-2459-4e7d-93f6-e309f1b8cbdb.png)
+![image](https://user-images.githubusercontent.com/40943064/129448394-84e0d731-2459-4e7d-93f6-e309f1b8cbdb.png)  
+
+CAM은 (1) 주석 없이 클래스 레이블로 학습하고 (2) 미분 가능하므로 학습중에 end-to-end 통합 할 수 있는 두 가지 좋은 속성을 제공한다.  
+이상적으로 식 (3)은 분류 성능을 손상시키지 않으면서 동시에 발생하는 범주 간의 공간적 중복을 줄이는 방법을 배워야 한다.  
+그러나 중첩을 최소화하려고 시도하는 동안 식 (3)은 b와 c의 CAM이 실제 픽셀 영역에서 멀어지는 trivial 솔루션으로 이어질 수도 있다.  
+강력하게 감독되는 공간 주석 없이 이를 방지하기 위해 정규화 항 LR을 도입한다.  
+특히, 표준 분류 작업을 위해 별도의 네트워크(오프라인)를 사전 훈련하고 b 및 c에 대해 CAMpre를 생성한다.  
+그런 다음 각 범주의 CAM을 CAMpre에서 예측한 픽셀 영역에 더 가깝게 ground한다. 따라서 LR은 다음과 같이 정의된다.  
+![image](https://user-images.githubusercontent.com/40943064/129463305-f9f04626-c875-40bc-bb34-54b3ba680259.png)  
+그리고 표준 BCE 로스항을 사용한다. 그러면 최종 loss는 아래와 같다.  
+![image](https://user-images.githubusercontent.com/40943064/129463317-2931dd75-2f58-4f24-b595-cdc970fd3369.png)
+그림 3 전체 접근법 결과(5절)에서 알 수 있듯이, CAM 기반 방법은 편향된 범주의 픽셀 영역에 더 의존하는 방법을 성공적으로 학습하여  
+인식 성능을 향상시킨다. 우리의 방법은 전형적인 맥락이 없는 상황에서 biased category가 발생할 때 큰 이득을 얻는다.  
+그러나 biased category가 문맥과 함께 발생할 경우 성능이 저하되는 경우가 있다(그림 7 뒷부분에서 설명).  
+한 가지 이유는 동시발생 범주를 둘러싼 픽셀 영역이 편향된 범주를 인식하는 데 유용한 보완 정보를 제공하기 때문일 수 있다.  
+상호 공간 중복을 억제함으로써 CAM 기반 접근법은 이 정보를 활용하지 못할 수 있다.  
+이러한 핵심 insight로 기능 공간을 둘로 나누고 context와 category를 별도로 나타내면서  
+공간 범위에는 제약을 가하지 않는 다음 접근 방식이 형성되었다.  
+
+### 4.2. Feature splitting and selective context suppression
+
 
 ## 6. Conclusion
 Biased category가 일반적인 context에서 벗어날 때 표준 분류기가 제대로 작동하지 않는다는 것을 보여줌으로써  
