@@ -52,9 +52,12 @@ I2I translation : pix2pix : paried -> cycleGAN : unpaired 1-domain -> StarGAN : 
 
 ## 3. AMGAN
 multi-domain i2i 변환(속성 조작)을 수행할 수 있는 AMGAN에 대해 설명한다. 다음으로 AMGAN을 조정하여 지역별 속성 조작을 수행하는 방법을 이해한다.  
+  
 **Problem Definition.**  
-AMGAN 아키텍처는 그림 2와 같이 G(Enc.-Dec. 구조:속성 조작 m을 적용하여 입력 이미지 xI를 출력 이미지 x\*I , G(x_I , m) → x^∗I로 변환)와 DI, DC로 구성  
-. 가능한 모든 속성 조작 작업은 m = {m1, ...mN , r}로 인코딩될 수 있습니다. 여기서 N은 속성 값의 수(예: 긴 소매, 빨간색 등)이고 r은 조작 중인 속성을 나타냅니다. (예: 소매, 색상 등) 생성자가 각 학습 반복에 대한 특정 속성에 초점을 맞추도록 합니다. r과 m은 모두 원-핫 인코딩으로 표현됩니다.
+AMGAN 아키텍처는 그림 2와 같이 G(Enc.-Dec. 구조:속성 조작 m을 적용하여 입력 이미지 xI를 출력 이미지로 변환 : ![image](https://user-images.githubusercontent.com/40943064/129750323-8f8fd92d-8d99-4fb9-97f6-8df4a89f2ad7.png)))와 DI, DC로 구성하며 가능한 모든 속성 조작 작업은 m = {m1, ...mN , r}로 인코딩될 수 있다.   
+N은 속성 값의 수(예: 긴 소매, 빨간색 등)이고 r은 조작 중인 속성(소매, 색상 등)을 나타낸다. G 각 학습 반복에 대한 특정 속성에 초점을 맞추도록 한다.  
+r과 m은 모두 원-핫 인코딩으로 표현된다.
+
 3.1. Network Construction
 3.2. Discriminators
 3.3. Generator
