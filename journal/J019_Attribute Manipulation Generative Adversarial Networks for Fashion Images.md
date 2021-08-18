@@ -116,7 +116,7 @@ d = C일 때, 속성 localized 이미지가 입력되어 attended 영역에 올�
 CAM을 사용하면 다음과 같이 주의 손실이 G에 포함됩니다.  
 **CAM**  
 먼저, 입력 XI는 CNN에 입력되어 convolutional feautre fk를 생성한다. xI의 속성 m'에 대한 (i, j) 위치의 CAM은 다음과 같이 추정된다.  
-![image](https://user-images.githubusercontent.com/40943064/129841617-4c452650-2785-4b51-8cfb-8e331804bfe8.png)
+![image](https://user-images.githubusercontent.com/40943064/129841617-4c452650-2785-4b51-8cfb-8e331804bfe8.png)  
 여기서, ![image](https://user-images.githubusercontent.com/40943064/129841687-316cd7a4-0bcf-4b38-835c-1d5e663095ea.png)는 k'th feauture map과 관련된 속성 m'에 대한 weight 변수이다. ![image](https://user-images.githubusercontent.com/40943064/129841764-2c35120c-64d4-43d4-8946-589237af9001.png)에 대한 값들은 0~1로 정규화되어 a\*로 명기된 guidance mask에 상응하도록 된다.  
 L1 norm을 채택하고 다음과 같이 attention loss를 정의한다. 
 ![image](https://user-images.githubusercontent.com/40943064/129841876-5c02b43d-2845-4885-acb0-21b07bbcf979.png)  
