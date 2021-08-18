@@ -147,7 +147,7 @@ AMGAN이 특정 영역에 대한 속성 조작을 수행하는 능력은 segment
 먼저 G를 이용하여 속성 조작을 수행한다. 예를 들어 사용자가 소매 또는 몸통 영역만 조작하려는 경우 그림 3과 같이 attention mask에 개입해야 한다.  
 ![image](https://user-images.githubusercontent.com/40943064/129847835-b677d723-fc79-4c92-9413-4838e7217224.png)  
 
-영역별 attention mask를 생성하기 위해 "소매 없는" 속성 조작이 적용되어 강조 표시 α1로 표시된 슬리브 영역. α1을 직접 적용하기 전에  
+영역별 attention mask를 생성하기 위해 "sleeveless" 속성 조작이 적용되어 강조 표시 α1로 표시된 슬리브 영역. α1을 직접 적용하기 전에  
 임계값 함수를 사용하여 노이즈 값을 제거하기 위해 0.9보다 작은 픽셀 값을 제거한다.  
 attention α\*1은 이제 다음과 같이 소매 또는 몸통 영역에서 "주황색" 속성 조작을 수행하는 데 적용할 수 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/129842807-a8740152-9763-479a-8482-5a1da24d8cfc.png)  
