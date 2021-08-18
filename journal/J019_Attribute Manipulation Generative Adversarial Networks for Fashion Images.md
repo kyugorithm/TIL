@@ -113,7 +113,7 @@ d = C일 때, 속성 localized 이미지가 입력되어 attended 영역에 올�
 분류 손실이 속성 관련 영역으로 attention mask를 유도하는 경우 위에 정의된 손실 함수로 그럴듯한 attention mask를 가질 수 있다.  
 그러나 속성 수가 증가하거나 이미지에 challenging한 포즈 변형이 나타날 때 attention mask가 불안정해져서 속성 조작 결과에 영향을 미칠 수 있다.  
 모든 속성에 대해 ground truth mask를 가질 수 없기 때문에 CAM 기법을 사용하여 속성 위치에서 생성기 네트워크를 안내할 것을 제안한다.  
-CAM을 사용하면 다음과 같이 주의 손실이 G에 포함됩니다.  
+CAM을 사용하면 다음과 같이 attention loss가 G에 포함된다.    
 **CAM**  
 먼저, 입력 XI는 CNN에 입력되어 convolutional feautre fk를 생성한다. xI의 속성 m'에 대한 (i, j) 위치의 CAM은 다음과 같이 추정된다.  
 ![image](https://user-images.githubusercontent.com/40943064/129841617-4c452650-2785-4b51-8cfb-8e331804bfe8.png)  
@@ -144,10 +144,10 @@ AMGAN에서는 속성 조작 후 속성에 해당하는 이미지로 참조 이�
 AMGAN이 특정 영역에 대한 속성 조작을 수행하는 능력은 segmentation ground truth를 사용하지 않기 때문에 제한적이다.  
 이것은 사용자가 시간 집약적인 AMGAN의 attention mask를 수동으로 편집할 수 있게 함으로써 극복할 수 있다.  
 이 과정을 자동화하기 위해 몸통, 소매 등 특정 영역에 대한 속성 조작을 가능하게 하는 방법을 제안한다.  
-먼저 G를 이용하여 속성 조작을 수행한다. 예를 들어 사용자가 소매 또는 몸통 영역만 조작하려는 경우 그림 3과 같이 주의 마스크에 개입해야 한다.  
+먼저 G를 이용하여 속성 조작을 수행한다. 예를 들어 사용자가 소매 또는 몸통 영역만 조작하려는 경우 그림 3과 같이 attention mask에 개입해야 한다.  
 ![image](https://user-images.githubusercontent.com/40943064/129847835-b677d723-fc79-4c92-9413-4838e7217224.png)  
 
-영역별 주의 마스크를 생성하기 위해 "소매 없는" 속성 조작이 적용되어 강조 표시 α1로 표시된 슬리브 영역. α1을 직접 적용하기 전에  
+영역별 attention mask를 생성하기 위해 "소매 없는" 속성 조작이 적용되어 강조 표시 α1로 표시된 슬리브 영역. α1을 직접 적용하기 전에  
 임계값 함수를 사용하여 노이즈 값을 제거하기 위해 0.9보다 작은 픽셀 값을 제거한다.  
 attention α\*1은 이제 다음과 같이 소매 또는 몸통 영역에서 "주황색" 속성 조작을 수행하는 데 적용할 수 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/129842807-a8740152-9763-479a-8482-5a1da24d8cfc.png)  
@@ -239,7 +239,8 @@ Shopping100k 데이터 세트의 경우 StarGAN은 특히 좋은 성능을 보�
 사용자 연구는 분류 정확도가 높다고 해서 모델이 시각적으로 좋은 번역을 수행한다는 의미가 아님을 증명한다.  
 Shopping100k 데이터 세트에서 흥미로운 사실은 StarGAN이 특정 영역(칼라, 고정, 소매)에 해당하는 이미지에 비해  
 전체 이미지(색상, 패턴)를 포함하는 속성 조작을 수행하는 능력이 더 우수하다는 것이다.  
-사용자 연구에 따르면 AMGAN의 주의 메커니즘은 Ganimation 및 SaGAN보다 안정적이며 보다 사실적인 번역을 수행한다.  
+사용자 연구에 따르면 AMGAN의 attention mechanism
+은 Ganimation 및 SaGAN보다 안정적이며 보다 사실적인 번역을 수행한다.  
 고정 속성의 경우 AMGAN은 이 속성 조작이 다른 것보다 더 어렵다는 것을 나타내는 약간 낮은 점수를 받았다.  
 #### Ablation Experiments.
 Dc, perceptual loss, attention loss, CAM as a에 따른 ablation study를 수행한다.  
