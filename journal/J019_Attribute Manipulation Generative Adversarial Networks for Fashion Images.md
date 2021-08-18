@@ -83,7 +83,7 @@ DI, DC 둘다 DCNN에 기반하며 adverasrial/classification loss를 가진다.
 d는 x_I, x_C 전체 이미지를 의미한다.  
 D의 목적은 ![image](https://user-images.githubusercontent.com/40943064/129839767-7cdf3105-fc29-47e0-86eb-4d7e060b05da.png)를 최대화하고 ![image](https://user-images.githubusercontent.com/40943064/129839830-6cb93980-efe9-4f9c-9c7b-8beae2e8ce4a.png)를 최소화한다.  
 따라서, 전체 D에 대한 loss는 다음과 같이 정의된다.  
-![image](https://user-images.githubusercontent.com/40943064/129839919-71a9b0b2-b143-4e7e-aad5-0945b3919605.png)
+![image](https://user-images.githubusercontent.com/40943064/129839919-71a9b0b2-b143-4e7e-aad5-0945b3919605.png)  
 위 loss의 최종항은 gradient penalty를 lamda_gp(실제와 fake이미지 사이에 직선을 따라 uniform하게 샘플된 x_tilde_d를 패널티하는) Wasserstein GAN 목적함수이다.
 **Classification Loss.**  
 적대적 손실이 있는 실제/가짜 샘플을 인식하는 것 외에도 판별자가 실제/가짜 이미지의 속성을 분류할 수 있는 것도 중요하다.  
