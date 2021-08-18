@@ -93,7 +93,7 @@ cross-entropy를 사용하여 전반 classification loss는 다음과 같이 정
 두 loss를 결합하여 목적함수는 다음과같이 정의할 수 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/129840392-5057d9df-6232-437d-b60c-e6a241400b53.png)  
 
-**3.3. Generator**
+**3.3. Generator**  
 AMGAN의 G는 속성조절 m에 따라 새로운 이미지를 만들기 위해 다음의 loss로 구성된다.  
 
 **Adversarial Loss.**  
