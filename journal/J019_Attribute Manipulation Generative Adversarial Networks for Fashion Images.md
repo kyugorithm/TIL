@@ -25,6 +25,8 @@ Attention mechanism을 갖는 것은 속성 관련 영역에서 속성 조작을
 본 논문에서는 사용자가 속성 조작을 수행할 수 있도록 하는 패션 이미지에 대한 다중 도메인 I2I translation에 초점을 맞춘 속성 조작 GAN(AMGAN)를 제안한다.  
 현재 I2I 변환 네트워크는 대부분 얼굴 이미지 용이지만 AMGAN은 패션 이미지와 같이 덜 딱딱한 개체에 대해 이를 달성한다.  
 그림 1은 Deepfashion, Shopping100k 데이터 세트에 대한 속성 조작의 몇 가지 예를 보여준다.  
+![image](https://user-images.githubusercontent.com/40943064/129847716-32fedd50-f696-4e73-8f12-0494f17148f0.png)
+
 제안 방법은 AMGAN은 다른 속성을 유지하면서 대상 속성의 변경 사항을 기반으로 입력 이미지를 새 이미지로 변환하는 기능이 있다.  
 제안 방법은 속성 위치에 대한 정보를 활용하지 않고 속성 조작을 위한 attention mechanism을 통합한다.  
 **속성 조작에서 목표는 관심 속성이 있는 영역을 찾아 새로운 영역으로 변환할 수 있도록 하는 것이다**.  
@@ -140,6 +142,8 @@ AMGAN이 특정 영역에 대한 속성 조작을 수행하는 능력은 segment
 이것은 사용자가 시간 집약적인 AMGAN의 attention mask를 수동으로 편집할 수 있게 함으로써 극복할 수 있다.  
 이 과정을 자동화하기 위해 몸통, 소매 등 특정 영역에 대한 속성 조작을 가능하게 하는 방법을 제안한다.  
 먼저 G를 이용하여 속성 조작을 수행한다. 예를 들어 사용자가 소매 또는 몸통 영역만 조작하려는 경우 그림 3과 같이 주의 마스크에 개입해야 한다.  
+![image](https://user-images.githubusercontent.com/40943064/129847835-b677d723-fc79-4c92-9413-4838e7217224.png)
+
 영역별 주의 마스크를 생성하기 위해 "소매 없는" 속성 조작이 적용되어 강조 표시 α1로 표시된 슬리브 영역. α1을 직접 적용하기 전에  
 임계값 함수를 사용하여 노이즈 값을 제거하기 위해 0.9보다 작은 픽셀 값을 제거한다.  
 attention α\*1은 이제 다음과 같이 소매 또는 몸통 영역에서 "주황색" 속성 조작을 수행하는 데 적용할 수 있다.  
@@ -164,26 +168,114 @@ G 업데이트에 대해 D는 5번 업데이트된다. DeepFashion 및 Shopping1
 ## 6. Experiments
 이 섹션에서 AMGAN은 양적 및 정성적 실험을 사용하여 몇 가지 최근 방법과 비교된다.  
 새로운 구성 요소의 효과를 조사하기 위해 ablation 실험을 수행한다.  
-  
 ### 6.1. Competing Methods
+다음 SOTA multi-domain i2i translation 방법들과 비교한다.  
 #### StarGAN
+단일 G로 입력 attribute에 대해 multi-domain i2i translation를 수행한다.
 #### Ganimation
+StarGAN과 유사하나 attention mechanism을 G에 포함한다.  
+우리는 regression loss 대신 classification loss를 사용한다.  
 #### SaGAN
+역시 Attention mask를 사용하지만 2개의 G가 존재하여 이미지와 attention mask를 생성한다.  
+우리는 multi-domain task를 위해 단일 모델에 대해 attribute manipulation을 condition으로 더하였다.  
 ### 6.2. Datasets
+속성 수 측면에서 풍부한 두 가지 패션 데이터 세트가 실험에 사용한다.  
 #### DeepFashion-Synthesis
-#### Shopping 100k
+78,979개의 이미지로 상의 이미지로 구성되어 있다. 이 하위 집합은 DeepFashion 데이터 세트의 훨씬 더 깨끗한 버전이며  
+21개의 속성 값에 해당하는 color(17), sleeve(4) 속성을 사용하기로 선택했다.  
+#### Shopping 100k  
+101,021개의 의복 이미지가 포함되어 있으며 70개의 속성 값에 해당하는 칼라(17), 색상(19), 조임(9), 패턴(16), 소매 길이(9)의  
+6가지 속성을 사용하도록 선택했습. 이 데이터 세트에 대해 λp = 10인 특징을 추출하기 위해 avg-pool 레이어만 사용한다.  
 ### 6.3. Evaluation Metrics
-#### Classification Accuracy.
-#### Top-k Retrieval Accuracy.
+모든 이미지는 128x128로 크기가 조정되고 테스트 세트에 대해 2,000개의 이미지가 무작위로 샘플링되고 나머지는 훈련에 사용된다.  
+두 데이터 세트의 속성 조작을 위해 대부분 합리적인 속성을 사용하도록 선택한다.  
+참조 이미지를 선택할 때 더 정확한 일치를 위해 카테고리 및 성별 속성을 추가로 포함한다.  
+
+#### Classification Accuracy. 
+속성 조작이 성공적으로 적용되었는지 테스트하기 위해 조작 중인 속성에 대한 분류 정확도를 확인한다.  
+cross-entropy loss가 있는 attribute manipulation를 위해 ResNet-50을 훈련하기로 선택했다.  
+모든 경쟁 방법은 동일한 아키텍처로 테스트되었으며 정확도가 높을수록 네트워크에 따라 속성 조작이 더 성공적임을 나타낸다.  
+#### Top-k Retrieval Accuracy. 
+생성된 이미지의 성공 여부를 평가하기 위해 이미지 검색 기반 방법을 제안한다. Top-k 검색 정확도는 검색 알고리즘이 Top-k 결과에서  
+올바른 이미지를 찾는지 여부를 고려한다. 검색된 이미지가 입력 및 속성 조작에서 요구하는 속성으로 구성된 경우 히트 "1"이 되고  
+그렇지 않으면 "0"이 누락된다. 이 메트릭은 원하는 이미지를 직접 생성하므로 속성 조작에 적용할 수 있다.  
+보다 구체적으로, ResNet-50 네트워크를 사용하여 생성된 이미지(Query)와 실제 이미지(Retrieval Gallery) 모두에 대해  
+avg pool layer에서 특성을 추출하고 Query와 Retrieval Gallery를 비교한다.  
 #### User Study.
-### 6.4. Competing Methods
-#### Ablation Experiments
+각 경쟁 방법에서 생성된 이미지를 평가하기 위해 20명의 참가자로 구성된 사용자 연구를 수행한다.  
+연구 전에 각 참가자는 각 속성 값에 대해 지시를 받는다. 입력 이미지와 속성 조작이 주어지면 참가자들은 4가지 경쟁 방법 중에서  
+지각적 사실주의, 속성 조작의 품질 및 이미지의 원래 정체성 보존을 기반으로 가장 잘 생성된 이미지를 선택하도록 요청한다.  
+### 6.4. Quantitative Experiments
+속성 조작에 대한 분류 정확도 결과는 표 1에 있으며 AMGAN은 각 데이터 세트에 대해 각각 평균 79.48%, 49.49%로 최고의 성능을 달성했다.  
+![image](https://user-images.githubusercontent.com/40943064/129847999-3a35d468-2c8b-4e7b-ba6a-4c12125621bc.png)
+
+
+세 경쟁 제품 모두 DeepFashion 데이터 세트에서 유사 성능을 보이지만 StarGAN은 Shopping100k 데이터 세트에서 훨씬 더 나은 성능을 가지고 있으며  
+그 이유는 대부분 속성 수가 더 많기 때문이다(21 vs 70).  
+이는 속성 수가 증가하고 attention mechanism이 있다고 해서 이 평가 메트릭에 추가 성공을 가져오지 않는 attention based 방법의 확장 문제를 지적한다.  
+반면 AMGAN은 새로운 구성 요소로 인해 훨씬 더 안정적이다. AMGAN의 구성 요소에 대한 철저한 조사는 ablation 실험에서 이루어진다.  
+그림 4에 따르면 AMGAN은 각 데이터 세트에 대해 각각 0.657 및 0.403의 평균 Top30 검색 정확도로 경쟁 모델보다 더 나은 성능을 보인다.  
+![image](https://user-images.githubusercontent.com/40943064/129847866-8327111c-878b-4656-9db2-d1d16dfb4f93.png)
+
+
+또한 보다 자세한 조사를 위해 표 2에서 각 속성의 상위 30개 검색 정확도를 보고한다.  
+![image](https://user-images.githubusercontent.com/40943064/129848034-e5e77b66-c3d3-4236-a546-fbd241de6116.png)
+
+
+AMGAN이 속성 조작에 탁월할 뿐만 아니라 변경되지 않은 속성을 동일하게 유지하는 데에도 탁월함을 보여준다.  
+또한 속성 조작 없이 입력 이미지에서 특징을 추출한 실제 이미지의 결과를 보고한다.  
+실제 이미지가 큰 차이로 최악의 결과를 얻었다는 사실은 속성 조작을 수행하는 능력이 이 메트릭에서 매우 중요하다는 것을 증명한다.  
+Ganimation과 SaGAN은 두 평가 메트릭 간의 상관 관계를 보여주는 표 1의 경우인 Shopping100k 데이터 세트에 대해 StarGAN보다 성능이 좋지 않다.  
+Top-k 검색 정확도는 생성된 이미지에 대해 "변경되지 않은 속성 유지"와 "속성 조작 활성화"의 균형을 관찰하기 위한 좋은 측정 기준이라고 믿는다.  
+이러한 실험은 또한 AMGAN이 향후 연구를 위해 조사할 가치가 있는 이미지 검색을 위한 좋은 모델이 될 수 있음을 시사한다.  
+표 3은 선호도에 기반한 사용자 연구의 결과를 보여준다. AMGAN은 다른 경쟁 방법이 두 데이터 세트에서 서로 유사하게 수행되는 모든 속성에 대해 다시 최고의 성능을 달성한다.  
+![image](https://user-images.githubusercontent.com/40943064/129848068-531f6335-51e6-4a17-8479-db3c7722c086.png)
+
+
+Shopping100k 데이터 세트의 경우 StarGAN은 특히 좋은 성능을 보인 슬리브 속성에서 표 1에 표시된 것처럼 좋지 않다.  
+사용자 연구는 분류 정확도가 높다고 해서 모델이 시각적으로 좋은 번역을 수행한다는 의미가 아님을 증명한다.  
+Shopping100k 데이터 세트에서 흥미로운 사실은 StarGAN이 특정 영역(칼라, 고정, 소매)에 해당하는 이미지에 비해  
+전체 이미지(색상, 패턴)를 포함하는 속성 조작을 수행하는 능력이 더 우수하다는 것이다.  
+사용자 연구에 따르면 AMGAN의 주의 메커니즘은 Ganimation 및 SaGAN보다 안정적이며 보다 사실적인 번역을 수행한다.  
+고정 속성의 경우 AMGAN은 이 속성 조작이 다른 것보다 더 어렵다는 것을 나타내는 약간 낮은 점수를 받았다.  
+#### Ablation Experiments.
+Dc, perceptual loss, attention loss, CAM as a에 따른 ablation study를 수행한다.  
 #### AMGAN w/o Dc
+5.43%, 6.34% drop이 있으며 현실적 이미지를 생성하는데 Attended 영역에 대한 정확한 속성을 주어 도움을 준다.  
 #### AMGAN w/o L_p^G, Dc
+above + 4.21%, 7.68% drop이 있으며 attribute manipulation에 큰 영향을 줌을 알 수 있다.
 #### AMGAN w/o L_a^G, L_p^G, Dc
+above + 2.50%, 9.97% drop이 있으며 CAM의 보조가 없어 G에 올바른 영역에 대한 localizing을 주지 못하며 m이 큰 데이터에 영향이 크다.  
+새로운 방법 없이 기존 방법론과 결과는 유사하다.  
 #### AMGAN, CAM as a
+attention mask 출력값 대신 CAM을 넣었다. 비교를 위해 Dc와 perceptual loss를 학습에서 제외하였다.  
+CAM을 직접 넣은경우 제안 방법보다 6.97%, 9.34% drop이 있었다.  
+즉, 직접적으로 CAM을 사용하기 보다 학습에 사용하는것이 도움이 된다는 사실을 증명한다.  
+Attention loss의 목표는 CAM을 복사하는것이 아니라 AMGAN의 localization 능력을 부여하는것이다.  
 ### 6.5. Qualitative Evaluation
+여러 속성 조작의 예를 보여주는 그림 5에서 AMGAN이 속성 조작을 수행하고 원본 이미지의 내용을 유지하는 측면에서 적절한 번역을 수행한다는 것이 분명하다.  
+DeepFashion 데이터 세트의 경우 색상 속성 조작을 적용하는 경쟁 방법이 올바른 영역에 초점을 맞추는 데 문제가 있음이 분명하다.  
+DNN의 "extra help"를 통해 AMGAN은 보다 정확한 attention mask를 생성하여 보다 사실적인 번역을 제공할 수 있다.  
+sleeve 속성을 보면 모든 메소드가 올바른 영역에 번역을 적용하는 것처럼 보인다. 그러나 AMGAN은 생성된 슬리브 영역이 색상 및 패턴 유사성 측면에서  
+입력 이미지와 더 상관 관계가 있으므로 보다 사실적으로 수행할 수 있다. Shopping100k 데이터 세트의 경우 그림 5의 오른쪽에 몇 가지 예가 제공된다.  
+![image](https://user-images.githubusercontent.com/40943064/129847903-07736118-f417-46d7-87bf-63c07dbe1545.png)
+
+AMGAN에 의한 속성 조작 결과는 다시 더 일관되고 정확하다. 이는 경쟁 방법이 원하는 속성의 실루엣만 제공하는 세 번째 행의 긴팔 속성 조작에서 쉽게 알 수 있다.  
+보다 정확하고 사실적인 번역을 수행하는 AMGAN의 능력은 대부분 속성 특정 영역에 참석하기 위해 추가 판별기를 사용하고  
+예상 출력에 대해 G를 안내하는 지각 손실에 기인한다.
 #### Region-specific Attribute Manipulation:
+두 데이터 세트의 예 세트가 그림 6에 제공된다.  
+![image](https://user-images.githubusercontent.com/40943064/129847928-b6c1ae23-a1b4-4e5e-8672-bdad91fdf62b.png)
+
+DeepFashion : "sleeveless" 속성에서 얻은 attention mask를 사용하여 지역별 속성 조작을 수행한다.  
+그런 다음 Eq12를 사용하여 소매 마스크에 "빨간색" 및 "주황색" 속성 조작을 수행한다.  
+Shopping100k : occlusion으로 인해 의류 제품에 대한 localize가 더 어렵다. 또한, 우리는 hard threshold 방법을 사용하고 있기 때문에  
+최적의 값을 찾는 것이 때때로 문제가 될 수 있다. 그럼에도 불구하고 속성 조작은 처음 두 행에 성공적으로 적용된다.  
+마지막 두 행의 경우 이 프로세스에 대한 속성만 사용한다는 사실을 감안할 때 괜찮은 결과를 얻는다.  
+"sleeveless" 속성 값에서 얻은 attention mask가 소매 영역을 성공적으로 강조 표시할 수 있음을 알 수 있다.  
+그런 다음 "파란색" 및 "색 그라데이션 패턴" 속성 조작을 수행한니다. 최종 출력을 보면 마스크 개입의 아이디어가  
+지역별 속성 조작 작업에 성공적으로 적용되었다. 이 실험은 또한 G에 의해 생성된 attention mask의 성공을 보여준다.  
+
 ## 7. Conclusion
 Multi-domain i2i translation을 위한 AMGAN은 향상된 attention mechanism과 속성조절으로 인해 경쟁 방법보다 큰 성능 이점이 있다.  
 성능 향상은 CAM 및 perceptual loss의 guide와 추가 D를 통해 가능하다. AMGAN은 attention mask를 활용하여  
