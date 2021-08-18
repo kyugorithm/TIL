@@ -134,3 +134,59 @@ AMGAN에서는 속성 조작 후 속성에 해당하는 이미지로 참조 이�
 ![image](https://user-images.githubusercontent.com/40943064/129842526-19aed6ee-076a-4272-bc1a-9864b65f514c.png)
 **Hyper-Parameters**  
 ![image](https://user-images.githubusercontent.com/40943064/129842549-06233897-0eca-4b17-96cb-45671b99b385.png)
+
+## 4. Region-specific Attribute Manipulation  
+AMGAN이 특정 영역에 대한 속성 조작을 수행하는 능력은 segmentation ground truth를 사용하지 않기 때문에 제한적이다.  
+이것은 사용자가 시간 집약적인 AMGAN의 attention mask를 수동으로 편집할 수 있게 함으로써 극복할 수 있다.  
+이 과정을 자동화하기 위해 몸통, 소매 등 특정 영역에 대한 속성 조작을 가능하게 하는 방법을 제안한다.  
+먼저 G를 이용하여 속성 조작을 수행한다. 예를 들어 사용자가 소매 또는 몸통 영역만 조작하려는 경우 그림 3과 같이 주의 마스크에 개입해야 한다.  
+영역별 주의 마스크를 생성하기 위해 "소매 없는" 속성 조작이 적용되어 강조 표시 α1로 표시된 슬리브 영역. α1을 직접 적용하기 전에  
+임계값 함수를 사용하여 노이즈 값을 제거하기 위해 0.9보다 작은 픽셀 값을 제거한다.  
+attention α\*1은 이제 다음과 같이 소매 또는 몸통 영역에서 "주황색" 속성 조작을 수행하는 데 적용할 수 있다.  
+![image](https://user-images.githubusercontent.com/40943064/129842807-a8740152-9763-479a-8482-5a1da24d8cfc.png)
+이 방법은 attention mask가 속성조작과 관련되어 있음을 표시하는 데 사용할 수도 있다.  
+이 방법의 더 많은 변형이 실험에서 조사된다.  
+
+## 5. Implementation Details
+**Network Architecture**  
+AMGAN의 G에 대해 [39]와 유사한 구조를 사용하고 단일 채널 attention mask를 출력하는 sigmoid activation이 있는 Conv. layer를 추가한다.  
+G 입력은 "3+N+M"(N:속성 값의 수, M:속성의 수) 차원의 텐서이다. [7]의 Masking 벡터를 사용하여 속성 간에 교대 훈련 전략을 수행한다.  
+PatchGAN 아키텍처는 두개 D에 모두 사용된다. DC의 경우 입력 이미지의 크기가 절반으로 줄어들고 2개의 더 적은 컨볼루션 계층이 사용된다.  
+CNN 아키텍처의 경우 ResNet-50을 사용하여 CAM 및 기능을 추출한다.  
+각 데이터 세트에 대해 속성 예측을 위해 전이 학습(AMGAN 고정)이 수행된다.  
+동일한 네트워크가 conv5 및 avg 풀 레이어를 사용하는 특징 추출에 사용된다.  
+**Training**  
+Adam(β = 0.5, β = 0.999, lr = 0.0001), mini_batch : 16  
+G 업데이트에 대해 D는 5번 업데이트된다. DeepFashion 및 Shopping100k 데이터 세트의 경우 GeForce GTX TITAN X GPU로  
+각각 약 1.5 및 2일이 소요되는 각 속성에 대해 80k 및 50k 반복에 대해 AMGAN을 훈련  
+훈련의 전반부가 끝나면 학습률은 선형적으로 0으로 감소  
+
+## 6. Experiments
+이 섹션에서 AMGAN은 양적 및 정성적 실험을 사용하여 몇 가지 최근 방법과 비교된다.  
+새로운 구성 요소의 효과를 조사하기 위해 ablation 실험을 수행한다.  
+  
+### 6.1. Competing Methods
+#### StarGAN
+#### Ganimation
+#### SaGAN
+### 6.2. Datasets
+#### DeepFashion-Synthesis
+#### Shopping 100k
+### 6.3. Evaluation Metrics
+#### Classification Accuracy.
+#### Top-k Retrieval Accuracy.
+#### User Study.
+### 6.4. Competing Methods
+#### Ablation Experiments
+#### AMGAN w/o Dc
+#### AMGAN w/o L_p^G, Dc
+#### AMGAN w/o L_a^G, L_p^G, Dc
+#### AMGAN, CAM as a
+### 6.5. Qualitative Evaluation
+#### Region-specific Attribute Manipulation:
+## 7. Conclusion
+Multi-domain i2i translation을 위한 AMGAN은 향상된 attention mechanism과 속성조절으로 인해 경쟁 방법보다 큰 성능 이점이 있다.  
+성능 향상은 CAM 및 perceptual loss의 guide와 추가 D를 통해 가능하다. AMGAN은 attention mask를 활용하여  
+특정 영역에 대한 속성 조작을 수행할 수 있다. DeepFashion 및 Shopping100k 데이터 세트에 대해 수행된 실험을 통해  
+AMGAN이 이미지 검색을 기반으로 하는 새로운 방법뿐만 아니라 기존 메트릭기반 최신 i2i 변환 방법보다 나은 성능을 발휘할 수 있다.  
+향후에는 과제는 AMGAN을 다른 도메인으로 확장하거나 속성 조작 작업 후 이미지 검색을 위한 도구로 사용하는 것이다.
