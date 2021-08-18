@@ -213,8 +213,8 @@ avg pool layer에서 특성을 추출하고 Query와 Retrieval Gallery를 비교
 ![image](https://user-images.githubusercontent.com/40943064/129847999-3a35d468-2c8b-4e7b-ba6a-4c12125621bc.png)  
 
 
-세 경쟁 제품 모두 DeepFashion 데이터 세트에서 유사 성능을 보이지만 StarGAN은 Shopping100k 데이터 세트에서 훨씬 더 나은 성능을 가지고 있으며  
-그 이유는 대부분 속성 수가 더 많기 때문이다(21 vs 70).  
+세 경쟁 제품 모두 DeepFashion 데이터 세트에서 유사 성능을 보이지만 StarGAN은 Shopping100k 데이터 세트에서  
+훨씬 더 나은 성능을 가지고 있으며 그 이유는 대부분 속성 수가 더 많기 때문이다(21 vs 70).  
 이는 속성 수가 증가하고 attention mechanism이 있다고 해서 이 평가 메트릭에 추가 성공을 가져오지 않는 attention based 방법의 확장 문제를 지적한다.  
 반면 AMGAN은 새로운 구성 요소로 인해 훨씬 더 안정적이다. AMGAN의 구성 요소에 대한 철저한 조사는 ablation 실험에서 이루어진다.  
 그림 4에 따르면 AMGAN은 각 데이터 세트에 대해 각각 0.657 및 0.403의 평균 Top30 검색 정확도로 경쟁 모델보다 더 나은 성능을 보인다.  
