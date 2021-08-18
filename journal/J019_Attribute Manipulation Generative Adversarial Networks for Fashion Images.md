@@ -134,8 +134,8 @@ L1 norm을 채택하고 다음과 같이 attention loss를 정의한다.
 AMGAN에서는 속성 조작 후 속성에 해당하는 이미지로 참조 이미지를 선택할 것을 제안한다.  
 따라서 외부 참조를 선택하는 규칙은 그림 2에 제공된 예와 같이 모든 속성이 x^\*I와 일치해야 한다.  
 착용자와 포즈가 다르더라도 x\*I 및 xref는 피쳐 공간에서 서로 가깝다.  
-생성된 이미지 z의 품질을 향상시키면서 지각 손실도 주의 메커니즘에 기여할 수 있다.  
-마지막으로 G를 최적화하는 목적 함수는 다음과 같이 공동으로 작성할 수 있습니다.
+생성된 이미지 z의 품질을 향상시키면서 지각 손실도 attention mechanism에 기여할 수 있다.  
+마지막으로 G를 최적화하는 목적 함수는 다음과 같이 공동으로 작성할 수 있다.
 ![image](https://user-images.githubusercontent.com/40943064/129842526-19aed6ee-076a-4272-bc1a-9864b65f514c.png)  
 **Hyper-Parameters**  
 ![image](https://user-images.githubusercontent.com/40943064/129842549-06233897-0eca-4b17-96cb-45671b99b385.png)  
