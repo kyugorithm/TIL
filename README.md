@@ -35,11 +35,6 @@
 
     ```
 
-
-
-
-
-
 ## 2.2. Image Generation and etc.
 * **2021**
     ```
@@ -65,6 +60,7 @@
     
 * **2017**
     ```
+    Generative Semantic Manipulation with ContrastingGAN
     Unsupervised Image-to-Image Translation Networks
     Wasserstein GAN
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
@@ -77,7 +73,7 @@
 * **2014**
     ```
     Generative Adversarial Nets 
-    Conditional Generative Adversarial Nets [논문링크][j_link001]
+    Conditional Generative Adversarial Nets
     ```
 
 # 3. 학습완료 논문
