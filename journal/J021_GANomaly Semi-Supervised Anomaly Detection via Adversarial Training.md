@@ -67,3 +67,5 @@ MNIST 데이터 세트에서 우수한 결과를 얻을 수 있었다.
 이미지와 latent 벡터 공간 모두에서 공동으로 표현을 학습하고 상태를 달성하는 cGAN을 소개한다. 통계 및 계산 모두에서 SOTA를 달성한다.  
 
 ## 3 GANomaly
+
+![image](https://user-images.githubusercontent.com/40943064/130704123-6e78b60c-8296-40d6-82f7-865bc5cbae54.png)
