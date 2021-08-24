@@ -1,6 +1,7 @@
-Not just Compete, but Collaborate: Local Image-to-Image Translation via Cooperative Mask Prediction
+# Not just Compete, but Collaborate: Local Image-to-Image Translation via Cooperative Mask Prediction
+
 ## Abstract 
-얼굴 속성 편집은 원하는 속성으로 이미지를 조작하면서 다른 디테일은 보존하는 것을 목표로 한다.  
+Facial attribute editing은 원하는 속성으로 이미지를 조작하면서 다른 디테일은 보존하는 것을 목표로 한다.  
 최근, GAN, Encoder-Decoder architecture가 현실적인 이미지를 만들 수 있는 능력 때문에 이 작업에 활용되고 있다.  
 그러나 unpaired dataset에 대한 기존 방법은 ground truth image가 없기 때문에 attribute-irrelevant regions를 제대로 보존할 수 없다.  
 본 연구는 CAM-consistensy loss라는 새롭고 직관적인 손실 함수를 제안하며, 이는 이미지 변환에서 입력 이미지의 일관성을 향상시킨다.  
