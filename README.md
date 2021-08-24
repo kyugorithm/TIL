@@ -21,6 +21,7 @@
     ```
 * **2018**
     ```
+    GANomaly: Semi-Supervised Anomaly Detection via Adversarial Training
     Detecting spacecraft anomalies using lstms and nonparametric dynamic thresholding
     ```
 * **2017**
