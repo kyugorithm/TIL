@@ -30,10 +30,75 @@ anomaly를 높은 정확도로 식별하는 동시에 volxel-level 주석을 사
 ![image](https://user-images.githubusercontent.com/40943064/130891864-d7e53a0b-5d32-4119-95fd-599ca5ee76af.png)
 
 ### 2.1. Unsupervised Manifold Learning of Normal Anatomical Variability
+![image](https://user-images.githubusercontent.com/40943064/131071619-7830ddda-07b3-4daa-91d3-85217568afb0.png)
+GAN을 통해 해부학적 가변성을 인코딩합니다. GAN은 G와 D의 적대 모듈로 구성됩니다.  
+G는 z의 매핑 G(z), 잠재 공간 Z에서 샘플링된 균일하게 분포된 입력 노이즈의 1D 벡터를 통해 데이터 x에 대한 분포 pg를 학습합니다.  
+건강한 예제로 채워진 이미지 공간 **매니폴드 X의 2D 이미지로 변환**합니다. 이 설정에서 G의 아키텍처는 stride conv. stack을 활용하는  
+conv. decoder와 동일합니다.  
+D는 2D 이미지를 단일 스칼라 값에 매핑하는 표준 CNN입니다. 출력은 D에 대한 주어진 입력이 학습 데이터 X에서 샘플링된 실제 이미지 x이거나  
+G에 의해 생성된 G(z)일 확률로 해석될 수 있습니다. D와 G는 다음을 통해 동시에 최적화됩니다.  
+V(G;D)가 있는 two-player minmax game:  
+![image](https://user-images.githubusercontent.com/40943064/131072145-4f82eb6b-ccea-4898-89aa-171e80c08e7a.png)
 
 ### 2.2. Mapping new Images to the Latent Space 
+적대적 훈련이 완료되면 G 잠재 공간 표현 z에서 실제(일반) 이미지 x로 매핑 G(z) = z → x를 학습했습니다.  
+그러나 GAN은 inverse mapping µ(x) = x → z를 자동으로 생성하지는 않습니다.  
+잠재 공간은 smooth translation을 가지므로, Z에서 가까운 두 지점은 시각적으로 유사한 이미지가 됩니다.  
+쿼리 이미지 x가 주어지면 유사하고 매니폴드 X에 위치한 이미지 G(z)에 해당하는 잠재 공간에서 점 z를 찾는 것을 목표로 합니다.  
+x와 G(z)의 유사도는 쿼리 이미지가 생성기 훈련에 사용된 데이터 분포 pg를 어느 정도 따랐는지에 따라 다릅니다.  
+최상의 z를 찾기 위해 잠재 공간 분포 Z에서 무작위로 z1을 샘플링하고 훈련된 생성기에 공급하여 생성된 이미지 G(z1)를 얻습니다.  
+생성된 이미지 G(z1)를 기반으로 손실 함수를 정의합니다.  
+이 손실 함수는 z1 계수 업데이트에 대한 기울기를 제공하여 잠재 공간 z2에서 업데이트된 위치를 생성합니다.  
+가장 유사한 이미지 G(zΓ )를 찾기 위해 잠재 공간 Z에서 z의 위치는 γ = 1, 2, . . . , Γ 역전파 단계.  
+[13]의 정신에 따라 우리는 새로운 이미지를 잠재 공간에 매핑하기 위한 손실 함수를 정의합니다.  
+이 손실 함수는 residual 손실과 discrimination 손실의 두 가지 구성 요소로 구성됩니다.  
+residual loss는 G(zγ)와 쿼리 이미지 x 간의 시각적 유사성을 적용합니다.  
+discrimination loss는 G(zγ)가 학습된 manifold X에 놓이도록 강제합니다.  
+따라서 훈련된 GAN의 두 구성요소인 D와 G는 역전파를 통해 z의 계수를 조정하는 데 사용됩니다.  
+다음에서는 손실 함수의 두 구성 요소에 대해 자세히 설명합니다.  
+
+**Residual Loss**  
+이미지 공간에서 생성 이미지와 실제 이미지 간 시각적 불일치성을 나타내는 척도는 다음과 같습니다.
+![image](https://user-images.githubusercontent.com/40943064/131074320-189f83fd-6f79-4183-b8b6-a4d765213828.png)
+완벽한 G와 완벽한 latent 공간 mapping, 이상적인 정상 query case의 가정 하에 이미지와 생성 이미지는 동일합니다.  
+이 경우에 residual loss는 0이 됩니다.
+**Discrimination Loss**   
+이미지 inpainting에  대해 Yeh는 생성 이미지를 입력으로 받는 D 출력을 discrimination loss에 대한 계산을 기반으로 합니다.  
+![image](https://user-images.githubusercontent.com/40943064/131074778-5b988617-963c-4c58-bf6f-b651ed1f26fd.png)
+**An improved discrimination loss based on feature matching**  
+Yeh의 작업과 대조적으로. zγ가 D를 속이도록 업데이트되는 경우 대체 식별 손실 LD(zγ)를 정의합니다.  
+여기서 zγ는 G(zγ)를 학습된 정규 이미지 분포와 일치시키도록 업데이트됩니다. 이것은 최근에 제안된 특징 매칭 기법에서 영감을 받았습니다.  
+feature matching은 D 응답에 대한 과도한 훈련으로 인한 GAN의 불안정성을 해결합니다.  
+feature matching 기법에서 G를 최적화하기 위한 목적 함수는 GAN 훈련을 개선하기 위해 적용됩니다.  
+생성된 샘플에 대한 D의 출력을 최대화하여 G의 매개변수를 최적화하는 대신(식(2)), G는 훈련 데이터와 통계가 유사한 데이터,  
+즉 중간 기능 표현이 실제 이미지와 유사한 데이터를 생성해야 합니다.  
+Salimans는 분류가 대상 작업일 때 feature matching이 특히 유용하다는 것을 발견했습니다.  
+우리는 적대적 훈련 중에 레이블이 지정된 데이터를 사용하지 않기 때문에 클래스별 판별 기능을 학습하는 것이 아니라  
+좋은 표현을 학습하는 것을 목표로 합니다.  
+따라서 우리는 적대적 훈련 동안 G의 훈련 목표를 조정하지 않고 대신 잠재 공간에 대한 매핑을 개선하기 위해 feature matching의 아이디어를 사용합니다.  
+discrimination loss를 계산하기 위해 D의 스칼라 출력을 사용하는 대신 D의 더 풍부한 중간 기능 표현을 사용하고  
+discrimination loss를 다음과 같이 정의할 것을 제안합니다.  
+![image](https://user-images.githubusercontent.com/40943064/131075314-4d33cc14-15d7-47a8-8d14-d02e7b9aa90a.png)
+여기서 D의 중간 계층 f(·)의 출력은 입력 이미지의 통계를 지정하는 데 사용됩니다.  
+이 새로운 손실 항에 기초하여 z 축의 adaptation은 G(zγ)가 정상 이미지의 학습된 분포에 맞는지 여부에 따라  
+학습된 D의 어려운 결정에 의존할 뿐만 아니라 대신 풍부한 적대적 훈련 동안 판별자가 학습한 특징 표현의 정보를 고려합니다.  
+이러한 의미에서 우리의 접근 방식은 훈련된 판별자를 분류자가 아닌 특징 추출기로 활용합니다.  
+latent space에 대한 mapping에 대하여, 우리는 전체 loss를 두 component의 가중합으로 정의합니다.  
+![image](https://user-images.githubusercontent.com/40943064/131075533-a06b4158-2fa9-48db-88eb-06528944ff1b.png)  
+z에 대한 계수만 backpropagation을 통해 adapt 됩니다.  
+G와 D의 학습된 파라미터들은 고정됩니다.  
 
 ### 2.3. Detection of Anomalies
-
+새로운 데이터에서 Anomaly identification을 위해 우리는 새로운 query 이미지 x를 정상/비정상 이미지로 평가합니다.  
+잠재 공간에 매핑하는 데 사용되는 손실 함수(Eq. (5))는 모든 업데이트 반복 γ에서 생성된 이미지 G(zγ)와  
+adversarial training 동안 본 이미지의 호환성을 평가합니다.  
+따라서 쿼리 이미지 x의 일반 이미지 모델에 대한 적합도를 나타내는 이상 점수는 매핑 손실 함수(Eq. (5))에서 직접 파생될 수 있습니다.  
+![image](https://user-images.githubusercontent.com/40943064/131075797-eddd020a-facf-4bf2-a48e-f18b2414ac19.png)
+여기서 residual score R(x) 및 discriminator score D(x)는 latent 에 대한 매핑 절차의 마지막(Γ 번째) 업데이트 반복에서  
+residual loss LR(zΓ ) 및 discriminator loss LD(zΓ )로 정의됩니다.  
+모델은 비정상 이미지에 대해 큰 비정상 점수 A(x)를 산출하는 반면, 작은 비정상 점수는 훈련 중에 매우 유사한 이미지가 이미 표시되었음을 의미합니다.  
+이미지 기반 이상 탐지를 위해 이상 점수 A(x)를 사용합니다.
+추가로 Xr |x - G(zr)|은 이미지 내의 비정상 영역을 정의하기 위해 사용됩니다.  
+비교를 위해 우리는 추가로 reference anomaly score를 사용합니다
 
 ## 3. Experiments
