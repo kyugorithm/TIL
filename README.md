@@ -43,6 +43,7 @@
     ```
 * **2020**
     ```
+    Self-supervised Equivariant Attention Mechanism for Weakly Supervised Semantic Segmentation
     PIE: Portrait Image Embedding for Semantic Control (2020) / [논문링크][j_link008]
     StarGAN v2: Diverse Image Synthesis for Multiple Domains
     ```
