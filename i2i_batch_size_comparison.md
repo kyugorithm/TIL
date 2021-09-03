@@ -54,6 +54,7 @@ U-GAT-IT  : RandomHorizontalFlip > Resize > RandomCrop > ToTensor > Normalize(0.
 </pre>
 
 ## Key Concept
+<pre>
 CycleGAN  : Cycle consistency  
 discoGAN  : Shared encoder  
 UNIT      :  
@@ -61,7 +62,7 @@ Drit      :
 StarGANv1 : G(class input), cycle consistency   / D(real/facke + domain classifi.)
 StarGANv2 : G(style input, AdaIN), D : multiple output branches 
 U-GAT-IT  : CAM on Gen./Dis. & Adaptive Linear Instance Norm.  
-
+</pre>
 ## Pros and Cons
 
 ![image](https://user-images.githubusercontent.com/40943064/132003919-6d313c16-7aa6-4f06-8f08-93283cef810d.png)
