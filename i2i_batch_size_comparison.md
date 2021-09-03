@@ -39,7 +39,7 @@ UNIT      : D(X)        / G(IN + AdaIN)
 Drit      : D(IN or SN) / G(IN + LN)  
 StarGANv1 : D(X)        / G(IN)  
 StarGANv2 : D(IN)       / G(IN + AdaIN)  
-U-GAT-IT  : D(SN)       / G(IN  + **AdaLIN**)  
+U-GAT-IT  : D(SN)       / G(IN  + AdaLIN)  
 </pre>  
 
 ## Transform
