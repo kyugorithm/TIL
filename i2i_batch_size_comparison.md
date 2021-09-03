@@ -61,7 +61,7 @@ UNIT      :
 Drit      :  
 StarGANv1 : G(class input), cycle consistency   / D(real/facke + domain classifi.)
 StarGANv2 : G(style input, AdaIN), D : multiple output branches 
-U-GAT-IT  : CAM & AdaLIN
+U-GAT-IT  : D(Global + Local)/ CAM & AdaLIN
 </pre>
 ## Pros and Cons
 
