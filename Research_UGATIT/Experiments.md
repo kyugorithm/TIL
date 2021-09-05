@@ -8,5 +8,5 @@ U-GAT-IT ablation study for Cat2Dog in the wild(https://www.kaggle.com/c/dogs-vs
 
 ### 실패  
 <pre>
-
+1. Out Structure : 21875 iterations * 4 mini_batch
 </pre>
