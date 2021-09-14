@@ -67,6 +67,7 @@
     Wasserstein GAN
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
     Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization
+    StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
     ```
 * **2015**
     ```
