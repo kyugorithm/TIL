@@ -67,4 +67,43 @@ D : x -> {D_{src}(x), D_{cls}(x)}.
 이 논문에서, 우리는 Dsrc(x)는 D에 의해서 source에 대한 확률 분포를 표현하기 위해 사용한다.  
   
 **Domain Classification Loss.**  
-주어진 입력 x와 c에 대해 목표는 x를 c 도메인인 y로 변환하는것이다. 
+입력 x, c에 대해 x를 c 도메인 y로 변환하는것이 목표이다.  
+이 조건을 달성하기 위해, D와 G를 최적화 할때 D의 최종 layer에 보조 분류 loss를 추가한다.  
+즉, 목적을 아래 두개 항으로 분해한다.  
+1) D를 최적화하기위해 사용하는 **실제** 이미지의 **도메인 분류 loss**  
+2) G를 최적화하기위해 사용하는 **합성** 이미지의 **도메인 분류 loss**  
+  
+**Reconstruction Loss.**  
+Class를 고려하는 부분을 제외하고 CycleGAN과 개략적으로 동일 (생략)  
+  
+**Full Objective.**  
+![image](https://user-images.githubusercontent.com/40943064/133929841-ac7c4c2a-a846-4f46-943d-07a47091db51.png)
+
+### 3.2 Tranining with Multiple Datasets
+StarGAN의 주요 장점은 여러 유형의 여러 데이터 세트에 대해 통합하여 제어할 수 있다는 것이다.  
+그러나 여러 데이터셋에서 학습할 때 문제는 레이블 정보가 각 데이터셋에 부분적으로만 있다는 것이다.  
+CelebA와 RaFD의 경우, 전자는 머리카락 색과 성별과 같은 속성의 라벨을 포함하고 있지만,  
+'행복하다'와 '분노하다'와 같은 얼굴 표정의 라벨을 가지고 있지 않으며, 후자는 그 반대이다.  
+G(x, c)에서 입력 영상 x를 재구성할 때 original c에 대한 정보가 필요하기 때문에 문제가 있다.  
+  
+**Mask Vector.**
+이 문제를 완화하기 위해 지정되지 않은 label을 무시하고 특정 데이터 집합에서 제공하는 명시적으로 알려진 label에  
+초점을 맞출 수 있는 마스크 벡터 m을 도입한다. n차원 one-hot을 사용하여 m을 나타내며, n은 데이터셋의 수이다.  
+또한, label의 통합 버전을 벡터로 정의한다.  
+<img src="https://user-images.githubusercontent.com/40943064/133930096-fc4b67d7-bc56-4a55-a472-891d66397093.png" width = 600>  
+알려진 label ci의 벡터는 이진 속성의 이진 벡터 또는 범주 속성의 단일 핫 벡터로 나타낼 수 있다.  
+나머지 n-1 알려지지 않은 label의 경우 0 값을 할당하기만 하면 된다.  
+우리의 실험에서, 우리는 CelebA와 RaFD 데이터 세트를 활용한다. 여기서 n은 2이다.  
+  
+**Traning Strategy.**  
+여러 데이터 세트로 학습할 때 앞서 정의된 도메인 레이블 c~를 G 입력으로 사용한다. 그렇게 함으로써 생성기는 지정되지 않은 label을 무시하고  
+지정된 레이블에 초점을 맞추는 방법을 학습한다. G의 구조는 c~ 입력만 제외하고 일반 구조와 동일하다.  
+모든 데이터 세트에 대한 레이블에 대한 확률 분포를 생성하기 위해 D의 보조 분류기를 확장한다.  
+그런 다음 D가 알려진 label과 관련된 분류 오류만 최소화하려고 시도하는 다중 작업 학습 설정에서 모델을 학습한다.  
+이러한 설정에서 D는 CelebA와 RaFD를 번갈아 가며 학습하고 G는 두 데이터 세트의 모든 레이블을 제어하는 방법을 학습한니다.  
+  
+## 4. Implementation
+**Improved GAN Traing.**  
+학습 과정을 안정화하고 높은 품질의 이미지를 얻기 위해, 우리는 Adversarial Loss.를 gradient penaltyt가 있는  
+Wasserstein GAN 목적함수로 변형한다.  
+![image](https://user-images.githubusercontent.com/40943064/133930361-c32fd903-fad3-4df3-8eaf-b2472d57967c.png)
