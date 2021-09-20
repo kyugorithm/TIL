@@ -96,14 +96,38 @@ G(x, c)에서 입력 영상 x를 재구성할 때 original c에 대한 정보가
 우리의 실험에서, 우리는 CelebA와 RaFD 데이터 세트를 활용한다. 여기서 n은 2이다.  
   
 **Traning Strategy.**  
-여러 데이터 세트로 학습할 때 앞서 정의된 도메인 레이블 c~를 G 입력으로 사용한다. 그렇게 함으로써 생성기는 지정되지 않은 label을 무시하고  
-지정된 레이블에 초점을 맞추는 방법을 학습한다. G의 구조는 c~ 입력만 제외하고 일반 구조와 동일하다.  
+여러 데이터 세트로 학습할 때 앞서 정의된 도메인 레이블 c\~를 G 입력으로 사용한다. 그렇게 함으로써 생성기는 지정되지 않은 label을 무시하고  
+지정된 레이블에 초점을 맞추는 방법을 학습한다. G의 구조는 c\~ 입력만 제외하고 일반 구조와 동일하다.  
 모든 데이터 세트에 대한 레이블에 대한 확률 분포를 생성하기 위해 D의 보조 분류기를 확장한다.  
 그런 다음 D가 알려진 label과 관련된 분류 오류만 최소화하려고 시도하는 다중 작업 학습 설정에서 모델을 학습한다.  
 이러한 설정에서 D는 CelebA와 RaFD를 번갈아 가며 학습하고 G는 두 데이터 세트의 모든 레이블을 제어하는 방법을 학습한니다.  
   
 ## 4. Implementation
-**Improved GAN Traing.**  
-학습 과정을 안정화하고 높은 품질의 이미지를 얻기 위해, 우리는 Adversarial Loss.를 gradient penaltyt가 있는  
-Wasserstein GAN 목적함수로 변형한다.  
-![image](https://user-images.githubusercontent.com/40943064/133930361-c32fd903-fad3-4df3-8eaf-b2472d57967c.png)
+**Improved GAN Training.**  
+학습 과정을 안정화하고 높은 품질의 이미지를 얻기 위해, 우리는 Adversarial Loss.를 gradient penalty가 있는  
+Wasserstein GAN 목적함수로 변형한다.  (xhat : 실제와 생성된 이미지의 쌍 사이를 따라 등균하는 샘플)
+<img src="https://user-images.githubusercontent.com/40943064/133931852-a9cbef0c-f9d8-4363-90ad-43eac0dc54f1.png" width = 600>   
+
+**Network Architecture.**  
+**G** : Down sampling 2 conv.(stride=2) > 6 residual block > Up sampling 2 transposed conv.(stride=2) + Instance Norm.  
+**D** : PatchGAN  + Norm. x  
+
+
+## 5. Experiments
+사용자 연구를 수행하여 얼굴 속성 전송에 대한 최근 방법과 비교 > 표정 합성에 대한 분류 실험을 수행  
+> 여러 데이터 세트에서 I2I 번역을 학습할 수 있다는 실증적 결과를 보여줌  
+### 5.1. Baseline Models
+DIAT, CycleGAN, IcGAN
+### 5.2. Datasets
+CelebA(이미지 202,599, 특징 40, 해상도 178->128, 테스트 이미지 2000)  
+RaFD(이미지 4,824, 표정 8, 해상도 256 -> 128)  
+### 5.3. Training
+Opt. : b1 = 0.5, b2=0.999  
+Aug. : 수평 뒤집기(p=50%)
+Upd. : D 업데이트 5번 > G 업데이트 1번  
+Bat. : 16  
+LR  : 1e-4 for 10 epochs and decrease to 0 for 10 epochs (100 for RaFD)  
+Time. : 1 day for single M40  
+  
+### 5.4. Experimental Results on CelebA
+다속성 transfer task에 대해 Baseline과 비교(여러 특성 합성을 위해 CycleGAN과 DIAT에 대해서 multi-step으로 학습 진행)  
