@@ -56,7 +56,6 @@
 * **2018**
     ```    
     Multimodal Unsupervised Image-to-Image Translation
-    StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
     Learning Pixel-Level Semantic Affinity With Image-Level Supervision for Weakly Supervised Semantic Segmentation
     ```
     
@@ -100,6 +99,7 @@
     ```
     StyleGAN1  : A Style-Based Generator Architecture for Generative Adversarial Networks (2019) [정리][j_link007]
     ArcFace: Additive Angular Margin Loss for Deep Face Recognition
+    StarGAN v1 : Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
     ```
 * **2017**
     ```
