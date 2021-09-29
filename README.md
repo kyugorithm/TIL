@@ -94,6 +94,7 @@
     DRIT++: Diverse Image-to-Image Translation via Disentangled Representations
     Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis
     Attribute Manipulation Generative Adversarial Networks for Fashion Images
+    MSG-GAN: Multi-Scale Gradients for Generative Adversarial Networks
     ```
 * **2018**
     ```
