@@ -147,11 +147,84 @@ G의 모드 붕괴의 어느 정도를 감지할 수 있다.
 직접 훈련 시간을 비교할 수 있도록 해당 실험 세트에 동일한 하드웨어를 사용한다.  
 표시된 실제 이미지 수와 교육 시간의 차이는 일반적인 관행과 같이 고정된 반복 횟수로 얻은  
 최상의 FID 점수와 해당 점수를 달성하는 데 걸린 시간을 보고하기 때문이다.
-
+  
 ### 3.2. Results
-### Stability during training
-### Robustness to learning rate
+**Quality** 
+**Mid-level resolution**(Table 1)
+해상도 데이터셋에 대한 우리 방식의 양적결과를 보여준다.  
+두 모델에 대해 FID 향상을 얻었다.
+![image](https://user-images.githubusercontent.com/40943064/135553413-ed75128d-21ae-4aa5-8a62-35541c9f3bd2.png)  
+위 결과를 얻기 위해서 PGGAN에 비해 저해상도의 성능 향상은 느리지만 본 방법은 전체를 한번에 학습하기 때문에 결과적으로는 훨씬  
+적은 시간이 소요된다. Figure 3은 특정 latent에 대해 생성된 이미지를 보여준다.  
+![image](https://user-images.githubusercontent.com/40943064/135553633-c8cfc73c-a464-4e48-a321-f5eae18e3797.png)  
+  
+**High-level resolution**(Table 2)
+두 모델에 대해 유사한 결과가 나왔지만 성능이 더 낫지는 않았고 해당 이유에 대한 가설을 Sec.4에 기술한다.  
+그러나 안정화및 일반화하는 관점에서는 이점이 있으며 phase artifact는 발생하지 않는 결과가 나온다.  
+
+**Stability during training**
+모델 안정성을 평가하기 위해 고정 latent point에서 학습 진행사항을 확인해본다.  
+(The unusual effectiveness of averaging in GAN training 연구 참조)  
+연속된 Epochs끼리의 이미지의 MSE를 계산하여 평가한다.  
+그림 6을 보면 저해상도의 이미지에서만 수렴하며 MSG추가 모델에 대해서는 모든 해상도에 대해 수렴하는것을 알 수 있다.  
+![image](https://user-images.githubusercontent.com/40943064/135554138-8f90df5d-4fa7-4315-8107-ad3f999fb558.png)  
+학습 epoch는 기존의 경우 순차적으로 발생하지만 MSG는 동시에 발생한다.  
+좋은 결과를 생성하는 데 반드시 필요한 것은 아니지만, 안정성이 높은 방법은 훈련 중 스냅샷을 시각화하여 최종 결과가 어떻게 보일지에 대한  
+합리적인 추정을 더 쉽게 얻을 수 있다는 이점이 있으며 학습 작업이 며칠에서 몇주까지 걸릴 때 도움이 될 수 있다. 
+  
+**Robustness to learning rate**
+훈련 중 GAN의 수렴이 하이퍼파라미터, 특히 학습률의 선택에 매우 크게 의존한다는 것이 관찰되었다.  
+MSG-ProGAN의 견고성을 검증하기 위해 CIFAR-10 데이터에 대해 (0.001, 0.003, 0.005 및 0.01)로 학습했다(표 3).  
+![image](https://user-images.githubusercontent.com/40943064/135554947-a4405526-242a-4ef3-b3e5-c19879be7467.png)  
+  CIFAR-10에 대한 lr에 대한 robustness 실험. 모든 lr에 대해 유사한 lr로 수렴함을 알 수 있다.  
+  
+학습 속도의 큰 변화에도 불구하고 네 가지 모델이 모두 수렴하여 합리적인 이미지와 유사한 시작 점수를 생성하는 것을 볼 수 있다.  
+강력한 훈련 scheme은 unssen 데이터 세트에 얼마나 쉽게 일반화될 수 있는지를 나타내기 때문에 중요하다.  
+
 ## 4. Discussion
-### Limitations and Future Work
-### Conclusion
-## 5. Acknowledgements
+**Ablation Studies**  
+MSG-ProGAN에서 두 가지 ablation을 진행했다. 표4는 MultiScale Gradients의 ablated 버전을 적용하는 실험을 요약한다.  
+![image](https://user-images.githubusercontent.com/40943064/135554729-6cdd9063-cc7e-480d-b680-4660b23e3c87.png)  
+(1024x1024) FFHQ 데이터 세트에서 다양한 정도의 다중 스케일 그라디언트 연결에 대한 절제 실험.  
+Coarse : (4x4) & (8x8) / Middle : (16x16) & (32x32) / Fine : (64x64) ~ (1024x1024)  
+
+여기서 서로 다른 규모의 G->D로 연결의 하위 집합만 추가한다. ProGAN(DCGAN) 아키텍처에 모든 수준에서  
+다중 스케일 그라디언트를 추가하면 FID 점수가 향상된다는 것을 알 수 있다.  
+흥미롭게도 middle 연결만 추가하면 coarse 또는 fine 연결만 추가하는 것보다 약간 더 나은 성능을 보이지만  
+모든 수준의 연결에서 전반적인 최상의 성능을 얻을 수 있다.  
+
+표 5는 MSG-ProGAN 및 MSG-StyleGAN 아키텍처에서 결합 기능 φ의 다양한 변형에 대한 실험을 보여준다.  
+![image](https://user-images.githubusercontent.com/40943064/135555211-1617439d-2258-438e-b8c1-894b22b693c1.png)  
+φsimple은 MSG-ProGAN 아키텍처에서 가장 잘 수행된 반면 φcat lin은 MSGStyleGAN 아키텍처에서  
+최고의 FID 점수를 얻었다. 이 작업에 표시된 모든 결과는 이러한 각각의 결합 기능을 사용한다.  
+이러한 실험을 통해 결합 기능이 모델의 생성 성능에 중요한 역할을 함을 알 수 있으며,  
+multi-layer densenet이나 AdaIN과 같은 고급 결합 기능이 결과를 더욱 향상시킬 수 있다.  
+  
+### Limitations and Future Work  
+본 방법에는 제한이 없다. PG방법을 사용하면 낮은 해상도에서 학습 빠르게 수행되는 반면 MSG-GAN의 각 반복에는 동일한 시간이 걸린다.  
+그러나 MSG-GAN이 동일한 FID에 도달하기 위해 더 적은 iteration이 필요하다.  
+또한 MSG-StyleGAN의 multi-scale 수정으로 인해 다중 latent 벡터가 혼합되고 결과 이미지가 D에 의해 현실적이어야 하는  
+mixing regularization 트릭을 사용할 수 없다.  
+이는 테스트 시간에 다양한 수준에서 다양한 스타일을 혼합할 수 있도록 하기 위해 수행되지만 전반적인 품질도 향상된다.  
+흥미롭게도 혼합 정규화를 명시적으로 시행하지 않더라도 우리 방법은 여전히 그럴듯한 혼합 결과를 생성할 수 있다(보충 자료 참조).  
+
+## 6.3. Observation
+생성된 결과의 차이(vs StyleGAN)에 대한 몇 가지 관찰과 가설을 제시한다.  
+그림 7에서 두 모델에서 무작위로 선택된 샘플의 개요를 보여준다. 결과 분석에서 실제 결과 이미지 품질은 매우 비슷하지만  
+StyleGAN 샘플은 **포즈 측면에서 약간 더 높은 변화**를 나타냅니다. 대조적으로 MSGStyleGAN 결과는 약간 더 **전체적으로 일관되고 더 현실적**이다.  
+다양성과 결과 품질 간의 이러한 균형은 널리 보고되고, FID 점수의 일부 차이를 설명할 수 있다.  
+두 축(현실성 대 다양성)을 제어하는 방법과 이것이 FID 점수에 미치는 영향에 대한 추가 조사는 향후 작업을 위한 흥미로운 방법이 될 것이다.  
+또한 StyleGAN G의 각 블록에 추가된 픽셀 단위 noise가 이미지 생성에서 수행하는 역할을 조사하는 실험을 수행했다.  
+얼굴이 아닌 데이터에서 노이즈 레이어가 확률적 변화뿐만 아니라 이미지의 의미론적 측면을 모델링한다는 것을 발견했다(그림 8 참조).  
+![image](https://user-images.githubusercontent.com/40943064/135555995-c0b8979c-ad42-40c3-bf10-140de1113b0d.png)
+(StyleGAN vs MSG-StyleGAN / z를 유지하면서 픽셀당 노이즈를 다르게 구현)  
+
+MSG-StyleGAN도 이러한 유형의 효과를 나타내지만 정도는 약간 낮다는 것을 관찰했다.  
+확률적 특징과 의미론적 특징 사이의 이러한 분리가 얼굴 모델링 작업(예: CelebA-HQ 및 FFHQ 데이터 세트에서)에 대해 더 간단하고  
+노이즈에 대한 서로 다른 모델 민감도가 우리가 관찰한 성능 차이의 일부에 기여할 수 있다고 추측한다.  
+얼굴 vs 비얼굴 데이터 세트에서도 마찬가지이다. 본 논문의 discussion 부분에서 언급했듯이 StyleGAN 작업에서 설명한  
+mix.reg. 기술을 사용하지 않는다. 그러나 모델은 제안방법으로 인해 높은 수준의 의미론적 특징을 분리하는 방법을 여전히 학습한다(그림 9 참조).  
+![image](https://user-images.githubusercontent.com/40943064/135556238-8b532150-981e-43cb-9854-1e2002a9569e.png)
+그림에서 알 수 있듯이 높은 수준의 믹싱은 훨씬 더 일관성 있고 시각적으로 사실적인 결과를 생성한다.  
+낮은 수준의 믹싱은 종종 부적절한 조명 및 불균형한 머리카락과 같은 잘못된 시각적 신호를 생성한다.  
+이것은 생성의 coarse 수준에서 적절한 스타일 기반 믹싱을 보장함으로써 성능 향상이 가능할 수 있음을 보여준다.  
