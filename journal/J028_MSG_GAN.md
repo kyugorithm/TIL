@@ -87,9 +87,67 @@ StackGAN에서 더 적은 수의 매개변수와 디자인 선택이 필요한 �
 이미지 전반에 걸쳐 명시적인 색상 일관성 정규화 조건이 필요하지 않다. 
 
 ## 2. Multi-Scale Gradient GAN
+ProGAN과 StyleGAN에 적용된 MSG-GAN 프레임워크로 실험을 수행하며 MSG-ProGAN 및 MSG-StyleGAN이라 표현한다.  
+MSG 변종에는 점진적 성장이 없으며 따라서 본질적으로 DCGAN 아키텍처이다.  
+그림 2는 MSG-ProGAN 아키텍처를 보여주며, 이 섹션에서 더 자세히 정의하고 보충 자료에 MSGStyleGAN 모델 세부 정보를 설명한다.  
+![image](https://user-images.githubusercontent.com/40943064/135482041-630cd0ff-1481-411a-8ad2-6f7585b88159.png)  
+
+**G 정의**  
+ggen(초기 블록) : Z(=R^512) → Abegin(=R^4x4x512)  
+g^i(기본 블록)  : 구현에서 업샘플링과 두 개의 conv 레이어로 구성  
+![image](https://user-images.githubusercontent.com/40943064/135480369-e5ac29b7-6490-4aa4-9c9e-79c6eb65bada.png)  
+c_i = 채널수, i = G의 activation 순서  
+위 설명에 따라 GEN(z)인 전체 G는 아래와 같이 표준 포맷을 따르고 아래와 같이 표현할 수 있다.  
+![image](https://user-images.githubusercontent.com/40943064/135481591-048521e0-8c16-4f5e-9230-cdc303812a80.png)  
+  
+**r 정의**  
+최종 출력 이미지의 서로다른 downsampled 버전에 해당하는 G의 다른 stage이다.  
+r을 중간 conv 활성화를 RGB(=3ch)로 변환하는 (1x1) conv.로 정의한다.  
+![image](https://user-images.githubusercontent.com/40943064/135482510-3793b3f1-238b-4753-aeb1-5fe67e57d517.png)  
+즉, oi는 ai의 i번째 중간 레이어의 출력으로부터 합성된 이미지이다.  
+PGGAN과 유사하게 r은 학습된 feature map들이 RGB 공간으로 매핑되게 학습되도록 함으로써  
+regularizer 역할을 하는것으로도 여겨질 수 있다. D의 모든 구성요소를 **d**로 표현한다.  
+
+**D 정의**
+D의 최종 critic loss는 g의 최종 이미지에 대해서만 계산되는것이 아닌 oi로도 계산되기 때문에  
+D가 넘기는 gradient는 G의 중간 레이어로도 흘러들어갈 수 있다.  
+**d_critic(z')** : critic score를 만드는 D의 최종 레이어  
+**d^0(y), d^0(y')**: 첫번째 레이어(y=real, y'=fake)  
+**d^j** : 중간 레이어  
+![image](https://user-images.githubusercontent.com/40943064/135483939-4160b4e3-c317-44dd-8f18-63154626377c.png)  
+실험에서 아래 세가지 버전을 검토한다.  
+![image](https://user-images.githubusercontent.com/40943064/135484213-a752da03-f3f6-41ff-9fae-29a7a384b820.png)  
+r'는 r과 유사하지만 다른 (1x1) conv. 이다.  
+![image](https://user-images.githubusercontent.com/40943064/135484709-91c46598-73de-4af0-8bdb-ea41e409d447.png)
+
+d_critic loss : WGAN-GP(ProGAN) and Non-saturating GAN loss(1-sided GPStyleGAN)  
+
+
 ## 3. Experiments
-### New Indian Celebs Dataset
-### 3.1. Implementation Details
+CIFAR10에는 IS를 나머지에는 FID를 사용하며 사용자실험도 추가한다.  
+### New Indian Celebs Dataset  
+### 3.1. Implementation Details  
+1. CIFAR10 : 60K @ 32x32  
+2. Oxford flowers : 8K @ 256x256  
+3. LSUN churches : 126K @ 256x256  
+4. Indian Celebs : 3K @ 256x256  
+5. CelebA-HQ : 30K @ 1024x1024  
+6. FFHQ : 70K @ 1024x1024  
+- same dim of Z = 512(N(0, I)  
+- hypersphere normalization  
+- RMSprop(lr=0.003)
+- Initialize parameters N(0, I)
+  
+또한 샘플 다양성을 개선하기 위해 활성화 배치의 평균 표준 편차가 D에 공급되는  
+MinBatchStdDev 기술을 다중 스케일 설정으로 확장한다.  
+이를 위해 D의 각 블록 시작 부분에 별도의 MinBatchStdDev 레이어를 추가한다.  
+이러한 방식으로 D는 각 스케일에서 직선 경로 활성화와 함께 생성된 샘플의 배치 통계를 얻고  
+G의 모드 붕괴의 어느 정도를 감지할 수 있다.  
+모델을 직접 훈련할 때 훈련 시간과 사용된 GPU를 보고한다.  
+직접 훈련 시간을 비교할 수 있도록 해당 실험 세트에 동일한 하드웨어를 사용한다.  
+표시된 실제 이미지 수와 교육 시간의 차이는 일반적인 관행과 같이 고정된 반복 횟수로 얻은  
+최상의 FID 점수와 해당 점수를 달성하는 데 걸린 시간을 보고하기 때문이다.
+
 ### 3.2. Results
 ### Stability during training
 ### Robustness to learning rate
