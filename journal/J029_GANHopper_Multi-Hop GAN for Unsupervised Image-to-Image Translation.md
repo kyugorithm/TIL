@@ -7,7 +7,7 @@ Cyc. loss와 Adv. Loss 외에도 새로운 hybrid D를 도입하여 G에 의해 
 사전정의된 hop 수를 기반으로 하는 가중치를 사용하여 가중 하이브리드로 분류하도록 학습되었다.
 또한 각 hop의 magnitude를 제한하는 smootheness 항을 추가하여 변환을 더욱 정규화한다.  
 이전 방법과 비교하여 GANHopper는 도메인별 이미지 feature 및 geometry 변환과 관련된  
-이미지 변환에 탁월하며 일반 색 구성표와 같은 비도메인별 기능도 보존한다.
+이미지 변환에 탁월하며 색상 구성과 같은 도메인과 무관한 feature도 보존한다.
 
 ## 1. Introduction
 
