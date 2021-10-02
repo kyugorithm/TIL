@@ -147,6 +147,9 @@ G 및 D 가중치를 업데이트하고, 다음 hop을 수행하는 등이다.
 ![image](https://user-images.githubusercontent.com/40943064/135719443-5928d365-8797-4cf9-9566-7887384df7ca.png)  
 
 ## 4 Results and Evaluation
+![image](https://user-images.githubusercontent.com/40943064/135719882-8a8a5506-be3d-4263-bfe4-76a17c13f8cf.png)  
+![image](https://user-images.githubusercontent.com/40943064/135720559-874bf403-da68-4f10-8d38-35330d71e4d0.png)  
+
 
 ## 5 Conclusion and Future Work
 ### 5.1. Conclusion
@@ -172,4 +175,4 @@ GANHopper를 MUNIT[7] 또는 BiCycleGAN[29]의 아이디어와 결합하여 사�
 마지막으로, 처음에 GANHopper의 개발에 박차를 가한 아이디어를 조사하고자 한다.  
 즉, 주어진 이미지 영역의 경계를 넘어 의미 있는 외삽 시퀀스를 생성하여 창의적이고 참신한 출력을 생성하는 것이다.
 
-![image](https://user-images.githubusercontent.com/40943064/135719882-8a8a5506-be3d-4263-bfe4-76a17c13f8cf.png)
+
