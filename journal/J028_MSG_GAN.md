@@ -207,6 +207,17 @@ multi-layer densenet이나 AdaIN과 같은 고급 결합 기능이 결과를 더
 mixing regularization 트릭을 사용할 수 없다.  
 이는 테스트 시간에 다양한 수준에서 다양한 스타일을 혼합할 수 있도록 하기 위해 수행되지만 전반적인 품질도 향상된다.  
 흥미롭게도 혼합 정규화를 명시적으로 시행하지 않더라도 우리 방법은 여전히 그럴듯한 혼합 결과를 생성할 수 있다(보충 자료 참조).  
+## 6.1. Architecture Details
+**MSG-ProGAN**  
+MSG-ProGAN의 G, D 구조 : Table 6, 7  
+D로 넘기는 conv(in_ch, 3, kernel_size=1, stride=1, padding=0)를 매 G의 block 마다 사용한다.  
+위의 RGB 이미지는 D에서 combine 함수 φ를 통해 D의 activation 출력과 결합된다.  
+1. φsimple : channelwise concat.  
+2. φlin_cat : RGB를 다시 D출력 channel의 반의 channel을 가지는 conv.를 통과시켜 channelwise concat.  
+3. φcat_lin : channelwise concat. 후에 1x1 conv.를 수행 이때 channel은 앞선 블럭의 수와 같음  
+  
+Model 1, Model 2, Model 3 블럭은 32x32, 128 x 128, 256x256을 합성하는데 사용된다.  
+G에서의 매 3x3 conv 이후에는 PixNorm 방식으로 정규화한다.  
 
 ## 6.3. Observation
 생성된 결과의 차이(vs StyleGAN)에 대한 몇 가지 관찰과 가설을 제시한다.  
