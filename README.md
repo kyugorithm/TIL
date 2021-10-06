@@ -36,7 +36,7 @@
 
     ```
 
-## 2.2. Image Generation and etc.
+## 2.2. Generative models and etc.
 * **2021**
     ```
     StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing  
@@ -67,6 +67,7 @@
     Arbitrary Style Transfer in Real-time with Adaptive Instance Normalization
     Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization
     StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
+    FID_TOWARDS PRINCIPLED METHODS FOR TRAINING GENERATIVE ADVERSARIAL NETWORKS
     ```
 * **2015**
     ```
