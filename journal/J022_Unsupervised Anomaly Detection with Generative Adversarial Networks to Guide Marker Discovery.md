@@ -102,3 +102,5 @@ residual loss LR(zΓ ) 및 discriminator loss LD(zΓ )로 정의된다.
 비교를 위해 우리는 추가로 reference anomaly score를 사용한다.
 
 ## 3. Experiments
+
+![image](https://user-images.githubusercontent.com/40943064/136323325-f8f89dca-15e8-4ccf-9284-43d18a918d03.png)
