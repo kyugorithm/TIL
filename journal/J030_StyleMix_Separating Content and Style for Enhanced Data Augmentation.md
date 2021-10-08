@@ -43,3 +43,35 @@ CIFAR-10], CIFAR100 및 ImageNet 데이터 세트에 대한 분류 실험을 통
 쌍의 클래스 거리에 따라 style 혼합 정도를 결정하는 자동 방식을 제안한다.  
 3. CIFAR-10/100에서 SOTA 혼합 방법을 능가하며 Cutout, GridMix, Manifold Mixup], CutMix], AugMix 및 ImageNet에서 비교한다. 
 4. 퍼즐 믹스 또한 우리의 방법이 최근의 다른 혼합 방법보다 adversarial 공격에 대한 분류기의 견고성을 향상시킨다는 것을 보여준다.  
+
+### Mixup
+**Mixup** : 두 개의 무작위 훈련 예제와 해당 레이블을 선형으로 보간하도록 신경망을 훈련한다.  
+신경망이 훈련 이미지 사이에서 단순한 선형 동작을 선호하도록 장려하고 결국 일반화 능력을 향상시킨다.  
+**Manifold Mixup** : 선형 보간을 feature 수준으로 확장하고 네트워크가 은닉 계층의 보간된 표현에 대한 확신을 떨어뜨린다.  
+**CutMix** : 패치를 잘라내어 다른 이미지에 붙여넣고 패치 영역에 비례하여 정답 레이블을 혼합한다.  
+**GridMix** : 두 개의 입력 이미지를 그리드 셀로 나누고 두 이미지에서 각 패치를 무작위로 선택한다.  
+**PuzzleMix** : 패치를 잘라 붙일 때 전경과 배경을 구분하지 않는 CutMix의 한 가지 문제를 해결하기 위해 돌출 신호를 활용한다.  
+**AugMix** : 학습 데이터와 테스트 데이터 간의 도메인 불일치를 처리하기 위해 확률과 다양한 증강을 활용하는 간단한 데이터 처리 기술을 제안한다.  
+  
+그러나 이전의 접근 방식은 새로운 샘플을 혼합하기 위해 이미지의 content/style을 구분하지 않는다.  
+본 방법은 이미지를 content/style의 분리된 표현으로 분해하고 신중하게 혼합하여 더 풍부하고 강력한 샘플을 생성한다.  
+  
+### Style Transfer
+Source 이미지의 semantic한 내용을 유지하면서 스타일을 대상 이미지 스타일로 변경한다. Gatys et al. 는 CNN에서 파생된  
+feature 표현이 이미지 내용과 natural 이미지의 스타일을 분리하고 재결합할 수 있음을 보여준다.  
+그러나 이 방법은 고품질의 정형화된 이미지를 생성하기 위해 content/style 손실을 최적화하는데 느리다.  
+이 단점을 극복하고 실시간으로 임의의 스타일 전달을 가능하게 하기 위해 많은 접근법[14, 26, 7, 12, 20]이 제안되었다.  
+그 동안 style transfer 알고리즘을 기반으로 한 data augmentation이 연구되어 왔다.  
+Neural augmentation은 CycleGAN을 사용하여 다양한 스타일의 이미지를 생성한다.  
+STaDA는 학습 데이터 세트에 더 많은 변형을 추가하기 위해 data augmentaion 방법으로 neural style transfer를 사용한다.  
+이 방법들은 스타일마다 transfomer를 개별적으로 훈련하므로 스타일 세트가 제한될 수 있다.  
+Style augmentation은 contents를 보존하면서 style transfer 파이프라인을 사용하여 이미지의 질감, 대비 및 색상을 무작위로 지정한다.  
+Shape-texture debiased training은 임의의 이미지에 스타일 전송을 적용한 다음 쌍을 이루는 이미지의 레이블을 혼합한다.  
+이처럼 이전 작업은 mixup augmentation을 고려하지 않고 학습 이미지의 다양한 스타일에 중점을 두었다.  
+반면에 본 접근 방식은 content/style의 convex 조합뿐 아니라  패치 방식의 잘라내기 및 붙여넣기를 사용하여 샘플을 생성한다.  
+또한, 본 방법은 prefixed 또는 단순히 임의의 정도가 아닌 쌍의 클래스 거리에 따라 스타일 혼합 정도를 자동으로 결정한다.  
+
+## 3. Approach
+두 훈련 샘플(S3.1–3.2)의 content/style를 모두 고려하여 data augmentation을 위해 StyleMix 및 StyleCutMix를 제안한다.  
+주어진 쌍에 대한 style mixing 정도를 선택하는 방법을 제시한다(S3.3).  
+## 3.1. StyleMix
