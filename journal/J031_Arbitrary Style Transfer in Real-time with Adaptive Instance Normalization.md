@@ -16,24 +16,24 @@
 
 ## 1. Introduction 
 
+**기존 style transfer 방법론의 한계**
 Gatys는 유연한 style transfer 방법론을 제시하였다.  
 DNN을 통해 content와 style을 분리하여 encoding 하는 방법을 보여주었고 content를 유지하고 style을 변경할 수 있다.  
 임의의 이미지의 content과 style을 결합할 수 있을 정도로 유연하지만 최적화 프로세스로 인해 엄청나게 느리다.  
 이후 neural style 전달을 가속화하기 위해 많은 연구가 진행되어왔다.  
+보통의 방법은 단일 forward 방향의 stylization을 수행하는 feedforward 방법은 단일 style만 반영할 수 있다는 제한이 있다.  
+최근 연구도 style의 유한 집합으로 제한되어 있거나 단일 style 전송 방법보다 훨씬 느리다.  
 
-대부분의 방법은 단일 forward 방향의 stylization을 수행하는 feedforwardddd
-[24, 51, 31]은 단일 forward 뱡향의 stylization을 수행하는  학습을 시도했다.  
-대부분의 feedforward 방법의 제약은 네트워크가 단일 style로 제한된다는 것이다.  
-문제를 해결하는 최근 연구가 있지만 여전히 style의 유한 집합으로 제한되어 있거나[11, 32, 55, 5] 단일 style 전송 방법보다 훨씬 느리다[6].  
-본 논문에서는 이러한 **유연성-속도 딜레마**를 해결하는 최초의 neural style  transfer 알고리즘을 제시한다.  
-최적화 기반 프레임워크[16]의 유연성과 가장 빠른 feedforward 방식[24, 52]과 유사한 속도를 결합하여  
-임의의 새로운 style을 실시간으로 전송할 수 있다. 
+**해결책**
+위의 **유연성-속도 딜레마**를 해결하는 최초의 neural style  transfer 알고리즘을 제시한다.  
+최적화 기반 프레임워크의 유연성과 가장 빠른 feedforward 방식과 유사한 속도를 결합하여  
+임의의 새로운 style을 실시간으로 전송할 수 있다.  
 본 방법은 feedforward style 전송에 놀라울 정도로 효과적인 인스턴스 정규화(IN) [52, 11] 레이어에서 영감을 받았다.  
 IN의 성공을 설명하기 위해 IN이 이미지의 style 정보를 전달하는 것으로 밝혀진 특징 통계를 정규화하여  
-style 정규화를 수행한다는 새로운 해석을 제안한다[16, 30, 33]. 이에 영감을 받아 IN에 대한 간단한 확장,  
-즉 적응형 인스턴스 정규화(AdaIN)를 도입한다.  
+style 정규화를 수행한다는 새로운 해석을 제안한다.  
+이에 영감을 받아 IN에 대한 간단한 확장, 적응형 인스턴스 정규화(AdaIN)를 도입한다.  
 content 입력과 style 입력이 주어지면 AdaIN은 단순히 content 입력의 평균과 분산을 style 입력과 일치하도록 조정한다.  
-실험을 통해 우리는 AdaIN이 feature 통계를 전송하여 전자와 style의 content를 효과적으로 결합함을 발견했습니다.  
+실험을 통해 AdaIN이 feature 통계를 전송하여 전자와 style의 content를 효과적으로 결합함을 발견했다.  
 그런 다음 decoder는 AdaIN 출력을 다시 이미지 공간으로 반전하여 최종 style화된 이미지를 생성하도록 학습된다.  
 본 방법은 입력을 임의의 새 style로 전송하는 유연성을 희생하지 않으면서 [16]보다 거의 3배나 빠르다.  
 또한 학습 프로세스를 수정하지 않고도 런타임에 풍부한 사용자 제어를 제공한다.
