@@ -16,7 +16,7 @@
 
 ## 1. Introduction 
 
-**기존 style transfer 방법론의 한계**
+**style transfer 방법론의 한계**  
 Gatys는 유연한 style transfer 방법론을 제시하였다.  
 DNN을 통해 content와 style을 분리하여 encoding 하는 방법을 보여주었고 content를 유지하고 style을 변경할 수 있다.  
 임의의 이미지의 content과 style을 결합할 수 있을 정도로 유연하지만 최적화 프로세스로 인해 엄청나게 느리다.  
@@ -24,7 +24,7 @@ DNN을 통해 content와 style을 분리하여 encoding 하는 방법을 보여�
 보통의 방법은 단일 forward 방향의 stylization을 수행하는 feedforward 방법은 단일 style만 반영할 수 있다는 제한이 있다.  
 최근 연구도 style의 유한 집합으로 제한되어 있거나 단일 style 전송 방법보다 훨씬 느리다.  
 
-**해결책**
+**해결책**  
 위의 **유연성-속도 딜레마**를 해결하는 최초의 neural style  transfer 알고리즘을 제시한다.  
 최적화 기반 프레임워크의 유연성과 가장 빠른 feedforward 방식과 유사한 속도를 결합하여  
 임의의 새로운 style을 실시간으로 전송할 수 있다.  
