@@ -40,6 +40,7 @@
 * **2021**
     ```
     StyleMapGAN: Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing  
+    Not just Compete, but Collaborate: Local Image-to-Image Translation via Cooperative Mask Prediction
     ```
 * **2020**
     ```
