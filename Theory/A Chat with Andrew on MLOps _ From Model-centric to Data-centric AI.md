@@ -1,6 +1,6 @@
 # A Chat with Andrew on MLOps: From Model-centric to Data-centric AI
 AI 시스템은 code와 data로 구성되어있다.  
-![image](https://user-images.githubusercontent.com/40943064/136804151-1b676523-9ff4-4d34-b0d6-a31d2b4d504f.png)
+![image](https://user-images.githubusercontent.com/40943064/136804151-1b676523-9ff4-4d34-b0d6-a31d2b4d504f.png)  
 
 code는 내가 구현하는 네트워크 구조와 같은 모델이나 알고리즘을 지난 수십년간 ML이 발전된 방식으로 데이터에 학습하는것을 의미한다.  
 당신의 학습 알고리즘이 가지고자 하는 성능을 얻는데 도움을 주기 위해서는  
@@ -8,7 +8,7 @@ code는 내가 구현하는 네트워크 구조와 같은 모델이나 알고리
 예로부터 시작해보자,  
 나는 이 presentation을 약간 상호적으로 진행하고싶다. 자 당신이 대답 할 수 있는  몇개의 질문을 해 보겠다.  
 자 프로젝트의 결함 검사시트에 대한 예를 보자, 
-![image](https://user-images.githubusercontent.com/40943064/136804755-b4fe9a7c-9bb4-4562-81a6-6c720412aa23.png)
+![image](https://user-images.githubusercontent.com/40943064/136804755-b4fe9a7c-9bb4-4562-81a6-6c720412aa23.png)  
 아래 사진은 당신의 부엌에서 볼 수 있는 커다란 알루미늄 재질의 롤이며 무척이나 얇다.  
 어쨋든 당신의 차에 사용될 수 있는 그런 것이다.  
 이 생산과정에서 발생하는 다양한 defect가 존재할 수 있다.  
@@ -18,7 +18,7 @@ code는 내가 구현하는 네트워크 구조와 같은 모델이나 알고리
 내가 구입하는 차에 이런 결함이 존재하길 원하지 않기 때문에 당연히 이러한 문제는 중요하다.  
 지금까지는 상대적으로 제한된 정보를 전달받았지만 단순한 질문 한가지를 해보겠다.  
 만일 당신이 팀을 리드하고 있다면 code/data 중 어떤것을 향상하는데 노력을 기울이겠는가?  
-![image](https://user-images.githubusercontent.com/40943064/136805621-aab6e83b-a0c4-45f4-8f73-f68bf09011cf.png)
+![image](https://user-images.githubusercontent.com/40943064/136805621-aab6e83b-a0c4-45f4-8f73-f68bf09011cf.png)  
 
 
 
