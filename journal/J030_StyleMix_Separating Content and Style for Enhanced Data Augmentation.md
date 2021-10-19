@@ -46,16 +46,15 @@ CIFAR10, CIFAR100 및 ImageNet 데이터 세트에 대한 분류 실험을 통�
 4. puzzle-mix 또한 우리의 방법이 최근의 다른 혼합 방법보다 adversarial 공격에 대한 분류기의 견고성을 향상시킨다는 것을 보여준다.  
 
 ### Mixup
-**Mixup** : 두 개의 무작위 학습샘플과 해당 레이블을 선형으로 보간하도록 신경망을 훈련한다.  
-신경망이 훈련 이미지 사이에서 단순한 선형 동작을 선호하도록 장려하고 결국 일반화 능력을 향상시킨다.  
-**Manifold Mixup** : 선형 보간을 feature 수준으로 확장하고 네트워크가 은닉 계층의 보간된 표현에 대한 확신을 떨어뜨린다.  
+**Mixup** : 두 개의 무작위 학습샘플과 해당 레이블을 선형으로 보간하도록 신경망 학습  
+**Manifold Mixup** : 선형 보간을 feature 수준으로 확장하고 네트워크가 은닉 계층의 보간된 표현에 대한 확신을 떨어뜨림.  
 **CutMix** : 패치를 잘라내어 다른 이미지에 붙여넣고 패치 영역에 비례하여 정답 레이블을 혼합한다.  
 **GridMix** : 두 개의 입력 이미지를 그리드 셀로 나누고 두 이미지에서 각 패치를 무작위로 선택한다.  
 **PuzzleMix** : 패치를 잘라 붙일 때 전경과 배경을 구분하지 않는 CutMix의 한 가지 문제를 해결하기 위해 saliency signal를 활용한다.  
 **AugMix** : 학습 데이터와 테스트 데이터 간의 도메인 불일치를 처리하기 위해 확률과 다양한 증강을 활용하는 간단한 데이터 처리 기술을 제안한다.  
   
-그러나 위 방식들은 샘플을 혼합하기 위해 이미지의 content/style을 구분하지는 않는다.  
-본 방법은 이미지를 content/style의 분리된 표현으로 분해하고 신중하게 혼합하여 더 풍부하고 강력한 샘플을 생성한다.  
+샘플 혼합에 이미지의 content/style을 구분하지는 않는 위 방법과 달리  
+본 방법은 content/style의 분리된 표현으로 분해하고 신중하게 혼합하여 풍부하고 강력한 샘플을 생성한다.  
   
 ### Style Transfer
 Source 이미지의 semantic한 내용을 유지하면서 style을 변경한다. Gatys et al. 는 CNN에서 파생된  
@@ -73,12 +72,15 @@ feature 표현이 이미지 내용과 natural 이미지의 style을 분리하고
 또한, 본 방법은 prefixed 또는 단순히 임의의 정도가 아닌 쌍의 클래스 **거리에 따라 style 혼합 정도를 자동으로 결정**한다.  
 
 ## 3. Approach
-두 학습 샘플(S3.1–3.2)의 content/style를 모두 고려하여 data augmentation을 위해 StyleMix 및 StyleCutMix를 제안한다.  
-주어진 쌍에 대한 style mixing 정도를 선택하는 방법을 제시한다(S3.3).  
+두 학습 샘플(S3.1–3.2)의 content/style를 고려하여 데이터 증강을 위해 StyleMix/StyleCutMix를 제안  
+주어진 쌍에 대한 style mixing 정도를 선택하는 방법을 제시(S3.3).  
 ## 3.1. StyleMix
-x1, x2(∈R^W X H X C) 두 입력과 y1, y2 두 label이 있고 두 x를 사용하여 xm을 생성하고자 한다.  
-사전학습된 f=encoder/g=decoder를 각자 정의하며 AdaIN에서 정의된 구조를 사용한다.  
-arbitrary style에 대한 실시간 계산과 app. 때문에 AdaIN을 base style transfer로 사용한다.  
+Input : x1, x2(∈R^W X H X C)  
+Label : y1, y2 
+위를 사용하여 xm을 생성하고자 한다.  
+  
+사전학습된 f(encoder), g(decoder)를 정의하며 AdaIN 구조를 사용한다.  
+**Arbitrary style**에 대한 실시간 계산과 활용문제로 AdaIN을 base style transfer로 사용한다.  
 **f**는 VGG-19 상에서 **relu4_1**까지 해당한다.    
 ![image](https://user-images.githubusercontent.com/40943064/136988824-7b7b25a2-bb51-4880-a557-9d8ac7ef3152.png)
 
