@@ -121,3 +121,13 @@ t는 f11과 f12 사이의 비율을 결정하며 다행히 t를 설정하는 방
 content 기반 yc와 style 기반 ys를 먼저 계산하고 r의 비율을 가진 ym으로 결합한다.  
 ![image](https://user-images.githubusercontent.com/40943064/136584745-81bd64ce-b31b-4490-b876-8d49b181b7ea.png)  
 학습시에, rc와 rs는 무작위로 Beta(a,a) 분포로부터 추출되어 다양한 조합을 사용한다.
+  
+## 3.2. StyleCutMix
+Bounding box를 정의하고 box 내부의 이미지를 x1로 채우고 외부 이미지를 x2로 채우는 혼합 이미지를 생성하는  
+CutMix [29]의 아이디어를 사용하여 StyleMix를 StyleCutMix로 확장한다.  
+content/style 구성 요소를 별도로 고려하기 때문에 서로 다른 잘라내기 및 붙여넣기 방식을 적용한다.  
+content의 경우 CutMix와 동일하다.  
+Box 내부는 x1의 content 구성 요소로 채워지고 외부는 x2의 content 구성 요소로 채워진다.  
+반면에 스타일에 대한 구성표가 다르므로 아래에서 설명한다.  
+StyleMix에서 수행한 대로 두 입력 x1 및 x2의 content/style 구성 요소를 분리하고 4개의 이미지 변수에서 시작한다.  
+![image](https://user-images.githubusercontent.com/40943064/137870900-0b296f79-95b5-40e0-9c65-e53b52c4c1a9.png)
