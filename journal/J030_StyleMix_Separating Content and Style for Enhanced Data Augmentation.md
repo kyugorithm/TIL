@@ -123,30 +123,32 @@ content 기반 yc와 style 기반 ys를 먼저 계산하고 r의 비율을 가�
 학습시에, rc와 rs는 무작위로 Beta(a,a) 분포로부터 추출되어 다양한 조합을 사용한다.
   
 ## 3.2. StyleCutMix
-Bounding box를 정의하고 box 내부의 이미지를 x1로 채우고 외부 이미지를 x2로 채우는 혼합 이미지를 생성하는  
 CutMix [29]의 아이디어를 사용하여 StyleMix를 StyleCutMix로 확장한다.  
-content/style 구성 요소를 별도로 고려하기 때문에 서로 다른 잘라내기 및 붙여넣기 방식을 적용한다.  
+(Bounding box → box 내부 : x1, 외부 : x2 혼합 이미지)  
+content/style 구성 요소를 별도로 고려하기 때문에 서로 다른 cut-and-paste 방식을 적용한다.  
 content의 경우 CutMix와 동일하다.  
 Box 내부는 x1의 content 구성 요소로 채워지고 외부는 x2의 content 구성 요소로 채워진다.  
-반면에 스타일에 대한 구성표가 다르므로 아래에서 설명한다.  
-StyleMix에서 수행한 대로 두 입력 x1 및 x2의 content/style 구성 요소를 분리하고 4개의 이미지 변수에서 시작한다.  
+반면에 스타일에 대한 구성이 아래와 같이 다르다.  
+StyleMix에서 수행한 대로 x1과 x2의 content/style 구성 요소를 분리하고 4개의 이미지에서 시작한다.  
 ![image](https://user-images.githubusercontent.com/40943064/137870900-0b296f79-95b5-40e0-9c65-e53b52c4c1a9.png)  
-StyleMix와의 한 가지 차이점은 (1)-(2) 식의 특징 공간과 달리 (7)-(9) Eq의 이미지 공간에서 선형 보간을 실행한다는 것이다 .  
+StyleMix와의 차이점은 Eq. (1)-(2) 식의 **특징 공간**과 달리 Eq. (7)-(9)의 **이미지 공간**에서 선형 보간을 실행한다는 것이다.  
 Feature map 크기는 patch cut-and-paste 위한 이미지 크기보다 훨씬 작기 때문에  
 [29]에서 보고된 것처럼 feature map을 사용할 때 성능이 저하된다.  
 Table 1과는 약간 다른 Table2에 보여진것처럼 각 변수는 content/style를 포함한다고 가정한다.  
-g11 = x1 이므로 g11은 x1의 style/content를 가지고 있고 g22도 동일하다.  
-반면에 Eq.(8)과 같이 g12는 x1 content를 가지고 있지만 (r, 1-r) 비율의 x1, x2와 혼합된 스타일을 가진다.  
-그러므로 새로운 파라미터 γ은 스타일 혼합의 정도를 조절한다.  
-g12는 x1의 스타일만 가지고 있기 때문에 만약 γ=1 이면, style 혼합은 CutMix와 동일하다.  
+g11 = x1,  g22 = x2 이므로 각자는 x1, x2의 style/content를 가진다.  
+반면 Eq.(8)과 같이 g12는 x1 content를 가지고 있지만 (r, 1-r) 비율의 x1, x2와 혼합된 스타일을 가진다.  
+그러므로 파라미터 γ은 스타일 혼합의 정도를 조절한다.  
+만약 γ=1 이면, g12는 x1의 스타일만 가지고 있기 때문에  style mixing은 CutMix와 동일하다.  
 γ를 도입한 이유는 그림 5에 있다.  
+![image](https://user-images.githubusercontent.com/40943064/137889465-b6a89705-1f5e-48ae-8cd2-745f17118b8c.png)  
+  
 style transfer에서 한 쌍의 content/style 이미지가 입력으로 제공되며 새 이미지에는  
 해당 content 이미지의 content / style 이미지의 style이 포함되어야 한다는 분명한 의도가 있다.  
 반면, mixup context에서 두 입력 이미지는 학습 이미지의 모든 쌍이므로 style이 크게 다른 경우 혼합 이미지의 품질이 심각하게 저하된다.  
 (그림 5에서 γ = 0인 예 참조)  
-이는 이미지 간의 style 혼합 정도를 억제하는 γ 값을 높게 설정하여 방지할 수 있다.  
-다음 섹션에서는 x1과 x2 사이의 클래스 유사도에 따라 γ를 자동으로 설정하는 방식에 대해 설명한다.  
-CutMix에서 처럼 먼저 boundig box B= (rx,ry,rw,rh)를 sample하여 영역을 나눈다.  
+이는 이미지 간의 style 혼합 정도를 억제하는 γ를 높혀 방지할 수 있다.  
+다음 섹션에서는 x1과 x2 사이의 클래스 유사도에 따라 γ를 **자동으로 설정**하는 방식에 대해 설명한다.  
+CutMix에서 처럼 먼저 boundig box B= (rx,ry,rw,rh)를 뽑아서 영역을 나눈다.  
 ![image](https://user-images.githubusercontent.com/40943064/137875649-e480bd35-8b69-4689-a77b-d5dc6d88f235.png)
 
   
