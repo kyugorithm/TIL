@@ -13,6 +13,9 @@
   
 # 2. 학습할 논문
 
+## 추가 필요
+1. Lightweight 3D Human Pose Estimation Network Training Using Teacher-Student Learning
+2. 
 
 ## 2.1. Anomaly Detection
 * **2020**
