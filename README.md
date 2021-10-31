@@ -15,7 +15,7 @@
 
 ## 추가 필요
 1. Lightweight 3D Human Pose Estimation Network Training Using Teacher-Student Learning
-2. 
+2. Audio-Driven Facial Animation by Joint End-to-End Learning of Pose and Emotion
 
 ## 2.1. Anomaly Detection
 * **2020**
