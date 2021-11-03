@@ -1,9 +1,9 @@
 # VNect: Real-time 3D Human Pose Estimation with a Single RGB Camera
 
 ## Abstract
-단일 RGB 카메라를 사용하여 안정적이고 일시적으로 일관된 방식으로 인간의 전체 글로벌 3D 골격 포즈를 포착하는 첫 번째 실시간 방법을 제시한다.  
-본 방법은 새로운 **CNN 기반 pose regressor**와 **kinematic skeletal fitting**을 결합한다.  
-새로운 완전 컨볼루션 포즈 공식은 실시간으로 2D 및 3D 조인트 위치를 함께 회귀시키며 꽉 자른 입력 프레임을 필요로 하지 않는다.  
+단일 RGB 카메라로 안정적이 시간적으로 안정된 방식으로 글로벌 3D 골격 자세를 포착하는 첫 실시간 방법을 제시한다.  
+본 방법은 **CNN 기반 pose regressor**와 **kinematic skeletal fitting**을 결합한다.  
+새로운 완전 컨볼루션 포즈 formulation은 실시간으로 2D 및 3D 조인트 위치를 함께 회귀하며 맞게 자른 프레임이 필요없다.  
 실시간 kinematic skeletal fitting은 CNN 출력을 사용하여 일관된 kinematic skeleton을 기반으로 일시적으로 안정적인 3D 글로벌 pose reconstruction을 산출한다.  
 이는 우리의 접근 방식을 3D 캐릭터 제어와 같은 실시간 애플리케이션에서 사용할 수 있는 최초의 단일 카메라 RGB 방식으로 만들었으며,  
 (지금까지는 RGB-D 카메라를 사용한 방식이 유일하다.)  
