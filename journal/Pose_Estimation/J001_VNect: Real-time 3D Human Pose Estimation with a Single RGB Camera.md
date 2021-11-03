@@ -151,7 +151,7 @@ L2 loss를 사용한다. xj의 경우 손실 공식은 다음과 같다.
 Location map은 각 GT 2D 히트맵 H GT j로 가중치를 부여하며,  
 이는 다시 조인트 j의 2D 위치에 국소화된 작은 지지대를 가진 가우스와 동일한 신뢰도를 갖는다.  
 Location map에 어떤 구조도 부과되지 않는다는 점에 유의해야한다.  
-예측된 location map에 나타나는 구조는 영상 평면에서 관절 j의 뿌리 상대 위치와 xj 및 yj의 상관 관계를 나타낸다. (그림 3 참조)  
+예측된 location map에 나타나는 구조는 영상 평면에서 관절 j의 root relative joint position과 xj 및 yj의 상관 관계를 나타낸다. (그림 3 참조)  
   
 **Network Details**:  
 제안된 공식을 사용하여 He의 ResNet50 네트워크 아키텍처를 적용한다.  
