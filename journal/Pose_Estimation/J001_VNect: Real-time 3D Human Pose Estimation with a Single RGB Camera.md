@@ -120,7 +120,11 @@ CNN 포즈 회귀의 목표는 2D 이미지 공간과 3D 모두에서 관절 위
 이미지 증거를 포즈 추정에 자연스럽게 연결한다.  
 3D 포즈 추정에 대한 기존 접근 방식에는 이러한 이미지-예측 연관이 부족하여 종종 루트 상대적 관절 위치를 직접 회귀하여  
 관절의 정도가 이미지에 있는 사람의 관절 범위를 반영하지 않는 예측된 포즈로 이어진다. (그림 9 참조)  
-포즈를 관절 위치의 벡터로 처리하면 완전히 연결된 공식이 있는 네트워크에 대한 자연스러운 중력이 발생하여  
+![image](https://user-images.githubusercontent.com/40943064/140046027-015ca3ed-2699-4c7b-a08c-644849bae7ed.png)  
+그림9. 직접적인 fully conv. 구조의 3D 예측 vs Mehta 방법의 비교 : image evidence와 강력하게 연결되어 있어 특히 끝 부분의 자세 품질이 좋음  
+
+
+포즈를 관절 위치의 벡터로 처리하면 fully connected formulation이 있는 네트워크에 대한 자연스러운 중력이 발생하여  
 입력이 고정된 해상도에서 좁은 작물로 제한되어 극복해야 하는 한계가 있다.  
 이러한 방법은 tight한 bounding boxes를 사용할 수 있다고 가정하므로 실제 사용을 위해 별도의 bounding boxes 추정기로 보완해야 하므로  
 이러한 방법의 실행 시간이 추가된다.  
@@ -197,11 +201,11 @@ BB 불가지론적 예측을 사용하여 이미지의 사람을 연마한다.
 첫째, 2D 예측 Kt는 시간적으로 필터링되고 location map 예측에서 각 관절의 3D 좌표를 얻는 데 사용되어 PtL을 제공한다.  
 골격 안정성을 보장하기 위해 PtL의 뼈 방향을 유지하는 간단한 리타게팅 단계에서 PtL 고유의 뼈 길이가 기본 골격의 뼈 길이로 대체된다.  
 다음의 목적 에너지를 최소화하여 골격 관절 각도 θ와 카메라 공간 d에서 루트 관절의 위치에 대한 결과 2D 및 3D 예측을 결합한다.  
-![image](https://user-images.githubusercontent.com/40943064/140042258-de333751-ae58-4f62-b96a-e5a07bd4b537.png)
+![image](https://user-images.githubusercontent.com/40943064/140042258-de333751-ae58-4f62-b96a-e5a07bd4b537.png)  
 3D 역기구학 항 EIK는 3D CNN 출력 PtL과의 유사성에 따라 전체 포즈를 결정한다.  
 Projection 항 Eproj는 전역 위치 d를 결정하고 감지된 2D 키포인트 Kt에 재투영하여 3D 포즈를 수정한다.  
 두 항 모두 아래의 L2 norm으로 수행한다.  
-![image](https://user-images.githubusercontent.com/40943064/140042503-940ecf43-4cf7-4d1e-b99b-4f15d85dd1d7.png)
+![image](https://user-images.githubusercontent.com/40943064/140042503-940ecf43-4cf7-4d1e-b99b-4f15d85dd1d7.png)  
 여기서 Π는 3D에서 이미지 평면으로의 프로젝션 함수이며 PGt= PGt(θ, d) 이다.  
 
 우리는 pinhole 프로젝션 모델을 가정한다. 만약 카메라 캘리브레이션을 알지 못하는 경우 수직 view는 54도를 가정한다.  
