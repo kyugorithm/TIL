@@ -136,6 +136,8 @@ Pavlakos et al.의 fully-convolutional formulation은 이러한 문제 중 일�
 각각의 location-map에서 판독되어 PL = {x, y, z} 위치에 저장된다.  
 여기서 x ∈ R 1×J는 각 관절 최대값의 좌표 x 위치를 저장하는 벡터이다.  
 포즈 formulation은 그림 3에 시각화되어 있다.  
+![image](https://user-images.githubusercontent.com/40943064/140048317-07421fe1-aebb-438a-9f0e-c6508292c6d0.png)
+
 이 fully convolution formulation을 사용하는 네트워크는 입력 이미지 크기에 제약을 받지 않으며 타이트한 자르기 없이 작동할 수 있다.  
 또한 네트워크는 추가 오버헤드 없이 2D 및 3D 공동 위치 추정을 제공하며, 이를 실시간 추정을 위한 후속 단계에서 활용한다.  
 섹션 5.2는 이 공식이 제공하는 개선 사항을 보여준다.  
