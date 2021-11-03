@@ -125,7 +125,7 @@ CNN 포즈 회귀의 목표는 2D 이미지 공간과 3D 모두에서 관절 위
 
 
 포즈를 관절 위치의 벡터로 처리하면 fully connected formulation이 있는 네트워크에 대한 자연스러운 중력이 발생하여  
-입력이 고정된 해상도에서 좁은 작물로 제한되어 극복해야 하는 한계가 있다.  
+입력이 고정된 해상도에서 좁은 crop으로 제한되어 극복해야 하는 한계가 있다.  
 이러한 방법은 tight한 bounding boxes를 사용할 수 있다고 가정하므로 실제 사용을 위해 별도의 bounding boxes 추정기로 보완해야 하므로  
 이러한 방법의 실행 시간이 추가된다.  
 Pavlakos et al.의 fully-convolutional formulation은 이러한 문제 중 일부를 완화하려고 하지만 여전히 잘린 입력에 의존하고  
