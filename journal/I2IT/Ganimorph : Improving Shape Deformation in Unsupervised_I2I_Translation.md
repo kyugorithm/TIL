@@ -1,6 +1,6 @@
 # Improving Shape Deformation in Unsupervised I2I Translation
 ## Abstract
-Unsupervised I2I translation은 도메인간 local texture mapping이 가능케 하지만 shape change는 성공적이지 않다.  
+Unsupervised I2I translation은 도메인간 local texture mapping이 가능하게 하지만 shape change는 성공적이지 않다.  
 Semantic segmentation에서 영감을 얻어, 이미지 문맥을 학습에 관심을 갖는 dilated conv.를 통해 정보를 사용하는 D를 적용한다.  
 Object의 기본 형상의 에러를 표현하는 multi-scale perceptual loss를 적용한다.  
 위 방법을 통해 형태변형이 어려운 데이터셋에 대한 성능을 보인다.  
@@ -27,7 +27,7 @@ D는 per-pixel 판별을 수행하며 각각 global context에 의해 정보를 
 또한 'multi-scale structure similarity perceptual reconstruction loss'를 사용하여 픽셀이 아닌 이미지 영역에 대한 오류를 나타낸다.  
 
 ## Our Apporch
-모양 변형에서 변환의 성공에 결정적인 요소는 global/local 일관성을 유지하는 능력이다.  
+모양 변형 성공에 결정적인 요소는 global/local 일관성을 유지하는 능력이다.  
 우리의 알고리즘은 cyclic image translation framework를 채택하고 dilated D, residual block 및 skip-connection이 있는 G,  
 **multi-scale perceptual cyclic loss**를 통합하여 필요한 consistency를 달성한다.  
 
@@ -45,13 +45,13 @@ D는 고해상도의 segmentation map을 출력하기 때문에 G/D 사이의 �
 이것은 DiscoGAN과 같이 FC의 D를 사용하는 것보다 수렴이 빠르다.  
 Segmentation을 위한 최신 네트워크는 dilated conv.를 사용하며 유사한 수준의 정확도를 달성하기 위해  
 기존의 conv.보다 훨씬 적은 매개변수를 사용한다. Dilated conv.는 global 및 patch 기반 D에 비해 이점을 제공한다.  
-동일 매개변수에 대해 더 큰 주변 field의 데이터를 통합하여 G와 D 간의 정보 흐름이 증가한다.  
+동일 매개변수에 대해 더 큰 주변 field의 데이터를 통합하여 G와 D 사이 정보 흐름이 증가한다.  
 이미지 영역이 이미지를 비현실적으로 만드는 데 기여한다는 것을 알면 G는 이미지의 해당 영역에 집중할 수 있다.  
 Dilated conv. 대해 생각하는 또 다른 방법은 D가 context를 암시적으로 학습할 수 있도록 하는 것이다.  
 
 Multi-scale D가 고해상도 이미지 합성 작업의 결과와 안정성을 향상시키지만, D가 영역이 어디에 맞아야 하는지 결정할 수 있으므로  
 이미지에서 더 멀리 떨어진 정보를 통합하는 것이 번역 작업에 유용하다는 것을 보일것이다.  
-예를 들어, 증가된 공간적 context는 강아지의 얼굴을 몸에 상대적으로 위치시키는 데 도움이 되며,  
+예를 들어, 공간적 context 증가는 강아지의 얼굴을 몸에 상대적으로 위치시키는 데 도움이 되며,  
 이러한 방식은 이웃과 분리되어 학습된 작은 patch로는 학습이 어렵다. 그림 2(오른쪽)는 D 아키텍처를 보여준다.  
 ![image](https://user-images.githubusercontent.com/40943064/140634771-d16e0b0b-0fa6-48e9-85fd-664a52c81c92.png)  
 Fig. 2. (L) Unsupervised 방법론들의 G 구조. ResBlock과 Skip connection이 더하기가 아닌 concat.에 의해 결합되어있다.  
@@ -65,12 +65,12 @@ G 구조는 DiscoGAN과 CycleGAN 기본 구조로 한다. DiscoGAN은 표준 enc
 CycleGAN은 translation 학습을 위해 residual block을 이용해 용량을 높힌다.  
 Residual block은 극단적으로 깊은 네트웍에서 효과가 있어 저차원 정보를 표현할 수 있다.  
 그러나 단일 scale에서 residual block을 사용하면 bottleneck으로 넘겨주는 정보와 네트워크가 학습할 수 있는 능력을 제한한다.  
-G 구조는 여러 해상도의 decoder-encoder에 residual block을 사용하여  
-네트워크가 여러 해상도 변환을 배우게하며 다양한 해상도의 feature를 학습할 수 있도록 한다. (fig.2 좌측하단)  
+G 구조는 여러 해상도의 decoder-encoder에 residual block을 사용하여 네트워크가 여러 해상도 변환을 배우게하며  
+다양한 해상도의 feature를 학습할 수 있도록 한다. (fig.2 좌측하단)  
 
 ### 3.3 Objective Function
-_Perceptual Cyclic Loss_  
-기존 비지도 I2IT 작업에 따라 cyclic loss를 사용하여 도메인 간의 bijective mapping을 학습한다.  
+**_Perceptual Cyclic Loss_**  
+기존 unsupervised I2IT 작업에 따라 cyclic loss를 사용하여 도메인 간의 bijective mapping을 학습한다.  
 그러나 모든 이미지 번역 기능이 완벽하게 bijective 될 수는 없다.  
 예를 들어 얼굴 사진과 애니메이션 그림과 같이 한 도메인의 모양 변화가 상대적으로 더 작은 경우이다.  
 번역에서 입력 이미지의 모든 정보를 보존할 수 없는 경우 cyclic loss 항은 가장 중요한 정보를 보존하는 것을 목표로 해야 한다.  
@@ -86,14 +86,14 @@ Loss 계산에 복잡한 perceptual 신경망을 포함하면 상당한 계산 �
 최근 연구에 따르면 MS-SSIM과 L1 또는 L2 손실을 혼합하는 것이 초해상도 및 분할 작업에 효과적이다.  
 따라서 생성된 이미지의 선명도를 높이는 데 도움이 되는 lightly-weighted L1 loss 항도 추가한다.  
   
-_Feature Matching Loss_
+**_Feature Matching Loss_**  
 모델안정성 향상을 위해 feature matching loss를 사용한다.  
 ![image](https://user-images.githubusercontent.com/40943064/140635231-5acf121a-63c1-4e7c-8a1d-15c9f4b70bd8.png)  
 fi ∈ D(x)(D의 i 번째 layer의 raw activation potential) / (n : D의 layer 수)  
 real/fake 샘플이 D에서 유사한 activation을 생성하도록 하여 G가 대상 도메인과 더 유사하게 보이는 이미지를 생성하도록 한다.  
 GAN이 종종 취약한 G의 mode collapse를 방지하기 위해 이 손실 항을 사용한다.  
   
-_Scheduled Loss Normalization (SLN)_
+**_Scheduled Loss Normalization (SLN)_**  
 Multi-part loss에서 linear weight는 종종 서로에 대해 항을 정규화하는 데 사용되며 이전 작업에서는 단일 가중치 집합을 최적화하는 경우가 많다.  
 그러나 적절하게 균형 잡힌 weight를 찾는 것은 GT 없이는 어려울 수 있다.  
 또한, loss의 크기가 학습 과정에서 변하기 때문에 종종 단일 가중치 세트가 부적절하다.  
@@ -114,7 +114,7 @@ CycleGAN/DiscoGAN과 우리의 접근 방식 간의 또 다른 정규화 차이�
 배치 정규화로 인해 훈련 데이터에 과도하게 과적합되는 것을 발견하여 instance norm을 사용했다.  
 
 
-_Final Objective_  
+**_Final Objective_**  
 최종 목적함수 : 1) standard GAN loss, 2) feature matching loss, 3) two cyclic reconstruction loss  
 도메인 X 및 Y가 주어지면 G : X → Y가 X에서 Y로 매핑되고 F : Y → X가 Y에서 X로 매핑된다.  
 DX 및 DY는 각각 G 및 F에 대한 D를 나타낸다. GAN loss의 경우 Goodfellow의 일반 GAN 손실 조건을 결합한다.  
@@ -165,7 +165,7 @@ CycleGAN은 일반 공간에서 변형 공간으로 매핑할 때 다각형의 �
 일반 공간으로 매핑할 때 변형되지 않은 도트 매트릭스를 생성하는 local 변형만 학습한다.  
 그러나 우리의 접근 방식은 dilated D가 이미지 전체에서 정보를 통합하여 변형을 학습하는 데 훨씬 더 성공적이다.  
 
-_Quantitative Comparison_  
+**_Quantitative Comparison_**
 출력은 고도로 변형된 이미지이므로 샘플링을 통해 학습된 변환 매개변수를 추정한다.  
 우리는 GT polygon과 변환 후 생성된 polygon 이미지에서 500개 포인트 샘플 사이의 Hausdorff 거리를 계산한다.  
 finite point X와 Y 세트의 경우 d(X, Y) = max(y∈Y)min(x∈X) ||kx−yk|| 이다.  
