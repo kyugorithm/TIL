@@ -1,6 +1,6 @@
 # Improving Shape Deformation in Unsupervised I2I Translation
 ## Abstract
-비지도 I2I 변환 기법은 두 도메인간 local texture mapping이 가능케 하지만 형태 변환 문제에는 성공적이지 않다.  
+Unsupervised I2I translation은 도메인간 local texture mapping이 가능케 하지만 shape change는 성공적이지 않다.  
 Semantic segmentation에서 영감을 얻어, 이미지 문맥을 학습에 관심을 갖는 dilated conv.를 통해 정보를 사용하는 D를 적용한다.  
 Object의 기본 형상의 에러를 표현하는 multi-scale perceptual loss를 적용한다.  
 위 방법을 통해 형태변형이 어려운 데이터셋에 대한 성능을 보인다.  
