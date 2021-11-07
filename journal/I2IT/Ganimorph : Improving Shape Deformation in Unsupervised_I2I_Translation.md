@@ -177,4 +177,6 @@ _Quantitative Comparison_
 셋째, 'deformed to regular'의 경우 CycleGAN은 거리가 0.21 ± 0.04인 다각형을 생성하는 반면  
 우리의 접근 방식은 거리가 0.10 ± 0.03이다.  
 실제 데이터 세트에서 일반 다각형은 중앙에 있지만 CycleGAN은 원래 왜곡된 다각형 위치에서만 다각형을 구성한다.  
-우리의 네트워크는 원하는 대로 이미지 중앙에 정다각형을 구성한다.
+우리의 네트워크는 원하는 대로 이미지 중앙에 정다각형을 구성한다.  
+
+![image](https://user-images.githubusercontent.com/40943064/140635883-03f8bbf4-eae1-4558-bb6b-5bd6433e1d81.png)
