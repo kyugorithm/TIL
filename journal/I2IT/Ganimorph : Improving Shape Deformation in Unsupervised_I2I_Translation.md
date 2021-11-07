@@ -28,7 +28,7 @@ D는 per-pixel 판별을 수행하며 각각 global context에 의해 정보를 
 
 ## Our Apporch
 모양 변형에서 변환의 성공에 결정적인 요소는 global/local 일관성을 유지하는 능력이다.  
-우리의 알고리즘은 순환 이미지 변환 프레임워크를 채택하고 dilated D, residual block 및 skip-connection이 있는 G,  
+우리의 알고리즘은 cyclic image translation framework를 채택하고 dilated D, residual block 및 skip-connection이 있는 G,  
 multi-scale perceptual cyclic loss를 통합하여 필요한 일관성을 달성한다.  
 
 ### 3.1 Dilated Discriminator
