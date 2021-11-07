@@ -29,44 +29,43 @@ D는 per-pixel 판별을 수행하며 각각 global context에 의해 정보를 
 ## Our Apporch
 모양 변형에서 변환의 성공에 결정적인 요소는 global/local 일관성을 유지하는 능력이다.  
 우리의 알고리즘은 cyclic image translation framework를 채택하고 dilated D, residual block 및 skip-connection이 있는 G,  
-multi-scale perceptual cyclic loss를 통합하여 필요한 일관성을 달성한다.  
+**multi-scale perceptual cyclic loss**를 통합하여 필요한 consistency를 달성한다.  
 
 ### 3.1 Dilated Discriminator
-(DiscoGAN)은 fc 레이어가 있는 global D를 사용하며 이미지의 정확성을 결정하기 위해 이미지를 단일 스칼라 값으로 축소한다.  
-(CycleGAN, ContrastingGAN)은 patch 기반 DCGAN D를 사용하며 초기 스타일 전송 및 텍스처 합성을 위해 개발되었다.  
+(DiscoGAN)은 fully-connected global D를 사용하며 이미지의 정확성을 결정하기 위해 이미지를 단일 스칼라 값으로 축소한다.  
+(CycleGAN, ContrastingGAN)은 patch 기반 DCGAN D를 사용하며 초기 style transfer 및 texture synthesis를 위해 개발되었다.  
 이러한 D에서 각 이미지 패치는 real/fake를 결정하기 위해 평가된다.  
-patch 기반 접근 방식은 로컬 패치에서 독립적으로 작동하여 빠른 G 수렴을 돕는다.  
+Patch 방식은 local에 독립적으로 작동하여 빠른 G 수렴을 돕는다.  
 이 접근 방식은 texture transfer, segmentation 및 유사한 작업에 효과적이지만  
-전역 공간 정보에 대한 네트워크의 인식을 제한하여 일관된 전역 모양 변경을 수행하는 G의 능력을 제한한다.  
+전역 공간 정보에 대한 네트워크의 인식을 **제한**하여 일관된 global shape change를 수행하는 G의 능력을 제한한다.  
 _Reframing Discrimination as Semantic Segmentation_  
-이 문제를 해결하기 위해 식별 문제를 real/fake 또는 하위 이미지를 판별하는 것에서  
+이를 해결하기 위해 식별 문제를 real/fake 또는 하위 이미지를 판별하는 것에서  
 이미지의 실제 또는 가짜 영역을 찾는 보다 일반적인 문제, 즉 semantic segmentation으로 재구성한다.  
-D는 고해상도의 segmentation map을 출력하기 때문에 Generator와 Discriminator 사이의 정보 흐름이 증가한다.  
+D는 고해상도의 segmentation map을 출력하기 때문에 G/D 사이의 정보 흐름이 증가한다.  
 이것은 DiscoGAN과 같이 FC의 D를 사용하는 것보다 수렴이 빠르다.  
 Segmentation을 위한 최신 네트워크는 dilated conv.를 사용하며 유사한 수준의 정확도를 달성하기 위해  
-기존의 conv.보다 훨씬 적은 매개변수가 필요하다. Dilated conv.는 global 및 patch 기반 D에 비해 이점을 제공한다.  
-동일한 매개변수량에 대해 예측을 통해 더 큰 주변 field의 데이터를 통합할 수 있다.  
-이렇게 하면 G와 D 간의 정보 흐름이 증가한다.  
+기존의 conv.보다 훨씬 적은 매개변수를 사용한다. Dilated conv.는 global 및 patch 기반 D에 비해 이점을 제공한다.  
+동일 매개변수에 대해 더 큰 주변 field의 데이터를 통합하여 G와 D 간의 정보 흐름이 증가한다.  
 이미지 영역이 이미지를 비현실적으로 만드는 데 기여한다는 것을 알면 G는 이미지의 해당 영역에 집중할 수 있다.  
-dilated conv. 대해 생각하는 또 다른 방법은 D가 context를 암시적으로 학습할 수 있도록 하는 것이다.  
+Dilated conv. 대해 생각하는 또 다른 방법은 D가 context를 암시적으로 학습할 수 있도록 하는 것이다.  
 
-다중 스케일 D가 고해상도 이미지 합성 작업의 결과와 안정성을 향상시키지만, D가 영역이 어디에 맞아야 하는지 결정할 수 있으므로  
-이미지에서 더 멀리 떨어진 정보를 통합하는 것이 번역 작업에 유용하다는 것을 보여줄 것이다.  
-주변 데이터를 기반으로 이미지로 변환합니다.  
-예를 들어, 이렇게 증가된 공간적 맥락은 강아지의 얼굴을 몸에 상대적으로 위치시키는 데 도움이 되며,  
-이러한 방식은 이웃과 분리되어 학습된 작은 패치나 패치에서 배우기 어렵다. 그림 2(오른쪽)는 판별자 아키텍처를 보여준다.
-  ![image](https://user-images.githubusercontent.com/40943064/140634771-d16e0b0b-0fa6-48e9-85fd-664a52c81c92.png)
+Multi-scale D가 고해상도 이미지 합성 작업의 결과와 안정성을 향상시키지만, D가 영역이 어디에 맞아야 하는지 결정할 수 있으므로  
+이미지에서 더 멀리 떨어진 정보를 통합하는 것이 번역 작업에 유용하다는 것을 보일것이다.  
+예를 들어, 증가된 공간적 context는 강아지의 얼굴을 몸에 상대적으로 위치시키는 데 도움이 되며,  
+이러한 방식은 이웃과 분리되어 학습된 작은 patch로는 학습이 어렵다. 그림 2(오른쪽)는 D 아키텍처를 보여준다.  
+![image](https://user-images.githubusercontent.com/40943064/140634771-d16e0b0b-0fa6-48e9-85fd-664a52c81c92.png)  
 Fig. 2. (L) Unsupervised 방법론들의 G 구조. ResBlock과 Skip connection이 더하기가 아닌 concat.에 의해 결합되어있다.  
-(R) 우리의 D는 fully-convolutional segmentation network이다. (skip connection으로 local context에 대한 네트웍의 view를 보존할 수 있다.)
+(R) 우리의 D는 fully-convolutional segmentation network이다.  
+(skip connection으로 local context에 대한 네트웍의 view를 보존할 수 있다.)   
 
 ### 3.2 Generator
-우리의 G 구조는 DiscoGAN과 CycleGAN을 기본 구조로 한다. DiscoGAN은 표준 encoder-decoder 구조(fig.2 좌측상단)를 가진다.  
-그러나, bottleneck이 좁기 때문에 입력 이미지의 중요한 visual detail을 보존하지 못한다.  
+G 구조는 DiscoGAN과 CycleGAN 기본 구조로 한다. DiscoGAN은 표준 encoder-decoder 구조(fig.2 좌측상단)를 가진다.  
+그러나, bottleneck이 좁아 이미지의 중요한 visual detail을 보존하지 못한다.  
 또한, 네트워크의 용량이 낮아 제한된 해상도(64x64)만 표현할 수 있다.  
-CycleGAN은 이미지 translation 을 배우기 위해 residual block을 이용해 용량을 높힌다.  
-Residual block은 극단적으로 깊은 네트웍에서 효과가 있는것으로 알려져있으며 저차원 정보를 표현할 수 있다.  
-그러나 단일 scale에서 residual block을 사용하면 bottleneck으로 넘겨주는 정보와 네트워크가 학습할 수 있는 기능을 제한한다.  
-우리의 G 구조는 여러 해상도의 decoder-encoder에 residual block을 사용하여  
+CycleGAN은 translation 학습을 위해 residual block을 이용해 용량을 높힌다.  
+Residual block은 극단적으로 깊은 네트웍에서 효과가 있어 저차원 정보를 표현할 수 있다.  
+그러나 단일 scale에서 residual block을 사용하면 bottleneck으로 넘겨주는 정보와 네트워크가 학습할 수 있는 능력을 제한한다.  
+G 구조는 여러 해상도의 decoder-encoder에 residual block을 사용하여  
 네트워크가 여러 해상도 변환을 배우게하며 다양한 해상도의 feature를 학습할 수 있도록 한다. (fig.2 좌측하단)  
 
 ### 3.3 Objective Function
