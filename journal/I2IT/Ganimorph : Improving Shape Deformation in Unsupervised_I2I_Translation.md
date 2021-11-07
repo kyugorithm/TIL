@@ -184,10 +184,10 @@ finite point X와 Y 세트의 경우 d(X, Y) = max(y∈Y)min(x∈X) ||kx−yk|| 
 
 ### 4.4 Ablation Study
 1. 정량평가 : 표 7  
-1) MS-SSIM을 제거 & L1(LSS, Eq. 7)유지 : Mode-collapse  
+1) w/o MS-SSIM & w/ L1(LSS, Eq. 7)유지 : Mode-collapse  
 2) w/o Feature matching loss : segmentation consistency와 네트워크 안정성 하락.  
-3) w patch D : Global context를 사용할 수 없으므로 얼굴 레이아웃을 혼동한다.  
-4) w FC D : G 아키텍처와 loss 함수를 통해 동일한 유형의 D(완전히 연결됨)를 사용하더라도 네트워크가 DiscoGAN보다 성능이 우수하다는 것을 알 수 있다.  
+3) w/ patch D : Global context를 사용할 수 없으므로 얼굴 레이아웃을 혼동한다.  
+4) w/ FC D : G 아키텍처와 loss 함수를 통해 동일한 유형의 D(완전히 연결됨)를 사용하더라도 네트워크가 DiscoGAN보다 성능이 우수하다는 것을 알 수 있다.  
   
 2. 정성평가 : 표 9  
 Patch based D는 texture를 잘 번역하지만 globally 일관된 이미지를 생성하지 못한다.  
