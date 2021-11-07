@@ -36,6 +36,7 @@ _**논문**_
 다른 주관적 이미지와 비디오 DB에서 SSIM보다 성능이 동등하거나 우수한 것으로 나타났다.
 MS-SSIM은 SSIM에 스케일 스페이스의 개념을 추가시킨 것이다.  
 여러 스케일에서 SSIM 점수를 산출한 다음에 가중곱으로 최종 스코어를 얻는다.  
+![image](https://user-images.githubusercontent.com/40943064/140648116-8862d947-4d63-42cf-87eb-530ece3df694.png)
 
 
 설명참조 : https://bskyvision.com/396  
