@@ -70,37 +70,37 @@ G 구조는 여러 해상도의 decoder-encoder에 residual block을 사용하�
 
 ### 3.3 Objective Function
 _Perceptual Cyclic Loss_  
-이전의 비지도 I2IT 작업에에 따라 cyclic loss를 사용하여 도메인 간의 bijective mapping을 학습한다.  
+기존 비지도 I2IT 작업에 따라 cyclic loss를 사용하여 도메인 간의 bijective mapping을 학습한다.  
 그러나 모든 이미지 번역 기능이 완벽하게 bijective 될 수는 없다.  
-예를 들어 얼굴 사진과 애니메이션 그림과 같이 한 도메인의 모양 변화가 더 작은 경우이다.  
-번역에서 입력 이미지의 모든 정보를 보존할 수 없는 경우 순환 손실 항은 가장 중요한 정보를 보존하는 것을 목표로 해야 한다.  
+예를 들어 얼굴 사진과 애니메이션 그림과 같이 한 도메인의 모양 변화가 상대적으로 더 작은 경우이다.  
+번역에서 입력 이미지의 모든 정보를 보존할 수 없는 경우 cyclic loss 항은 가장 중요한 정보를 보존하는 것을 목표로 해야 한다.  
 네트워크는 보는 사람에게 중요한 이미지 속성에 초점을 맞춰야 하므로 생성된 이미지와 대상 이미지 간의 모양과  
 모양 유사성을 강조하는 지각 손실을 선택해야 한다. 명시적 shape loss를 정의하는 것은 어렵다.  
-명시적 용어에는 도메인 간의 알려진 이미지 대응이 필요하기 때문이다. 이것은 우리의 예와 비지도 환경에 존재하지 않는다.  
-또한 loss 계산에 보다 복잡한 perceptual 신경망을 포함하면 상당한 계산 및 메모리 오버헤드가 발생한다.  
+명시적 term을 설정하기 위해서는 도메인간 이미지 pair가 존재해야하기 때문이다. 이는 비지도 환경에 맞지 않다.  
+Loss 계산에 복잡한 perceptual 신경망을 포함하면 상당한 계산 및 메모리 오버헤드가 발생한다.  
 사전 학습된 이미지 분류 네트워크를 perceptual 손실로 사용하면 스타일 전송 속도를 높일 수 있지만 사전 학습된 네트워크는  
 낮은 수준의 텍스처 정보만 캡처하는 경향이 있으므로 모양 변경에는 작동하지 않으므로 MS-SSIM(다중 구조 유사성 손실)을 사용한다.  
 이 loss은 noisy한 고주파 정보 대신 사람이 볼 수 있는 feature를 더 잘 보존한다.  
-또한 MS-SSIM은 area statistics를 통해 geometric 차이를 인식할 수 있으므로 형상 변화에 더 잘 대처할 수 있다.  
+또한 MS-SSIM은 area statistics를 통해 geometric 차이를 인식할 수 있으므로 shape 변화에 더 잘 대처할 수 있다.  
 그러나 MS-SSIM만으로는 작은 세부 사항을 무시할 수 있으며 색상 유사도를 잘 포착하지 못한다.  
 최근 연구에 따르면 MS-SSIM과 L1 또는 L2 손실을 혼합하는 것이 초해상도 및 분할 작업에 효과적이다.  
-따라서 생성된 이미지의 선명도를 높이는 데 도움이 되는 가벼운 가중치 L1 손실 항도 추가한다.  
+따라서 생성된 이미지의 선명도를 높이는 데 도움이 되는 lightly-weighted L1 loss 항도 추가한다.  
   
 _Feature Matching Loss_
-모델안정성을 향상하기 위해 우리의 목적함수는 feature matching loss를 사용한다.  
+모델안정성 향상을 위해 feature matching loss를 사용한다.  
 ![image](https://user-images.githubusercontent.com/40943064/140635231-5acf121a-63c1-4e7c-8a1d-15c9f4b70bd8.png)  
-여기서 fi ∈ D(x)는 D의 i 번째 계층의 raw activation potential을 나타내고 n은 D의 layer의 수이다.  
-이 항은 가짜 및 실제 샘플이 D에서 유사한 활성화를 생성하도록 장려하므로 G가 대상 도메인과 더 유사하게 보이는 이미지를 생성하도록 한다.  
+fi ∈ D(x)(D의 i 번째 layer의 raw activation potential) / (n : D의 layer 수)  
+real/fake 샘플이 D에서 유사한 activation을 생성하도록 하여 G가 대상 도메인과 더 유사하게 보이는 이미지를 생성하도록 한다.  
 GAN이 종종 취약한 G의 mode collapse를 방지하기 위해 이 손실 항을 사용한다.  
   
 _Scheduled Loss Normalization (SLN)_
-multi-part loss에서 linear weight는 종종 서로에 대해 항을 정규화하는 데 사용되며 이전 작업에서는 단일 가중치 집합을 최적화하는 경우가 많다.  
-그러나 적절하게 균형 잡힌 weight를 찾는 것은 ground truth 없이는 어려울 수 있다.  
-또한, loss의 크기가 훈련 과정에서 변하기 때문에 종종 단일 가중치 세트가 부적절하다.  
+Multi-part loss에서 linear weight는 종종 서로에 대해 항을 정규화하는 데 사용되며 이전 작업에서는 단일 가중치 집합을 최적화하는 경우가 많다.  
+그러나 적절하게 균형 잡힌 weight를 찾는 것은 GT 없이는 어려울 수 있다.  
+또한, loss의 크기가 학습 과정에서 변하기 때문에 종종 단일 가중치 세트가 부적절하다.  
 대신에 각 loss를 주기적으로 재정규화하여 상대적 값을 제어하는 절차를 만든다.  
 이를 통해 사용자는 가중치의 합이 1이 되는 가중치를 직관적으로 제공하여 훈련에 따라 크기가 어떻게 변할지 알지 않고도  
 모델의 loss term의 균형을 맞출 수 있다.  
-L을 손실 함수라고 하고 Xn = {xt} bn t=1이라고 하면 L(xt)가 반복 t에서의 훈련 손실이 되도록 각 b개의 이미지가 큰 n개의 훈련 입력 배치의 시퀀스이다.  
+Xn = {xt} bn t=1이라고 하면 L(xt)가 반복 t에서의 훈련 손실이 되도록 각 b개의 이미지가 큰 n개의 훈련 입력 배치의 시퀀스이다.  
 손실의 지수 가중 이동 평균을 계산한다.  
 
 ![image](https://user-images.githubusercontent.com/40943064/140635346-79d5b8a7-f125-4ab3-9cb4-8480c739a4fe.png)  
@@ -115,19 +115,19 @@ CycleGAN/DiscoGAN과 우리의 접근 방식 간의 또 다른 정규화 차이�
 
 
 _Final Objective_  
-최종 목적함수는는 (standard GAN loss, feature matching loss, two cyclic reconstruction losses)로 구성된다.  
+최종 목적함수 : 1) standard GAN loss, 2) feature matching loss, 3) two cyclic reconstruction loss  
 도메인 X 및 Y가 주어지면 G : X → Y가 X에서 Y로 매핑되고 F : Y → X가 Y에서 X로 매핑된다.  
 DX 및 DY는 각각 G 및 F에 대한 D를 나타낸다. GAN loss의 경우 Goodfellow의 일반 GAN 손실 조건을 결합한다.  
 ![image](https://user-images.githubusercontent.com/40943064/140635463-f5d88b1c-ac44-4079-a71b-af310938f872.png)  
 각 도메인에 대해 1번 항의 feature matching loss를 아래와 같이 적용한다.  
-![image](https://user-images.githubusercontent.com/40943064/140635479-b96aad9f-17ba-47a7-b56e-eaf283767d76.png)
+![image](https://user-images.githubusercontent.com/40943064/140635479-b96aad9f-17ba-47a7-b56e-eaf283767d76.png)  
 
 두 개의 cyclic reconstruction loss에 대해 구조적 유사성과 L1 loss를 고려한다.  
 X0 = F(G(X)) 및 Y 0 = G(F(Y))를 순환적으로 재구성된 입력 이미지라고 하자. 그러면 :  
-![image](https://user-images.githubusercontent.com/40943064/140635517-1a64077d-2d7e-4370-afbb-360e1735fa33.png)
+![image](https://user-images.githubusercontent.com/40943064/140635517-1a64077d-2d7e-4370-afbb-360e1735fa33.png)  
 여기서 우리는 discorrelation 없이 MS-SSIM을 계산한다.  
 SLN을 포함한 최종 목적함수는 다음과 같다.  
-![image](https://user-images.githubusercontent.com/40943064/140635534-3eecc6b7-34ee-4bc7-add2-9ac8553cbd52.png)
+![image](https://user-images.githubusercontent.com/40943064/140635534-3eecc6b7-34ee-4bc7-add2-9ac8553cbd52.png)  
 (λGAN=0.49 + λFM=0.21 + λCYC=0.3) = 1, (λSS=0.7 + λL1=0.3) = 1 & (all coefficients ≥ 0).  
 경험적으로, 이러한것들은 mode collapse를 줄이며 모든 데이터셋에 동작한다.  
 
@@ -180,4 +180,40 @@ finite point X와 Y 세트의 경우 d(X, Y) = max(y∈Y)min(x∈X) ||kx−yk|| 
 실제 데이터 세트에서 일반 다각형은 중앙에 있지만 CycleGAN은 원래 왜곡된 다각형 위치에서만 다각형을 구성한다.  
 우리의 네트워크는 원하는 대로 이미지 중앙에 정다각형을 구성한다.  
 
-![image](https://user-images.githubusercontent.com/40943064/140635883-03f8bbf4-eae1-4558-bb6b-5bd6433e1d81.png)
+![image](https://user-images.githubusercontent.com/40943064/140635883-03f8bbf4-eae1-4558-bb6b-5bd6433e1d81.png)  
+
+### 4.4 Ablation Study
+1. 정량평가 : 표 7  
+1) MS-SSIM을 제거 & L1(LSS, Eq. 7)유지 : Mode-collapse  
+2) w/o Feature matching loss : segmentation consistency와 네트워크 안정성 하락.  
+3) w patch D : Global context를 사용할 수 없으므로 얼굴 레이아웃을 혼동한다.  
+4) w FC D : G 아키텍처와 loss 함수를 통해 동일한 유형의 D(완전히 연결됨)를 사용하더라도 네트워크가 DiscoGAN보다 성능이 우수하다는 것을 알 수 있다.  
+  
+2. 정성평가 : 표 9  
+Patch based D는 texture를 잘 번역하지만 globally 일관된 이미지를 생성하지 못한다.  
+FC D를 사용하거나 feature matching을 제거하여 정보 흐름을 줄이면 더 나은 결과를 얻을 수 있다.  
+정보 흐름을 극대화하면 궁극적으로 최상의 결과를 얻을 수 있다(마지막 열).  
+Perceptual consistency loss 대신 L1을 사용하면 모드 붕괴가 발생한다.  
+  
+## 5 Discussion
+cyclic loss에 대한 상대적 가중치에는 trade-off가 있다. 가중치 상당한 형태 변화를 방지하고 D에 적응하는 G의 능력을 약화시킨다.  
+너무 낮게 설정하면 네트워크가 붕괴되고 도메인 간에 의미 있는 매핑이 존재하지 않는다.  
+예를 들어, 네트워크는 cyclic loss가 너무 낮으면 다른 도메인의 물체를 쉽게 착각할 수 있다.  
+반대로 너무 높게 설정하면 네트워크가 모양을 제대로 변형하지 못한다.  
+따라서 테스트 시간에 이 항의 가중치를 수정할 수 있는 아키텍처는 허용할 변형의 정도에 대한 사용자 제어에 유용할 것이다.  
+우리가 발견한 반직관적인 결과 중 하나는 다양성이 거의 없는 도메인에서 매핑이 의미론적 의미를 잃을 수 있다는 것이다(appendix).  
+실패한 매핑의 한 예는 celebA>bitmoji이다. 자세를 포함한 많은 속성이 손실되며 얼굴의 pseudo-steganographic encoding으로 되돌아갔다.  
+예를 들어 배경 정보는 헤어 스타일의 색상 그라데이션으로 인코딩되고 눈 너비의 약간의 변형도 유사하게 사용되었다.  
+따라서 cyclic loss는 관련 세부 정보를 추상화하는 네트워크의 기능을 제한한다.  
+Benaim과 유사하게 각 데이터 세트 내의 분산 매핑에 의존하는 것과 같은 접근 방식은 두 도메인의 분산이 유지되도록 하는 효과적인 수단임을 입증할 수 있다.  
+우리는 이 항이 대상 영역에서 모양 변화의 양을 과도하게 제한한다는 것을 발견했다. 그러나 이것은 더 조사할 가치가 있다.  
+마지막으로 각 영역을 동시에 학습하는 것도 이미지 번역의 정확도를 높이는 효과적인 방법이 될 수 있다.  
+이렇게 하면 D와 G가 두 네트워크에 대해 관심 영역을 더 잘 결정하고 변환하는 방법을 배울 수 있다.  
+매개변수 효율적인 네트워크(예: StarGAN)를 사용하여 여러 도메인 간에 매핑하면 더 나은 결과를 얻을 수 있다.  
+  
+## 6. Conclusion
+Semantic segmenter로 D의 역할을 재구성하면 이미지 artifact를 줄이면서 더 큰 모양 변경이 가능하다는 것을 입증했다.  
+또한 **perceptual cyclic loss**를 사용한 학습과 명시적 **multi-scale features**를 추가하면 복잡한 모양으로 변환하는 데 도움이 된다.  
+마지막으로 **feature matching loss** 와 **scheduled loss normalization**과 같은 학습 테크닉은 번역 네트워크의 성능을 향상시킬 수 있다.  
+요약하면, 우리의 아키텍처 및 교육 변경을 통해 네트워크는 단순한 텍스처 전송을 넘어 모양 변형을 개선할 수 있다.  
+이를 통해 GANimorph 시스템은 인간에서 애니메이션으로, 고양이 얼굴로, 고양이에서 개와 같은 까다로운 번역을 수행할 수 있다.
