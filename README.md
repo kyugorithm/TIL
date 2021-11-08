@@ -8,7 +8,7 @@
 
 # 1. 정리논문 목록 
 : Last updated 2021/11/09
-
+: 추가예정논문 : Pose estimations
 ## 3DMM
 ```
 (2020) StyleRig : Rigging StyleGAN for 3D Control over Portrait Images
