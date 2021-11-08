@@ -1,9 +1,9 @@
 # Learning Deep Features for Discriminative Localization
 ## Abstract
-본 연구에서는 제안된 GAP layer를 살펴보고, 이미지 수준 분류에 대한 학습수행에도 CNN이 어떻게 현저한 localization이 가능한지 조명한다.  
-정규화 수단으로 제안 되었지만, implicit한 관심을 이미지에 노출시키는 localizable deep representation을 구축한다는 것을 알게 되었다.  
-GAP의 단순성에도 불구하고  bounding box annotation 없이 ILSVRC 2014에서 object localization에 37.1%의 top-5 accuracy 달성할 수 있다.  
-여러 실험에서 네트워크가 분류 과제를 위해 학습되었음에도 불구하고 차별적인 이미지 영역을 localize 할 수 있다는 것을 증명한다.  
+Global average pooling(GAP) layer는 network in network 논문에서 제안된 바 있으며 regularizing training을 위해 사용 되었다.  
+그러나 본 논문에서는 GAP를 사용하여 image-level label에 학습됨에도 놀라운 localization 능력을 가지는것을 보인다.  
+GAP의 명확한 단순성에도 불구하고 localization 성능이 매우 뛰어나며 기존 fully supervised 방식의 SOTA에 꽤 가까운 성능을 보여준다.  
+다양한 task에서 localization을 위한 학습이 이루어지지 않음에도 불구하고 localize가 가능함을 보인다.  
 
 ## Introduction
 Zhou는 CNN의 다양한 층의 conv. 유닛은 물체의 위치에 대한 감독이 없이도 object detector로 동작하는 것으로 나타났다.  
@@ -28,3 +28,9 @@ CNN은 다양한 시각 인식 작업에서 인상적인 성과를 이끌어냈�
 ### WSOL 
 Bergamo는 최대 활성화를 일으키는 영역을 식별하기 위해 이미지 영역을 마스킹하는 것을 포함하는 self-taught 객체 지역화 기술을 제안한다.  
 Cinbis/Pinheiro는 다중 인스턴스 학습과 CNN 기능을 결합하여 객체를 현지화한다. Oquab은 중간 수준의 이미지 표현을 전송하는 방법을 제안하고 여러 겹치는 패치에서 CNN의 출력을 평가하여 일부 객체 지역화가 달성될 수 있음을 보여줍니다. 그러나 저자는 실제로 현지화 능력을 평가하지 않습니다. 다른 한편으로, 이러한 접근 방식은 유망한 결과를 가져오지만, 종단 간 훈련이 되지 않고 객체를 지역화하기 위해 네트워크의 여러 정방향 전달이 필요하므로 실제 데이터 세트로 확장하기 어렵습니다. 우리의 접근 방식은 end-to-end로 훈련되었으며 단일 정방향 패스에서 개체를 지역화할 수 있습니다. 우리와 가장 유사한 접근 방식은 Oqua의 global max pooling을 기반으로 한 작업입니다. 전역 평균 풀링 대신 전역 최대 풀링을 적용하여 개체의 한 지점을 현지화합니다. 그러나 그 위치는 물체의 전체 범위를 결정하는 것이 아니라 물체의 경계에 있는 점으로 제한됩니다. 우리는 최대 및 평균 함수가 다소 유사하지만 평균 풀링을 사용하면 네트워크가 객체의 완전한 범위를 식별하도록 장려한다고 믿습니다. 이것의 기본 직관은 네트워크가 최대 풀링과 비교하여 객체의 모든 구별 영역을 식별할 때 평균 풀링의 손실이 이익이라는 것입니다. 이것은 Sec.에서 더 자세히 설명되고 실험적으로 검증됩니다. 3.2. 또한, 이와 달리 우리는 이 현지화 능력이 일반적이며 네트워크가 훈련되지 않은 문제에 대해서도 관찰될 수 있음을 보여줍니다.
+
+## 핵심구조
+![image](https://user-images.githubusercontent.com/40943064/124291821-ef81ce80-db8f-11eb-97cd-19a8ea7d980a.png)  
+  
+본 논문이 제안하는 핵심 구조는 매우 간단하다. FC대신 GAP를 사용함으로써 Feature 특성을 살리고 이를 이용하는 것으로 판단된다.  
+이로써 CAM이 생성되며 어떤 부분이 활성화되어 Class가 선택되었는지를 Visually 이해할 수 있으며 localization에 활용 할 수도 있다.
