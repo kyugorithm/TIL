@@ -129,11 +129,12 @@ joint의 정도가 이미지에 있는 사람의 joint 범위를 반영하지 �
 입력이 고정된 해상도에서 좁은 crop으로 제한되어 극복해야 하는 한계가 있다.  
 이러한 방법은 tight한 bounding boxes를 사용할 수 있다고 가정하므로 실제 사용을 위해 별도의 bounding boxes 추정기로 보완해야 하므로  
 이러한 방법의 실행 시간이 추가된다.  
-Pavlakos et al.의 fully-convolutional formulation은 이러한 문제 중 일부를 완화하려고 하지만 여전히 잘린 입력에 의존하고  
-더 큰 이미지 크기로 잘 확장되지 않는 값비싼 joint별 volumetric formulation에 의해 제한된다.  
-joint j당 3개의 추가 위치 맵 Xj, Yj, Zj를 사용하여 2D 히트맵 공식을 3D로 확장하고 root 상대 위치 xj, yj 및 zj를 각각 캡처하여  
+Pavlakos의 fully-convolutional formulation은 이러한 문제 중 일부를 완화하려고 하지만 여전히 잘린 입력에 의존하고  
+더 큰 이미지 크기로 잘 확장되지 않는 계산량이 큰 joint별 volumetric formulation에 의해 제한된다.  
+
+Joint j당 3개의 추가 location-map Xj, Yj, Zj를 사용하여 2D heatmap 공식을 3D로 확장하고 root 상대 위치 xj, yj 및 zj를 각각 캡처하여  
 새로운 formulation을 통해 이러한 제한을 극복했다.  
-3D 포즈 예측이 이미지의 2D 모양에 더 강력하게 연결되도록 하기 위해 xj , yj 및 zj 값은 해당 joint의 2D 히트맵 Hj 최대값의 위치에 있는  
+3D 포즈 예측이 이미지의 2D 모양에 더 강력하게 연결되도록 하기 위해 xj , yj 및 zj 값은 해당 joint의 2D heatmap Hj 최대값의 위치에 있는  
 각각의 location-map에서 판독되어 PL = {x, y, z} 위치에 저장된다.  
 여기서 x ∈ R 1×J는 각 joint 최대값의 좌표 x 위치를 저장하는 벡터이다.  
 포즈 formulation은 그림 3에 시각화되어 있다.  
@@ -141,29 +142,29 @@ joint j당 3개의 추가 위치 맵 Xj, Yj, Zj를 사용하여 2D 히트맵 공
 
 이 fully convolution formulation을 사용하는 네트워크는 입력 이미지 크기에 제약을 받지 않으며 타이트한 자르기 없이 작동할 수 있다.  
 또한 네트워크는 추가 오버헤드 없이 2D 및 3D 공동 위치 추정을 제공하며, 이를 실시간 추정을 위한 후속 단계에서 활용한다.  
-섹션 5.2는 이 공식이 제공하는 개선 사항을 보여준다.  
+S5.2는 이 formulation이 제공하는 개선 사항을 보여준다.  
 
 **Loss term**:  
-joint j의 2D 위치에 있는 각각의 맵에서 xj , yj 및 zj에만 관심이 있다는 사실을 적용하기 위해  
+Joint j의 2D 위치에 있는 각각의 맵에서 xj , yj 및 zj에만 관심이 있다는 사실을 적용하기 위해  
 joint location-map loss는 joint의 2D 위치 주변에서 더 강하게 가중치가 부여된다.  
-L2 loss를 사용한다. xj의 경우 손실 공식은 다음과 같다.  
+L2를 사용한다. xj의 경우 loss 공식은 다음과 같다.  
 ![image](https://user-images.githubusercontent.com/40943064/140038207-2a1bcc54-3889-448b-ac58-4865c43c9618.png)  
 여기서 GT는 실측 정보를 나타내고 ⊙는 하다마드 product이다.  
-Location map은 각 GT 2D 히트맵 H GT j로 가중치를 부여하며,  
+Location map은 각 GT 2D heatmap H GT j로 가중치를 부여하며,  
 이는 다시 joint j의 2D 위치에 국소화된 작은 지지대를 가진 가우스와 동일한 신뢰도를 갖는다.  
 Location map에 어떤 구조도 부과되지 않는다는 점에 유의해야한다.  
 예측된 location map에 나타나는 구조는 영상 평면에서 joint j의 root relative joint position과 xj 및 yj의 상관 관계를 나타낸다. (그림 3 참조)  
   
 **Network Details**:  
 제안된 공식을 사용하여 He의 ResNet50 네트워크 아키텍처를 적용한다.  
-res5a부터 ResNet50의 레이어를 그림 5에 표시된 아키텍처로 교체하여 모든 joint j ∈ {1..J }에 대한 히트맵과 위치 맵을 생성한다.  
-학습 후 Batch Normalization 레이어는 이전 컨볼루션 레이어의 가중치와 병합되어 순방향 패스의 속도를 향상시킨다.  
-![image](https://user-images.githubusercontent.com/40943064/140038975-92a943d2-1c70-4d1f-93b1-b1a6992599e8.png)
-
+res5a부터 ResNet50의 그림 5에 표시된 구조 교체하여 joint j ∈ {1..J }에 대한 heatmap과 location-map을 생성한다.  
+학습 후 Batch Normalization은 이전 컨볼루션 레이어의 가중치와 병합되어 순방향 패스의 속도를 향상시킨다.  
+![image](https://user-images.githubusercontent.com/40943064/140038975-92a943d2-1c70-4d1f-93b1-b1a6992599e8.png)  
+  
 **Intermediate Supervision**:  
-res4d 및 res5a의 feature에서 2D 히트맵 및 3D 위치 맵을 예측하여 반복 횟수가 증가함에 따라 중간 손실의 가중치를 줄인다.  
+res4d 및 res5a의 feature에서 2D heatmap 및 3D location-map을 예측하여 반복 횟수가 증가함에 따라 중간 손실의 가중치를 줄인다.  
 또한 root-relative location-maps Xj , Yj 및 Zj 와 유사하게 res5b 의 feature에서  
-kinematic 부모 상대 위치 맵 ∆Xj , ∆Yj 및 ∆Zj 를 예측하고 다음과 같이 뼈 길이 맵을 계산한다.  
+kinematic 부모 상대 location-map ∆Xj , ∆Yj 및 ∆Zj 를 예측하고 다음과 같이 뼈 길이 맵을 계산한다.  
 ![image](https://user-images.githubusercontent.com/40943064/140039379-fc4ed675-fd76-48cf-bfa9-d6fa0fe79d48.png)  
 이러한 중간 예측은 이후에 중간 feature와 연결되어 네트워크에 예측을 안내하는 뼈 길이의 명시적 개념을 제공한다. (그림 5를 참조)  
 실험에 따르면 ResNet의 더 깊은 변종은 계산 시간의 상당한 증가(1.5배)에 대해 약간의 이득만 제공하므로  
