@@ -6,7 +6,8 @@
 - 이론본다고 코드공부도 게을리하지 않기~!
 
 
-# 1. 정리논문 목록
+# 1. 정리논문 목록 
+: Last updated 2021/11/09
 
 ## 3DMM
 ```
@@ -30,8 +31,6 @@
 (2020) Don't Judge an Object by Its Context: Learning to Overcome Contextual Bias
 (2016) Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization
 (2015) CAM : Learning Deep Features for Discriminative Localization
-
-
 ```
 ## Classification
 ```
@@ -75,8 +74,6 @@
 (2019) MSG-GAN: Multi-Scale Gradients for Generative Adversarial Networks 
 (2018) PGGAN : Progressive Growing of GANs for Improved Quality, Stability, and Variation
 (2016) Improved Techniques for Training GANs : **TBD**
-
-
 ```
 ## LypSync
 ```
@@ -107,7 +104,6 @@
 ## WSSS
 ```
 (2020) Unsupervised Learning of Image Segmentation Based on Differentiable Feature Clustering
-
 ```
 
 # 2. 그외 이론및 모델
