@@ -48,3 +48,19 @@ parameter 효율성을 촉진하는 역할을 할 뿐만 아니라 시간적 관
 또한 "TSTR(Train on Synthetic, Test on Real)" 프레임워크[5, 9]를 seq. 예측 작업에 적용하여  
 생성된 데이터가 원본의 예측 특성을 얼마나 잘 보존하는지 평가한다.  
 TimeGAN이 현실적인 시계열을 생성하는 데 있어 최첨단 벤치마크보다 일관되고 상당한 개선을 달성한다는 것을 발견했다.
+
+## 2 Related Work
+## 3 Problem Formulation
+두개의 요소를 구성하는 일반적인 데이터 세팅을 고려해보자.  
+Static features : 시간에 독립적인 정보  
+Temporal features : 시간적 정보  
+_**S**_ 를 정적 feature의 벡터공간으로 두고 _**X**_ 를 시계열 feature로 정의한다. 
+s와 x로 명시되는 특정값으로 명시될 수 있는 랜덤 백터로 정의 **S**∈ _S_, **X**∈ _X_ 한다.  
+joint distribution 를 가진 (**S**, **X**1:T)의 튜플을 고려한다.  
+길이 T 벡터 또한 랜덤변수이다. 학습데이터에서 개별 샘플이 n ∈ {1,...,N} 이 되도록 하여 
+학습 데이터를 D = {(sn, xn,1:Tn)}N/n=1 으로 명시한다. (n의 명시는 필요하지만 생략한다.)  
+
+학습 데이터 D를 사용하여 p(S, X1:T)를 가장 잘 근사하는 확률밀도 phat(S, X1:T)을 배우는 것이다.  
+이는 다음 3개에 의존하는 high-level 목적함수이다 : length, dimensionality, data distribution  
+그리고 표준 GAN framework에서 학습하는 것은 어렵다.  
+그러므로 우리는 ![image](https://user-images.githubusercontent.com/40943064/140686016-f0dbfa53-6736-4291-ae1e-8dae13480d07.png)에 대한 autoregressive decomposition를 이용한다.  
