@@ -46,11 +46,11 @@ Depth 및 limb labeling 정보의 손실은 종종 단일 silhouette에서 3D �
 
 ## 1.1 Previous work
 인간 포즈 분석에 대한 선행 작업은 많지만 **이미지 측정에서 3D 포즈를 직접 학습**하는 작업은 상대적으로 적다.  
-Brand : Hidden Markov Model을 사용하여 인체 구성의 동적 매니폴드를 모델링하고 엔트로피 최소화를 사용하여 학습  
+Brand : Hidden Markov Model을 사용하여 인체 구성의 dynamic manifold를 모델링하고 entropy 최소화를 사용하여 학습  
 Athitsos : 모양과 매개변수 공간 간의 perceptron mapping을 학습  
 Shakhnarovich :  보간된 KNN 사용  
-인간의 자세는 진실을 판단하기 어렵기 때문에 이 분야의 대부분의 논문은 결과를 판단하기 위해 휴리스틱 육안 검사만을 사용한다.  
-그러나 Shakhnarovich는 인간 모델 렌더링 패키지(Curious Labs의 POSER)를 사용하여  
+인간의 자세는 GT를 판단하기 어렵기 때문에 대부분의 논문은 결과를 판단하기 위해 경험적인 육안 검사만을 사용한다.  
+그러나 Shakhnarovich는 인간 모델 rendering 패키지(Curious Labs의 POSER)를 사용하여  
 제한된(40) 세트의 무작위 몸통 움직임 및 시점을 사용하여 13자유도 상체 포즈의 실제 훈련 및 테스트 이미지를 합성했다.  
 이에 비해 회귀 알고리즘은 전신 자세와 방향(54 자유도)을 추정한다.  
 이 문제는 높은 차원이 실제로 다음과 같은 예제 기반 방법의 용량을 늘릴 수 있습니다.  
