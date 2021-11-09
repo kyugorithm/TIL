@@ -24,7 +24,6 @@
 ## Battery
 ```
 (2019) Data-driven health estimation and lifetime prediction of lithium-ion batteries: A review
-
 ```
 ## CAM
 ```
