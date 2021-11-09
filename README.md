@@ -87,6 +87,8 @@
 ```
 (2021) MoVNect : Lightweight 3D Human Pose Estimation Network Training Using Teacher-Student Learning
 (2017) VNect: Real-time 3D Human Pose Estimation with a Single RGB Camera
+(2006) Recovering 3D Human Pose from Monocular Images
+
 ```
 ## Self Attention
 ```
