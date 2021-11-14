@@ -108,6 +108,11 @@
 (2020) Unsupervised Learning of Image Segmentation Based on Differentiable Feature Clustering
 ```
 
+## Attention
+```
+(2019) Stand-Alone Self-Attention in Vision Models
+```
+
 # 2. 그외 이론및 모델
 
 [Graphical Model?][b_link001] : 상태를 가지는 모델에서 directed/indirected graphical model의 개념이 자주 등장한다.  
