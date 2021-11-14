@@ -56,7 +56,7 @@
 (2021) Not just Compete, but Collaborate: Local Image-to-Image Translation via Cooperative Mask Prediction
 (2020) AttentionGAN: Unpaired Image-to-Image Translation using Attention-Guided Generative Adversarial Networks
 (2020) GANHopper : Multi-Hop GAN for Unsupervised Image-to-Image Translation
-(2019) U-GAT-IT: Unsupervised Generative Attentional Networks with Adaptive Layer-Instance Normalization for Image-to-Image Translation
+(2019) U-GAT-IT: Unsupervised Generative Attentional Networks with Adaptive Layer-Instance Normalization for I2I Translation
 (2019) StarGAN v2: Diverse Image Synthesis for Multiple Domains
 (2019) AMGAN : Attribute Manipulation Generative Adversarial Networks for Fashion Images
 (2018) StarGAN : Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation
