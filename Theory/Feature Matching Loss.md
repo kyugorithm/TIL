@@ -1,27 +1,10 @@
+Note (**Feature matching loss != Perceptual loss**)
+
 # Feature matching loss
   
 ## Summary
 In GAN-related papers that perform image to image translation tasks, feature matching loss term is often used.  
 The cases and explanations used in several papers are summarized to help understand Feature Matching Loss.  
-  
----
-  
-### (2016) Generating Images with Perceptual Similarity Metrics based on Deep Networks
-Named loss **Perceptual Similarity Metrics**  
-Instead of image space distances, compute distances between features extracted by deep neural networks.  
-**C** is feature extractor pretrained for classification task.  
-This paper used **L2 loss** for the loss term.  
-![image](https://user-images.githubusercontent.com/40943064/142176306-368c09d2-b1a0-467e-b9f4-6bf897d7b915.png)  
-![image](https://user-images.githubusercontent.com/40943064/142176421-152742b1-c882-459e-8533-848f22bbc879.png)  
-This loss term alone does not provide a good loss for training. It is known (Mahendran & Vedaldi, 2015) that optimizing just  
-for similarity in the feature space typically leads to **high-frequency artifacts**.  
-This is because for each natural image there are many non-natural images mapped to the same feature vector.  
-Therefore, a natural image prior is necessary to constrain the generated images to the manifold of natural image.  
-
----
-  
-### (ECCV 2018) MUNIT : Multimodal Unsupervised Image-to-Image Translation
-
   
 ---
   
@@ -35,12 +18,31 @@ Process :
 
 Unlike other papers, the target class is set to K, not one.  
 Therefore, for each target image, the value obtained through the **Df** is forced to be equal to the average of all other classes's feature.  
-Furthermore other papers utilize feature matching loss by using feature values of all layers of Discriminator 
+Furthermore other papers utilize feature matching loss by using feature values of all layers of D 
 This paper's contribution is to extend feature matching loss's use to the more challenging and novel few-shot unsupervised image-to-image translation setting.  
   
 ---
   
-19
-29
-37
-50
+### (CVPR 2018) pix2pix HD : High-Resolution Image Synthesis and Semantic Manipulation with Conditional GANs
+This **stabilizes the training** as **the G has to produce natural statistics at multiple scales**.  
+Extract features from **multiple layers of D** and learn to match these intermediate representations from the real and the fake.  
+For ease of presentation, we denote the ith-layer feature extractor of discriminator Dk as D(i)k (from input to the ith layer of Dk).  
+The feature matching loss is then calculated as:  
+![image](https://user-images.githubusercontent.com/40943064/142188950-6eb5c6f9-40f0-48f2-8854-65ad7910f5db.png)  
+---
+  
+# Perceptual loss
+## Summary
+It should be understood that Perceptual loss is different in that it extracts loss through other natural networks such as VGG-16.
+
+### (2016) Generating Images with Perceptual Similarity Metrics based on Deep Networks  
+Named loss Perceptual Similarity Metrics  
+Instead of image space distances, compute distances between features extracted by deep neural networks.  
+**C** is feature extractor pretrained for classification task.  
+This paper used **L2 loss** for the loss term.  
+![image](https://user-images.githubusercontent.com/40943064/142176306-368c09d2-b1a0-467e-b9f4-6bf897d7b915.png)  
+![image](https://user-images.githubusercontent.com/40943064/142176421-152742b1-c882-459e-8533-848f22bbc879.png)  
+This loss term alone does not provide a good loss for training. It is known (Mahendran & Vedaldi, 2015) that optimizing just  
+for similarity in the feature space typically leads to **high-frequency artifacts**.  
+This is because for each natural image there are many non-natural images mapped to the same feature vector.  
+Therefore, a natural image prior is necessary to constrain the generated images to the manifold of natural image.  
