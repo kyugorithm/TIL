@@ -10,8 +10,9 @@
 
 # 1. 정리필요 목록 : Last updated 2021/11/22
 
-(2021) StyTr^2: Unbiased Image Style Transfer with Transformers
-(2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis
+(2021) StyTr^2: Unbiased Image Style Transfer with Transformers  
+(2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis  
+  
 ## 3DMM
 ```
 (2020) StyleRig : Rigging StyleGAN for 3D Control over Portrait Images
