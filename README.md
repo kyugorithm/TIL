@@ -106,7 +106,8 @@
 ```
 ## Time Series
 ```
-(2019) Time-series Generative Adversarial Networks
+(2019) TimeGAN : Time-series Generative Adversarial Networks
+(2017) RCGAN : REAL-VALUED (MEDICAL) TIME SERIES GENERATION WITH RECURRENT CONDITIONAL GANS
 ```
 ## WSSS
 ```
