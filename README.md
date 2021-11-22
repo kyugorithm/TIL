@@ -6,12 +6,12 @@
 - 이론본다고 코드공부도 게을리하지 않기~!
 
 
-(정리 필요 목록)
-(2021) StyTr^2: Unbiased Image Style Transfer with Transformers
 
-# 1. 정리논문 목록 
-: Last updated 2021/11/09
-: 추가예정논문 : Pose estimations
+
+# 1. 정리필요 목록 : Last updated 2021/11/22
+
+(2021) StyTr^2: Unbiased Image Style Transfer with Transformers
+(2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis
 ## 3DMM
 ```
 (2020) StyleRig : Rigging StyleGAN for 3D Control over Portrait Images
