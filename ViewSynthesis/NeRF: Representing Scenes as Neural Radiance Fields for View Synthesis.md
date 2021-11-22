@@ -8,7 +8,7 @@
 2. Input____ : 5D 공간좌표(x,y,z) 및 시야 방향 (θ, φ)  
 3. Output___ : 해당 위치의 Volume density & view dependent emitted radiance  
   
-카메라 ray를 따라 5D 좌표를 쿼리하여 view synthesis + 고전적 volume rendering 기술을 사용하여 출력 색상과 밀도를 이미지에 projection한다.  
+카메라 ray를 따라 5D 좌표를 쿼리하여 view synthesis + 고전적 volume rendering을 이용해 출력 색상/밀도를 이미지에 projection한다.  
 Volume rendering은 본래 구분할 수 있기 때문에 표현을 최적화하는데 필요한 입력은 알려진 카메라 포즈가 있는 이미지 세트뿐이다. 
 Neural radiance field를 효과적으로 최적화하여 복잡한 기하학과 외관을 가진 장면의 사실적인 새로운 뷰를 렌더링하는 방법을 설명한다.
 
