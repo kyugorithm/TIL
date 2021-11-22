@@ -13,14 +13,14 @@ Volume rendering은 본래 구분할 수 있기 때문에 표현을 최적화하
 Neural radiance field를 효과적으로 최적화하여 복잡한 기하학과 외관을 가진 장면의 사실적인 새로운 뷰를 렌더링하는 방법을 설명한다.
 
 ## Introduction
-Continous 5D scene representation의 parameters를 직접 최적화하여 capture image set의 rendering 오류를 최소화함으로써  
-오래 연구된 view synthesis 문제를 새롭게 해결한다.  
-(x, y, z)에서 각 방향(θ, φ)에서 방출되는 광도를 출력하는 연속 5D 함수와 (x, y, z) 통과하는 광선에 의해 누적되는 광도를  제어하는  
-차동 불투명도처럼 작용하는 각 지점의 밀도로 정적 장면을 나타낸다.  
-우리의 방법은 단일 5D 좌표(x, y, z, θ, φ)에서 단일 볼륨 밀도 및 뷰 의존 RGB 색상으로 회귀하여  
+Continous 5D scene representation을 위해 parameters를 직접 최적화하여 capture image set의 rendering 오류를 최소화함으로써  
+view synthesis 문제를 새롭게 해결한다.  
+(x, y, z)에서 각 방향(θ, φ)에서 방출되는 radiance를 출력하는 연속 5D 함수와 (x, y, z) 통과하는 ray에 의해 누적되는 radiance를  제어하는  
+differential opacity controlling처럼 작용하는 각 지점의 밀도로 정적 장면을 나타낸다.  
+방법은 단일 5D 좌표(x, y, z, θ, φ)에서 단일 volume density 및 view dependent RGB로 회귀하여  
 이 기능을 나타내도록 conv. 없이 FNN를 최적화한다.  
   
-특정 관점에서 이 신경 방사장(NeRF)을 rendering 하려면  
+특정 관점에서 이 NeRF rendering을 위해 다음이 필요하다.  
   
 1) 카메라 ray를 scene으로 이동하여 샘플링된 3D 포인트 세트를 생성  
 2) 이러한 점과 그에 상응하는 2D 보기 방향을 신경망에 대한 입력으로 사용하여 색상과 밀도의 출력 세트를 생성  
