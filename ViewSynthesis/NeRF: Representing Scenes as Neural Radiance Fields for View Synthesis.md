@@ -1,7 +1,8 @@
 # NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis
 
 ## Abstract
-(희소 이미지 view 셋)으로 (underlying continous volumetric scence function을 최적화)하여 (complex scene에 대한 view synthesis)  
+**Input** : (Set of sparse view images) → **Output** : (view synthesis for complex scene)  
+**Function** : (underlying continous volumetric scence function optimization)  
   
 1. Structure : FC DNN(non-conv.) 
 2. Input____ : 5D 공간좌표(x,y,z) 및 시야 방향 (θ, φ)  
