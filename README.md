@@ -48,8 +48,9 @@
 ```
 (2021) StyleMix : Separating Content and Style for Enhanced Data Augmentation
 ```
-## DeepFake
+## FaceSwap
 ```
+(2021) SimSwap: An Efficient Framework For High Fidelity Face Swapping
 (2020) DeepFaceLab: Integrated, flexible and extensible face-swapping framework
 ```
 ## Generative Model
