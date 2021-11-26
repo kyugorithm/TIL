@@ -17,8 +17,38 @@
 
 
 ## Introduction
-Face swapping은 target의 attribute(표정, 자세, 조명)는 보존하면서 source ID를 전달하는 유망한 기술이다.  
-이 기술은 존재하지 않는 쌍둥이를 생성하는 영화산업에서 광범위하게 사용된다.  
+Face swapping은 target attribute(표정, 자세, 조명)는 보존하면서 source ID를 전달하는 유망한 기술이다.  
+이 기술은 존재하지 않는 twin을 생성하는 영화산업에서 광범위하게 사용된다.  
+산업에서의 face swapping 방식은 배우의 얼굴모델을 재현하기 위한 최신 장비를 이용하고  
+대부분의 사람이 접근할 수 없는 장면의 조명조건을 재구성한다.  
+최근, 최신 장비 없이 face swapping을 수행하는 방식은 연구자들의 관심을 끌어왔다.  
 
+face swapping에서 고려되는 주요 어려움들은 다음과 같다.  
+1) 강력한 일반화 능력을 가진 페이스 스왑 프레임워크를 임의의 페이스에 맞게 조정해야 한다.  
+2) 결과 face의 ID는 source의 것과 가까워야 한다.  
+3) 결과 face의 attribute(표정, 자세, 조명)는 target의 것과 가까워야 한다.  
 
-The industrial face swapping method utilizes advanced equipment to reconstruct the actor’s face model and rebuild the scene’s lighting condition, which is beyond the reach of most people. Recently, face swapping without high-end equipment [2, 7, 20, 26] has attracted the researcher’s attention. The main difficulties in face swapping can be concluded as follows: 1). A face swapping framework with a strong generalization ability should be adapted to arbitrary faces; 2). The identity of the result face should be close to the identity of the source face; 3). The attributes(e.g. expression, posture, lighting etc.) of the result face should be consistent with the attributes of the target face. There are mainly two types of face swapping methods, including source-oriented methods that work on the source face at image level and target-oriented methods that work on the target face at feature level. Source-oriented methods [3, 4, 26, 27] transfer attributes(like expression and posture) from the target face to the source face and then blend the source face into the target image. These methods are sensitive to the posture and lighting of the source image and are not able to reproduce the target’s expression accurately. Targetoriented approaches [2, 7, 18, 20] directly modify the features of the target image and can be well adapted to the variation of the source face. The open-source algorithm [7] is able to generate face swapping results between two specific identities, but lacks the ability for generalization. The GAN-based work [2] combines the source’s identity and the target’s attributes at the feature level and extends the application to arbitrary identity. A recent work [20] utilizes a two-stage framework and achieves high fidelity results. However, these methods focus too much on identity modification. They apply weak constrain on attribute preservation and often encounter mismatch in expression or posture. To overcome the defects in generalization and attribute preservation, we propose an efficient face swapping framework, called SimSwap. We analyze the architecture of an identity-specific face swapping algorithm [7] and find out the lack of generalization is caused by the integration of identity information into the Decoder so the Decoder can be only applied to one specific identity. To avoid such integration, we present the ID Injection Module. Our module conducts modifications on the features of the target image by embedding the identity information of the source face, so the relevance between identity information and the weights of Decoder can be removed and our architecture can be applied to arbitrary identities. Furthermore, identity and attribute information are highly coupled at feature level. A direct modification on the whole features will lead to a decrease in attribute performance and we need to use training losses to alleviate the effect. While explicitly constraining each attribute of the result image to match that of the target image is too complicated, we propose the Weak Feature Matching Loss. Our Weak Feature Matching Loss aligns the generated result with the input target at high semantic level and implicitly helps our architecture to preserve the target’s attributes. By using this term, our SimSwap is capable of achieving competitive identity performance while possessing a better attribute preservation skill than previous state-of-the-art methods. Extensive experiments demonstrate the generalization and effectiveness of our algorithm.
+swapping 방법은 주로 두가지로 나뉜다. 
+1) Source-oriented : image level로 source에서 작업  
+2) Target-oriented : feature level로 target에서 작업  
+
+Source-oriented methods transfer attributes(like expression and posture) from the target face to the source face and then blend the source face into the target image. 
+These methods are sensitive to the posture and lighting of the source image and are not able to reproduce the target’s expression accurately. 
+Targetoriented approaches [2, 7, 18, 20] directly modify the features of the target image and can be well adapted to the variation of the source face. 
+The open-source algorithm [7] is able to generate face swapping results between two specific identities, but lacks the ability for generalization.
+The GAN-based work [2] combines the source’s identity and the target’s attributes at the feature level and extends the application to arbitrary identity.
+A recent work [20] utilizes a two-stage framework and achieves high fidelity results. However, these methods focus too much on identity modification.
+They apply weak constrain on attribute preservation and often encounter mismatch in expression or posture. 
+To overcome the defects in generalization and attribute preservation, we propose an efficient face swapping framework, called SimSwap.
+We analyze the architecture of an identity-specific face swapping algorithm [7] and find out the lack of generalization is caused by 
+the integration of identity information into the Decoder so the Decoder can be only applied to one specific identity. 
+To avoid such integration, we present the ID Injection Module.
+Our module conducts modifications on the features of the target image by embedding the identity information of the source face, 
+so the relevance between identity information and the weights of Decoder can be removed and our architecture can be applied to arbitrary identities. 
+Furthermore, identity and attribute information are highly coupled at feature level.
+A direct modification on the whole features will lead to a decrease in attribute performance and we need to use training losses to alleviate the effect. 
+While explicitly constraining each attribute of the result image to match that of the target image is too complicated, we propose the Weak Feature Matching Loss.
+Our Weak Feature Matching Loss aligns the generated result with the input target at high semantic level and implicitly helps our architecture
+to preserve the target’s attributes. By using this term, our SimSwap is capable of achieving competitive identity performance 
+while possessing a better attribute preservation skill than previous state-of-the-art methods. Extensive experiments demonstrate 
+the generalization and effectiveness of our algorithm.
