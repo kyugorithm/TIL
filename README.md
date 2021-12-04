@@ -12,6 +12,7 @@
 ```
 (2021) StyTr^2: Unbiased Image Style Transfer with Transformers  
 (2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis  
+(2020) State of the Art on Neural Rendering
 ```
 
 ## 3DMM
