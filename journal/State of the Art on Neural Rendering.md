@@ -1,4 +1,4 @@
-# State of the Art on NR Rendering
+# State of the Art on Neural Rendering
 
 ### Nomenclature
 1. NR : Neural Rendring
