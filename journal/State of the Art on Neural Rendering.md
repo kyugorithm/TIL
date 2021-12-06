@@ -117,21 +117,26 @@ Camera optics는 조리개로부터 들어오는 빛을 획득하여 카메라 �
 이 물리적 이미지 형성의 모든 단계(광원, 장면 형상, 재료 특성, 광전송, 광학 및 센서 동작)는 CG로 모델링된다.
 
 ### 4.1.1. Scene Representations
-Scene object를 모델링하기 위해 sceone geometry에 대한 다양한 표현이 제안되었다.  
+Scene object를 모델링하기 위해 scene geometry에 대한 다양한 표현이 제안되었다.  
 그것들은 explicit/implicit 표현으로 분류될 수 있다.  
-Explicit은 장면을 삼각형, 점 같은 원시 요소 또는 고차 파라메트릭 표면과 같은 기하학적 원시 요소의 모음으로 설명한다.  
-Implicit은 표면이 함수(또는 다른 수준 집합)의 영점수로 정의되는 R3 → R로부터의 부호 거리 함수 매핑을 포함한다.  
+Explicit : 장면을 삼각형, 점 같은 원시 요소 또는 고차 파라메트릭 표면과 같은 기하학적 원시 요소의 모음으로 설명한다.  
+Implicit : 표면이 함수(또는 다른 수준 집합)의 영점수로 정의되는 R3 → R로부터의 부호 거리 함수 매핑을 포함한다.  
 실제로 대부분의 하드웨어와 소프트웨어 renderer는 삼각형 메시에서 가장 잘 작동하도록 조정되어 있으며  
-렌더링하기 위해 다른 표현을 삼각형으로 변환한다.
+렌더링을 위해 다른 표현을 삼각형으로 변환한다.
   
 빛과 장면 표면과의 상호 작용은 표면의 재료 특성에 따라 다르다.  
-재료는 BRDF(Bidirectional Reflectance Distribution Functions;양방향 반사율 분포 함수)  
-또는 BSSRDF(Bidirectional Subsurface Scattering Reflectance Distribution Functions;양방향 지하 산란 반사율 분포 함수)로 나타낼 수 있다.  
-BRDF는 들어오는 각 광선 방향의 표면 지점에서 발생하는 주어진 파장의 빛이 나가는 각 광선 방향을 향해 반사되는 정도를 설명하는 5차원 함수이다.  
-BRDF는 단일 표면 지점에서 발생하는 빛 상호 작용만 모델링하는 반면, 
-BSSDRF는 한 표면 지점에서 발생하는 빛이 다른 표면 지점에서 반사되는 방법을 모델링하여 7-D 함수를 만든다.  
-BRDF는 분석 모델 또는 측정된 데이터를 사용하여 나타낼 수 있다.  
-BRDF가 표면에 걸쳐 변화할 때 이를 공간적으로 변화하는 BRDF(svBRDF)라고 한다.  
+
+재료는 아래 두가지로 표현될 수 있다.  
+1) BRDF(Bidirectional Reflectance Distribution Functions;양방향 반사율 분포 함수)  
+- 들어오는 각 광선 방향의 표면 지점에서 발생하는 주어진 파장의 빛이 나가는 각 광선 방향을 향해 반사되는 정도를 설명하는 5차원 함수  
+- 분석 모델 또는 측정된 데이터를 사용하여 나타낼 수 있다.  
+- BRDF가 표면에 걸쳐 변화할 때 이를 spatially varing BRDF(svBRDF)라고 한다.  
+2) BSSRDF(Bidirectional Subsurface Scattering Reflectance Distribution Functions;양방향 지하 산란 반사율 분포 함수)  
+- BRDF는 단일 표면 지점에서 발생하는 빛 상호 작용만 모델링하는 반면,  
+- BSSDRF는 한 표면 지점에서 발생하는 빛이 다른 표면 지점에서 반사되는 방법을 모델링하여 7-D 함수를 만든다.  
+
+![image](https://user-images.githubusercontent.com/40943064/144844016-498e9cbe-4d52-438d-8025-3ca1234b6511.png)  
+
 기하학 전반에 걸쳐 공간적으로 변화하는 동작은 이산 재료를 다른 기하학적 원시 요소에 결합하거나 텍스처 매핑을 사용하여 나타낼 수 있다.  
 텍스처 맵은 2차원 또는 3차원 도메인에서 표면으로 확산 알베도와 같은 재료 매개 변수의 연속적 값 세트를 정의한다.  
 3차원 텍스처는 공간의 경계 영역을 통해 값을 나타내며 명시적이거나 암시적인 지오메트리에 적용될 수 있다. 
