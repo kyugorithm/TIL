@@ -113,5 +113,69 @@ max(De) min(Dv) lvisual를 사용하여 AE와 함께 Dv를 학습한다.
 그러나 더 약한 샘플을 공급하면 D의 학습을 방해하므로 무작위로 선택된 샘플을 사용하여 두 개의 D를 학습한다.  
 Informative-negative sample을 찾기 위해 먼저 임의의 latent space sample로 시작하고 D를 사용하여 샘플에서 생성된 이미지의 품질을 평가한다.  
 D 손실은 latent space의 gradient를 back-propagate하 계산하는 데 사용한다.  
-그런 다음 D가 생성된 이미지가 클래스를 벗어났다고 확신하는 잠재 공간의 새 지점으로 이동하기 위해 그래디언트 방향으로 작은 단계를 수행한다.  
+그런 다음 D가 생성된 이미지가 클래스를 벗어났다고 확신하는 잠재 공간의 새 지점으로 이동하기 위해 gradient 방향으로 작은 단계를 수행한다.  
+
+**Classifier:**  
+분류기는 주어진 이미지가 주어진 클래스의 내용과 얼마나 유사한지를 결정한다.  
+이상적으로 이러한 분류기는 주어진 클래스의 positive and negative example을 사용하여 학습할 수 있다.  
+그러나 사용할 수 있는 negative 학습 샘플이 없기 때문에 대신 weaker 분류기를 학습한다.  
+제안된 메커니즘에서 콘텐츠가 지정된 클래스에 속하면 분류자는 긍정적인 것으로 간주하고  
+긍정적인 클래스와 유사하지 않은 경우 분류자는 부정적으로 간주한다.  
+클래스 내 샘플의 reconstruction을 positive로 사용하고 latent space의 임의 샘플에서 생성된 fake를 negative로 사용하여 학습한다.  
+이 분류기는 binary cross entropy loss를 사용하여 다른 네트워크 요소와 독립적으로 학습한다.  
+즉, G 및 D 매개변수를 학습하는 동안 classifier loss를 고려하지 않는다.  
+초기에는 fake 품질이 좋지 않기 때문에 classifier는 매우 낮은 loss를 얻을 수 있다.  
+학습을 통해 fake의 품질이 향상됨에 따라 구분이 어려워지고 분류기가 더 똑똑해진다.  
+주어진 이미지를 negative로 분류하는 분류기의 예측은 주어진 이미지가 항상 informative-negative latent 샘플에 해당한다는 것을 의미하거나 의미하지 않을 수 있다.  
+그렇지 않더라도 그러한 이미지는 학습 과정을 전혀 방해하지 않으며 평소와 같이 진행한다.  
+Informative-negative 분류기는 GAN 게임에 참여하지 않기 때문에 분류기의 capacity과 G의 균형을 맞출 필요가 없다  
+따라서 분류기를 매우 강력하게 만들어 클래스 내 reconstruction에 대한 신뢰도를 높이는 것이 가능하다.  
+
+그림 4는 몇 가지 예시적인 예를 사용하여 informative-negative mining 절차의 영향을 보여준다.  
+그림에서 네거티브 마이닝 전후의 이미지 pair가 표시된다.  
+맨 아래 줄에는 원본 이미지가 크게 변경되지 않은 경우를 보여주었다.  
+맨 위 행에서 우리는 informative-negative mining의 결과로 입력 이미지가 크게 변경된 몇 가지 예를 보여주었다.  
+예를 들어, 숫자 2의 왼쪽 상단 샘플은 프로세스 후 숫자 7로 나타난다.  
+![image](https://user-images.githubusercontent.com/40943064/145540813-9aa3fdb7-781d-4ccc-87a2-c5998d13e388.png)  
+
+그림 3(b)에서 숫자 9에 대한 임의의 latent sample에서 생성된 몇 가지 fake를 시각화하여 이 절차의 영향을 보여준다.  
+Informative-negative mining이 전체 잠재 공간에 걸쳐 일관되게 원하는 클래스의 숫자를 더 많이 생성하는 도움을 주는것이 분명히 보인다.  
+
+**Full OCGAN Model:**
+OCGAN의 전체 네트워크와 제안된 네트워크의 각 개별 구성 요소에 대한 분석은 그림 5에 나와 있다.  
+![image](https://user-images.githubusercontent.com/40943064/145541191-81ca7dea-8435-4bae-9616-1d1acfefed91.png)  
+
+네트워크는 두 가지 반복 단계로 훈련된다.  
+1) 다른 모든 네트워크 고정되고 classifier는 재구성된 클래스 내 example과 fake example로 학습된다.  
+2) Classifier가 고정되고 AE와 두 개의 D가 적대적으로 학습된다.  
+
+Dl은 클래스 내 이미지의 latent projection과 U(−1, 1) 분포에서 추출한 무작위 샘플을 기반으로 학습된다.  
+Dv는 임의의 latent sample에서 생성된 fake와 주어진 클래스의 실제 이미지를 사용하여 학습된다.  
+  
+D는 손실 l latent + lvisual을 최소화하여 학습된다.   
+각 G 단계 전에 U(-1, 1) 분포에서 추출한 무작위 샘플 배치를 사용하고 latent space에서 classifier의 loss에서   
+gradient descent를 사용하여 informative-negative sample을 latent space에서 찾는다.  
+AE는 10×lMSE+lvisual+ l latent를 사용하여 주어진 클래스의 (노이즈 추가된)  
+실제 example의 informative-negative sample 및 latent projection을 사용하여 학습된다.  
+좋은 reconstruction을 얻기 위해 lMSE 항에 더 큰 가중치가 부여된다. (coefficeint는 reconstruction 품질에 따라 경험적으로 선택)  
+네트워크가 합리적인 품질의 fake를 생성하기 시작한 후에만 informative-negative sample에 대한 mining을 수행했다.  
+훈련 절차의 단계는 알고리즘 1에 요약되어 있다.  
+
+![image](https://user-images.githubusercontent.com/40943064/145542097-fb98910f-18ab-41f2-8cbc-02f967262ee3.png)
+
+**Network Architecture and Hyper-parameter Selection:**  
+AE : 3개의 5 x 5 conv. (stride==2) -> 3개의 transposed conv.  
+(모든 레이어 공통 : Batchnormalization & Leaky-Relu-0.2)  
+(tanh 활성화는 latent dimention의 지원을 제한하기 위해 마지막 conv. 레이어 직후에 배치)  
+AE에 기본 채널 크기 64를 사용하고 모든 layer1에 대해 2배만큼 채널 수를 증가  
+
+Dv와 Classifier : 3개의 5 x 5 conv.(stride==2)  
+기본 채널 크기 : 12, 64   
+
+Dl : FC layers(ch:128, 64, 32 및 16)  
+(모든 레이어 공통 : Batchnormalization & Relu)  
+  
+학습이 끝나면 평가를 위해 검증 세트에서 최소 MSE를 초래하는 모델을 결정  
+lr, latent space dimention 같은 모델 hyper-parameter는 검증 set의 MSE를 기반으로 결정  
+각 네트워크의 기본 채널 수와 loss term weight는 training loss plot을 기반으로 결정  
 
