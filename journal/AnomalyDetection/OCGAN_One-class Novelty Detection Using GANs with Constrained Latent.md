@@ -14,22 +14,24 @@ One class novelty detection의 고전적인 문제에 대해 OCGAN이라는 새�
 (개인생각 : 보통은 이미지 공간에서 사용하나 latent 에 대한 Discrimination을 사용하는것이 novelty가 있으나 학습시 D가 over-training 될 위험이 존재함)  
 3) 추가 D를 정의하여 image 공간에서의 discrimination을 수행하도록 하고 이를통해 생성된 이미지가 실제처럼 보이도록 한다.  
 (개인생각 : 기존 방식)
-4) 잠재적인 out-of-class 샘플을 생성하는 latent space의 point를 탐색하는 gradient-descent 기반 sampling은 네트워크에 피드백되어 해당 지점에서 클래스 내 example을 생성하도록 추가 학습한다.
+4) 잠재적인 out-of-class 샘플을 생성하는 latent space의 point를 탐색하는 gradient-descent 기반 sampling은 네트워크에 피드백되어  
+해당 포인트에서 in-class example을 생성하도록 추가 학습한다.
 
 
-두 개의 1-class novelty detection 프로토콜을 사용하여 네개의 데이터 세트에 걸쳐 성능을 증명한다.  
+두 개의 one-class novelty detection 프로토콜을 사용하여 네개의 데이터 세트에 걸쳐 성능을 증명한다.  
 
 
 ## 1. Introduction
-## 2. Related Work
+## 2. Related Work  
+  
 ## 3. Proposed Method: OCGAN
 ### 3.1. Motivation
-Introudction에서 주어진 클래스를 나타내도록 학습된 네트워크가 다른 클래스의 이미지에 대한 표현을 나타내는 예를 보여줬다.  
-주어진 클래스의 이미지가 충분히 다양할 때 latent space의 한 클래스 내 이미지의 projection을 다른 클래스의 이미지로 원활하게 전환하는 것은  
-무한히 다양한 경로를 따라 수행될 수 있다. 이는 특히 높은 차원의 latent space의 경우이다.  
-AE를 학습할 때 우리는 관찰된 예만 latent space로 projection을 모델링한다.
+Introduction에서 주어진 클래스를 표현하도록 학습된 네트워크가 다른 클래스에 대한 좋은 표현을 제공하는 예를 제시했다.  
+주어진 클래스의 이미지가 충분히 다양할 때 latent space의 하나의 in-class 이미지의 projection을 다른 클래스로 원활하게  
+전환하는 것은 무한히 다양한 경로를 따라 수행될 수 있다. 이는 특히 높은 차원의 latent space의 경우이다.  
+AE를 학습할 때 우리는 관찰된 예만 latent space로 projection을 모델링한다.  
 해당 latent point 사이의 모든 가능한 경로는 아니다.  
-그림 2에서 주어진 클래스8 의 서로 다른 두 이미지에 해당하는 두 지점 사이의 latent space에서 추적된 경로를 시각화한다.  
+그림 2에서 주어진 클래스 8 의 서로 다른 두 이미지에 해당하는 두 지점 사이의 latent space에서 추적된 경로를 시각화한다.  
 ![image](https://user-images.githubusercontent.com/40943064/145534081-a68d76e9-99fc-431b-a787-38e3f3927fe7.png)
 
 좌측은 지정된 경로를 따라 latent space 한 point에서 다른 point로 전환할 때 특정 중간 latent 샘플이 숫자 1인 것이 확인된다.  
@@ -71,11 +73,11 @@ AE의 decoder 부분은 latent space에서 이미지를 생성하는 역할도 �
 **Latent Discriminator:**  
 목표 : Latent space의 샘플이 주어진 클래스의 이미지를 잘 나타내는 latent space을 얻는것  
 주어진 클래스의 representation이 latent space의 하위 영역에만 국한된다면 이 목표는 달성할 수 없다.  
-따라서 클래스 내 sample의 latent representation이 latent space 전체에 균일하게 분포되도록 명시적으로 강제한다.  
+따라서 in-class sample의 latent representation이 latent space 전체에 균일하게 분포되도록 명시적으로 강제한다.  
 이를 latent discrimiantor **Dl**이라고 표현하는 latent space에서 적용하는 D를 사용하여 달성한다.  
 D 주어진 클래스의 실제 이미지의 latent representation과 U(-1, 1)d 분포에서 추출한 샘플을 구별하도록 학습된다.  
 ![image](https://user-images.githubusercontent.com/40943064/145536716-15009fbb-deb1-4218-8017-762d06e2f0ff.png)  
-(px는 클래스 내 example의 distribution)  
+(px는 in-class example의 distribution)  
 max(Encoder)min(Dl) l latent를 사용하여 AE와 함께 latent discriminator를 학습한다.  
 Latent space는 평형 상태에서 (−1, 1)d 를 support 하는 hyper cube이므로 주어진 클래스의 example의 latent projection은  
 U(−1, 1)d 분포를 따라 고르게 분포될 것으로 예상된다.  
@@ -121,15 +123,15 @@ D 손실은 latent space의 gradient를 back-propagate하 계산하는 데 사�
 그러나 사용할 수 있는 negative 학습 샘플이 없기 때문에 대신 weaker 분류기를 학습한다.  
 제안된 메커니즘에서 콘텐츠가 지정된 클래스에 속하면 분류자는 긍정적인 것으로 간주하고  
 긍정적인 클래스와 유사하지 않은 경우 분류자는 부정적으로 간주한다.  
-클래스 내 샘플의 reconstruction을 positive로 사용하고 latent space의 임의 샘플에서 생성된 fake를 negative로 사용하여 학습한다.  
+In-class 샘플의 reconstruction을 positive로 사용하고 latent space의 임의 샘플에서 생성된 fake를 negative로 사용하여 학습한다.  
 이 분류기는 binary cross entropy loss를 사용하여 다른 네트워크 요소와 독립적으로 학습한다.  
 즉, G 및 D 매개변수를 학습하는 동안 classifier loss를 고려하지 않는다.  
 초기에는 fake 품질이 좋지 않기 때문에 classifier는 매우 낮은 loss를 얻을 수 있다.  
 학습을 통해 fake의 품질이 향상됨에 따라 구분이 어려워지고 분류기가 더 똑똑해진다.  
-주어진 이미지를 negative로 분류하는 분류기의 예측은 주어진 이미지가 항상 informative-negative latent 샘플에 해당한다는 것을 의미하거나 의미하지 않을 수 있다.  
+이미지를 negative로 분류하는 예측은 주어진 이미지가 항상 informative-negative latent 샘플에 해당한다는 것을 의미하거나 의미하지 않을 수 있다.  
 그렇지 않더라도 그러한 이미지는 학습 과정을 전혀 방해하지 않으며 평소와 같이 진행한다.  
 Informative-negative 분류기는 GAN 게임에 참여하지 않기 때문에 분류기의 capacity과 G의 균형을 맞출 필요가 없다  
-따라서 분류기를 매우 강력하게 만들어 클래스 내 reconstruction에 대한 신뢰도를 높이는 것이 가능하다.  
+따라서 분류기를 매우 강력하게 만들어 in-class reconstruction에 대한 신뢰도를 높이는 것이 가능하다.  
 
 그림 4는 몇 가지 예시적인 예를 사용하여 informative-negative mining 절차의 영향을 보여준다.  
 그림에서 네거티브 마이닝 전후의 이미지 pair가 표시된다.  
@@ -146,10 +148,10 @@ OCGAN의 전체 네트워크와 제안된 네트워크의 각 개별 구성 요�
 ![image](https://user-images.githubusercontent.com/40943064/145541191-81ca7dea-8435-4bae-9616-1d1acfefed91.png)  
 
 네트워크는 두 가지 반복 단계로 훈련된다.  
-1) 다른 모든 네트워크 고정되고 classifier는 재구성된 클래스 내 example과 fake example로 학습된다.  
+1) 다른 모든 네트워크 고정되고 classifier는 재구성된 in-class example과 fake example로 학습된다.  
 2) Classifier가 고정되고 AE와 두 개의 D가 적대적으로 학습된다.  
 
-Dl은 클래스 내 이미지의 latent projection과 U(−1, 1) 분포에서 추출한 무작위 샘플을 기반으로 학습된다.  
+Dl은 in-class 이미지의 latent projection과 U(−1, 1) 분포에서 추출한 무작위 샘플을 기반으로 학습된다.  
 Dv는 임의의 latent sample에서 생성된 fake와 주어진 클래스의 실제 이미지를 사용하여 학습된다.  
   
 D는 손실 l latent + lvisual을 최소화하여 학습된다.   
