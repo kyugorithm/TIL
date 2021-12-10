@@ -23,6 +23,7 @@
 
 ## Anomaly Detection
 ```
+(2019) OCGAN: One-class Novelty Detection Using GANs with Constrained Latent
 (2018) DeepAnT: A Deep Learning Approach for Unsupervised Anomaly Detection in Time Series
 (2018) GANomaly : Semi-Supervised Anomaly Detection via Adversarial Training
 (2017) AnoGAN : Unsupervised Anomaly Detection with Generative Adversarial Networks to Guide Marker Discovery  
