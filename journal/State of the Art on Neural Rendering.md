@@ -239,3 +239,107 @@ cGAN은 거친 컴퓨터 그래픽 렌더링과 해당 실제 이미지 사이�
 아래에서는 네트워크 아키텍처와 학습 목표 모두에 대한 더 많은 기술적 세부 사항을 제공한다.
 
 ### 4.2.1. Learning a Generator
+
+조건부 입력 x ∈ X를 출력 y∈Y에 매핑할 수 있는 G를 학습하는 것을 목표로 한다. (X:입력도메인, Y:출력도메인)  
+(User-provided sketch image, camera parameters, lighting conditions, scene attributes, textual descriptions)  
+y는 영상, 비디오에서 voxel 또는 mesh와 같은 3D 데이터에 이르기까지 다양할 수 있다.  
+(각 애플리케이션에 대해 가능한 네트워크 입력 및 출력의 전체 목록은 표 1을 참조)  
+여기서는 일반적으로 사용되는 세 가지 G의 구조를 설명합니다.(S6의 app.별 세부 사항을 확인하도록 권장된다.)  
+1) **FCN**  
+FCN은 임의 크기의 입력 이미지를 촬영하고 동일한 크기로 출력을 예측한다.  
+이미지를 벡터로 매핑하는 AlexNet 및 VGG와 같은 대중적인 이미지 분류 네트워크에 비해 FCN은 공간 이미지 해상도를 보존하기 위해  
+fractionally-strided convolutions을 사용한다.  
+FCN은 원래 semantic segmentation 및 object detection과 같은 recognition을 위해 설계되었지만 이미지 합성 작업에 널리 사용되었다.  
+(2) **UNet**  
+Unet은 localization이 향상된 FCN 기반 구조이다.  
+초기 레이어의 고해상도 feature map에서 뒤 레이어의 업샘플링 feature로 이른바 "skip-connection"을 추가한다.  
+입력에서 나오는 고주파 정보는 출력으로 직접 전달될 수 있기 때문에 이러한 skip-connection은 상세한 출력을 생성하는 데 도움이 된다.  
+(3) ResNet  
+ResNet기반 G는 residual 블록을 사용하여 고주파 정보를 출력으로 전달하며 style transfer 및 이미지 super-resolution에 사용되었다.  
+
+### 4.2.2. Learning using Perceptual Distance
+많은 입출력 pair를 수집하고 G를 선택하면, 입력이 주어졌을 때 원하는 출력을 생산하는 G를 어떻게 학습시킬 수 있을까?  
+이 학습 문제에 효과적인 객관적 기능은 무엇인가? 한 가지 간단한 방법은 다음과 같이 G(x)와 y(GT) 사이의 거리를 최소화하는 것이다.  
+![image](https://user-images.githubusercontent.com/40943064/145590791-676fa40c-771f-4858-9443-1244b6f68928.png)
+안타깝게도 학습된 G는 흐릿한 이미지 또는 여러 그럴듯한 출력에 대한 평균 결과를 생성하는 경향이 있다.  
+예를 들어, image colorization에서 학습된 G는 평균화 효과로 인해 때때로 desaturated 결과를 생성한다.  
+이미지  super-resolution에서는 p-norm이 각 픽셀을 독립적으로 보기 때문에 생성기가 구조와 세부 정보를 합성하지 못한다.  
+
+이미지 유사성에 대한 인간의 인식과 더 잘 일치하는 학습 목표를 설계하기 위해, 최근 연구는 사전 학습된  
+이미지 classifier F(예: VGG)에 의해 추출된 deep feature representation 사이의 거리 측정을 제안한다.  
+이러한 loss는 'p-norm'이 각 픽셀의 품질을 독립적으로 평가하는 반면, deep feature representation은  
+전체 이미지를 전체적으로 요약하기 때문에 'pnorm'에 비해 유리하다.  
+G는 다음과 같은 feature matching 목표를 최소화하도록 학습된다.  
+![image](https://user-images.githubusercontent.com/40943064/145592173-2aabccb5-6d79-430c-9d15-ece1f645ef52.png)
+F(t) :T개 레이어를 가진 사전 학습된 F의 t번째 레이어에서 feature extracter  
+Nt : layer t의 총 feature 수  
+Δt : 각 layer의 weight  
+위의 거리는 종종 "perceptual disctance"라는 신조어로 만들어지지만, 네트워크가 원래 이미지 합성 작업보다는  
+이미지 분류 작업을 위해 훈련되었기 때문에 다단계 deep feature space에서 일치하는 통계가 인간의 인식과 일치하고  
+고품질 결과 합성에 도움이 될 수 있는 이유는 흥미롭다.  
+최근의 한 연구는 강력한 분류자가 학습한 풍부한 특징이 기존의 수작업 지각 메트릭스를 능가하는  
+인간의 지각 작업에 유용한 표현을 제공한다는 것을 시사한다.  
+
+### 4.2.3. Learning with Conditional GANs
+그러나 출력과 실측값 사이의 거리를 최소화한다고 해서 실제처럼 보이는 출력이 보장되지는 않는다.  
+그들은 또한 small distance and photorealism이 서로 상충한다는 것을 증명한다.  
+따라서 거리 최소화 대신 deep generative 모델은 distribution matching, 즉 생성된 결과의 분포를 학습 데이터의 분포에 일치시키는 데 초점을 맞춘다.  
+많은 유형의 생성 모델 중에서 GAN은 많은 CV 작업에 대해 유망한 결과를 보여주었다.  
+Goodfellow의 원본 작업에서 GAN 생성기 G : z → y는 저차원 무작위 벡터 z에서 출력 이미지 y로의 매핑을 학습한다.  
+일반적으로 입력 벡터는 다변량 가우스 또는 균등 분포에서 샘플링한다.  
+G는 적대적으로 훈련된 D에 의해 "실제"와 구별할 수 없는 출력을 생성하도록 학습된다.  
+D는 G에 의해 생성된 합성 이미지를 감지하도록 훈련된다.  
+얼굴이나 차량과 같은 객체 범주에 대해 훈련된 GAN은 객체의 고품질 인스턴스 합성을 배우지만, 일반적으로 합성된 배경은 품질이 낮다.  
+최근 논문은 전체 scene의 생성 모델을 학습하여 이 문제를 완화하려고 한다.  
+조건부 정보를 입력으로 추가하기 위해, cGAN은 관찰된 입력 x와 출력 이미지 y에 무작위로 샘플링된 벡터 z로부터 매핑 G : {x,z} → y를 학습한다.  
+관찰된 입력 x는 또한 D로 전달되어 이미지 pair {x, y}의 real/fake 여부를 모델링한다.  
+cGAN에서 입력 x는 모델이 생성해야 하는 객체 범주를 제어하는 categorical label이다.  
+pix2pix와 같은 이미지 조건부 GAN의 경우, G는 semantic label map과 같은 입력 x를 사실적으로 보이는  
+출력 이미지로 변환하는 것을 목표로 하는 반면 D는 real/fake를 구별하는 것을 목표로 한다.  
+모델은 해당 입력 xi와 출력 이미지 yi로 구성된 쌍 데이터 세트 {xi , yi} N i=1로 학습된다.  
+cGAN은 다음 미니맥스 게임을 통해 입력이 주어진 출력의 조건부 분포와 일치한다.
+![image](https://user-images.githubusercontent.com/40943064/145593823-5b721158-b603-439a-aa52-ff02338116f8.png)  
+일반적으로 목적함수는 아래와 같이 정의된다.  
+![image](https://user-images.githubusercontent.com/40943064/145593852-d0ed3476-4d15-4bad-b6df-2c43c7cf32de.png)  
+
+초기 cGAN 구현에서는 노이즈 벡터가 주입되지 않으며, 학습 중에 네트워크에 의해 무시되는 경향이 있기 때문에 매핑이 결정적이다.  
+보다 최근의 연구는 multi-modal image synthesis를 가능하게 하기 위해 latent vector z를 사용한다.  
+학습을 안정화시키기 위해, cGANs 기반 방법은 픽셀당 'l1 loss Lrecon(G) (Equation (1)) 및 pereceptual distance loss Lperc(G) (Equation (2))도 채택한다.  
+학습 중에 D는 real/fake를 구분하는 능력을 향상시키려고 하는 반면 G는 D를 속이는 능력을 향상시키려고 한다.  
+pix2pix 방법은 G의 아키텍처로 U-Net을 채택하고 D로 patch 기반 FCN을 사용한다.  
+
+개념적으로 perceptual distance와 cGAN은 둘 다 더 나은 G를 학습하기 위한 효과적인 학습 목표를 정의하기 위해  
+보조 네트워크(F 또는 D)를 사용하기 때문에 관련이 있다.  
+High-level 추상화에서 G(x)의 품질을 평가하기 위한 정확한 CV 모델(F 또는 D)은 neural rendering 문제를 해결하는 데 크게 도움이 될 수 있다.  
+그러나 두 가지 중요한 차이가 있다.  
+첫째, perceptual distance는 fake와 real 사이의 불일치를 측정하는 것을 목표로 하는 반면,  
+cGAN은 real/fake의 조건부 분포의 근접성을 측정한다.  
+둘째, perceptual distance의 경우 feature extractor F는 사전 학습되고 고정되는 반면,  
+cGAN은 G에 따라 D를 즉시 학습한다.  
+실제로, 두 가지 방법은 상호 보완적이며, 많은 neural rendering 애플리케이션은 두 손실을 동시에 사용한다.  
+GAN 외에도 최근 VAE, auto regressive NN(예: PixelCNN, PixelRNN), invertible density 모델 등 많은 유망한 연구 방향이 등장했다.  
+StarGAN은 서로 다른 도메인을 가진 여러 데이터 세트를 기반으로 i2i 변환을 위한 단일 모델을 학습할 수 있다.  
+논의를 간결하게 유지하기 위해 여기서는 GAN에 초점을 맞춘다.  
+우리는 독자들이 deep generative model의 완전한 그림을 위해 튜토리얼과 코스 노트를 검토할 것을 촉구한다.  
+  
+  
+### 4.2.4. Learning without Paired Dat
+위의 목표를 가진 G를 학습하려면 수백에서 수백만 개의 pair 학습 데이터가 필요하다.  
+많은 실제 애플리케이션에서 pair 학습 데이터는 수집이 어렵고 비용이 많이 든다.  
+분류 작업을 위해 이미지에 레이블을 지정하는 것과 달리  annotator는 이미지 합성 작업을 위해  
+모든 픽셀에 레이블을 지정해야 한다.  
+예를 들어, semantic segmentation과 같은 작업을 위한 몇 개의 작은 데이터 세트만 존재한다.  
+Artistic stylization과 같은 그래픽 작업을 위한 입력-출력 쌍을 얻는 것은 종종 예술적 저작이 필요하고  
+때로는 잘 정의되지도 않기 때문에 훨씬 더 어려울 수 있다.  
+이 설정에서 모델에는 source domain {xi} N i=1(xi x X)과 target domain {y j}j=1(y j y Y)이 지정된다.  
+우리가 아는 것은 출력 G(x)가 어느 대상 도메인에서 와야 하는지이다. 즉, 도메인 Y의 이미지와 같다.  
+그러나 특정 입력이 주어지면 출력이 어떤 대상 이미지여야 하는지 알 수 없다.  
+X에서 Y까지의 이미지를 projection하기 위해 무한히 많은 mapping이 있을 수 있다.  
+따라서 우리는 추가적인 제약이 필요하다.  
+Bijective mapping 적용을 위한 cyclic consistency loss, pixel space 또는 feature embeeding 공간에서  
+출력이 입력 이미지에 근접하도록 장려하기 위한 distance preserving loss,  
+도메인 간 공유 표현을 학습하기 위한 weight 공유 전략 등을 포함한 여러 제약 조건이 제안되었다.  
+위의 방법은 조건부 GAN의 적용 범위를 넓히고 객체 변환, 도메인 전송 및 CG2real과 같은 많은 그래픽 애플리케이션을 가능하게 한다.  
+
+
+## 5. Neural Rendering
