@@ -8,16 +8,16 @@ One class novelty detection의 고전적인 문제에 대해 OCGAN이라는 새�
   
 본 방법의 key contribution은 주어진 class를 배타적(독점적)으로 표현하기 위해 **latent space를 명시적으로 제약** 하는것이다.  
 
-이를 달성하기 위해 다음과 같이 설계한다.
-1) Encoder output 레이어에 tanh를 적용하여 latent space의 값이 제약되도록 한다. 
-2) 적대적으로 학습된 latent 공간에서 D를 사용함으로써 in-class 샘플의 encoding된 표현이 동일한 bounding space로부터 uniform random distribution을 모사하도록 한다. 
-(개인생각 : 보통은 이미지 공간에서 사용하나 latent 에 대한 Discrimination을 사용하는것이 novelty가 있으나 학습시 D가 over-training 될 위험이 존재함)
-3) 추가 D를 정의하여 image 공간에서의 discrimination을 수행하도록 하고 이를통해 생성된 이미지가 실제처럼 보이도록 한다.
+이를 달성하기 위해 다음과 같이 설계한다.  
+1) Encoder output 레이어에 tanh를 적용하여 latent space의 값이 제약되도록 한다.  
+2) 적대적으로 학습된 latent 공간에서 D를 사용함으로써 in-class 샘플의 encoding된 표현이 동일한 bounding space로부터 uniform random distribution을 모사하도록 한다.  
+(개인생각 : 보통은 이미지 공간에서 사용하나 latent 에 대한 Discrimination을 사용하는것이 novelty가 있으나 학습시 D가 over-training 될 위험이 존재함)  
+3) 추가 D를 정의하여 image 공간에서의 discrimination을 수행하도록 하고 이를통해 생성된 이미지가 실제처럼 보이도록 한다.  
 (개인생각 : 기존 방식)
 4) 잠재적인 out-of-class 샘플을 생성하는 latent space의 point를 탐색하는 gradient-descent 기반 sampling은 네트워크에 피드백되어 해당 지점에서 클래스 내 example을 생성하도록 추가 학습한다.
 
 
-두 개의 1-class novelty detection 프로토콜을 사용하여 네개의 데이터 세트에 걸쳐 성능을 증명한다.
+두 개의 1-class novelty detection 프로토콜을 사용하여 네개의 데이터 세트에 걸쳐 성능을 증명한다.  
 
 
 ## 1. Introduction
