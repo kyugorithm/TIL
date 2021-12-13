@@ -449,10 +449,34 @@ NR은 다음과 같은 여러 중요한 활용사례를 가진다.
 사진모양을 semantically meaningful 방식으로 제어하고 수정하는 대화형 이미지 편집 도구를 가능하게 한다.  
 중요한 작업인 Image Analogies는 patch 기반 텍스처 합성을 사용하여 semantic 레이아웃과  
 reference 이미지가 주어지면 새로운 텍스처를 만든다.  
-이러한 단일 이미지 patch 기반 방법은 이미지 reshuffling, retargeting, and inpainting은 가능하지만  
-새 개체를 추가하거나 이미지를 처음부터 합성하는 것과 같은 높은 수준의 작업은 허용할 수 없다.  
+이러한 단일 이미지 patch 기반 방법은 이미지 reshuffling, retargeting, inpainting은 가능하지만  
+개체를 추가하거나 이미지를 처음부터 합성하는 것과 같은 높은 수준의 작업은 허용할 수 없다.  
 데이터 기반 그래픽 시스템은 대규모 사진 수집에서 검색된 이미지에서 여러 이미지 영역을 합성하여 새로운 이미지를 만든다.  
 이러한 방법을 사용하면 스케치 또는 의미 레이블 맵과 같은 입력을 사용하여 원하는 장면 레이아웃을 지정할 수 있다.  
 가장 최근의 개발은 장면 컨텍스트, 모양 및 부품을 일치시켜 영역을 구성하는 OpenShapes이다.  
-이러한 시스템은 매력적인 결과를 얻으면서도 대형 이미지 데이터베이스에서 검색할 때 속도가 느린 경우가 많다.  
-또한 서로 다른 이미지 간의 시각적 불일치로 인해 원하지 않는 아티팩트가 발견되기도 한다.  
+이러한 시스템은 매력적인 결과를 얻으면서도 대형 이미지 DB에서 검색할 때 속도가 느린 경우가 많다.  
+또한 이미지 간의 시각적 불일치로 인해 원하지 않는 아티팩트가 발견되기도 한다.  
+
+### 6.1.1. Semantic Photo Synthesis
+Non-parametric 방식과 달리 최근에는 cGAN objective를 사용하여 FCN을 학습하여 semantic layout/색상/스케치/질감과 같은  
+사용자 입력을 사실적인 이미지에 직접 매핑했다.  
+이 중 pix2pix와 Karacan의 방법은 street view 및 natural scene 이미지 생성을 포함하는 semantic 이미지 합성을 위한 최초의 학습 기반 방법을 제시한다.  
+이미지 해상도를 높이기 위해 Cascaded Refinement NN은 perceptual loss로 학습된 coarse-fine G를 학습한다.  
+결과는 고해상도이지만 고주파 텍스처와 디테일이 부족하다.  
+풍부한 세부 정보를 합성하기 위해 pix2pixHD는 사실적인 질감으로 2048 × 1024를 생성하는 cGAN을 제안한다.  
+pix2pix와 비교하여 주요 확장 기능에는 CRN과 유사한  coarse-to-fine G, 여러 scale local 이미지 통계를 캡처하는 multi-scale D,  
+perceptual distance와 유사하지만 대신 작업별 특징을 추출하기 위해 적응형 D를 사용하는 multi-scale D 기반 feature-matching objective가 있다.  
+특히 비전 및 그래픽 분야에서 수십 년 된 방식인 multi-scale 파이프라인은 deep image synthesis에 여전히 매우 효과적이다.  
+pix2pixHD와 BicycleGAN은 동일한 사용자 입력이 주어지면 가능한 여러 출력을 합성할 수 있으므로 사용자가 다른 스타일을 선택할 수 있다.  
+후속 시스템은 비디오 도메인으로 확장되어 사용자가 비디오의 의미를 제어할 수 있다.  
+Semi-parametric systems은 기존의 데이터 기반 이미지 합성과 FNN을 결합한다.  
+가장 최근에 GauGAN은 **SP**atial **A**daptive **DE**normalization layer를 사용하여 G의 의미 정보를 더 잘 보존한다.  
+이전 조건부 모델이 여러 정규화 layer(예: InstanceNorm)를 통해 의미론적 레이아웃을 처리하는 동안 채널별 정규화 계층은  
+특히 균일하고 평평한 입력 레이아웃 영역에 대해 의미론적 정보를 "씻어 버리는" 경향이 있다.  
+대신 GauGAN G는 이미지 스타일 코드로 임의의 잠재 벡터를 사용하고 공간 적응 정규화 계층(SPADE)이  
+있는 여러 ResNet 블록을 사용하여 최종 출력을 생성한다.  
+그림 2에서 볼 수 있듯이 이 디자인은 시각적으로 매력적인 결과를 제공할 뿐만 아니라 스타일과 의미 체계에 대한 사용자 제어를 향상시킨다.  
+Adaptive normalization layer는 또한 stylization/super-resolution에 효과적이다.  
+![image](https://user-images.githubusercontent.com/40943064/145835630-7cbbcd44-2274-48dd-965c-c0a821d065ce.png)
+
+### 6.1.2. Semantic Image Manipulation
