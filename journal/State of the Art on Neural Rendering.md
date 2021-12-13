@@ -460,10 +460,10 @@ reference 이미지가 주어지면 새로운 텍스처를 만든다.
 ### 6.1.1. Semantic Photo Synthesis
 Non-parametric 방식과 달리 최근에는 cGAN objective를 사용하여 FCN을 학습하여 semantic layout/색상/스케치/질감과 같은  
 사용자 입력을 사실적인 이미지에 직접 매핑했다.  
-이 중 pix2pix와 Karacan의 방법은 street view 및 natural scene 이미지 생성을 포함하는 semantic 이미지 합성을 위한 최초의 학습 기반 방법을 제시한다.  
+이 중 pix2pix와 Karacan은 학습기반 semantic 이미지 합성(street view, natural scene 생성 포함)을 최초로 제시했다.  
 이미지 해상도를 높이기 위해 Cascaded Refinement NN은 perceptual loss로 학습된 coarse-fine G를 학습한다.  
-결과는 고해상도이지만 고주파 텍스처와 디테일이 부족하다.  
-풍부한 세부 정보를 합성하기 위해 pix2pixHD는 사실적인 질감으로 2048 × 1024를 생성하는 cGAN을 제안한다.  
+고해상도 결과물을 생성하지만 고주파 텍스처와 디테일이 부족하다.  
+pix2pixHD는 풍부한 세부 정보를 합성하기 위해 사실적인 질감으로 2048 × 1024를 생성하는 cGAN을 제안한다.  
 pix2pix와 비교하여 주요 확장 기능에는 CRN과 유사한  coarse-to-fine G, 여러 scale local 이미지 통계를 캡처하는 multi-scale D,  
 perceptual distance와 유사하지만 대신 작업별 특징을 추출하기 위해 적응형 D를 사용하는 multi-scale D 기반 feature-matching objective가 있다.  
 특히 비전 및 그래픽 분야에서 수십 년 된 방식인 multi-scale 파이프라인은 deep image synthesis에 여전히 매우 효과적이다.  
