@@ -8,37 +8,42 @@
 
 ## Abstract 
 현실같은 가상 세계를 구현하기 위한 **효율적인 rendering**은 컴퓨터 그래픽에서 오랜 노력의 대상이었다.  
-현대 그래픽 기법은 수작업 장면 표현을 통한 진짜같은 이미지 합성에 성공적인 결과들을 얻어왔다.  
+현대 그래픽 기술은 수작업 장면 표현을 통한 사실적 이미지 합성에 성공적인 결과들을 얻어왔다.  
 그러나 모양/재질/빛 그리고 장면에서의 다른 면들에 대한 자동 생성은 여전히 도전적인 문제로 남겨져 있으며  
-이러한 문제가 풀린다면 진짜같은 컴퓨터 그래픽을 통해 더 광범위하게 사용될 것이다.  
+해결된다면 사실적인 컴퓨터 그래픽을 통해 더 광범위하게 사용될 것이다.  
 
-동시에, CV와 ML의 진보는 Deep generative model이라 하는 새로운 이미지 합성 및 편집 방식을 낳았다.  
+한편, CV와 ML의 발전은 Deep generative model이라 하는 새로운 이미지 합성 및 편집 방식을 낳았다.  
 NR은 **Generative ML**과 **CG의 물리적 지식**을 결합한 급격하게 발전되는 분야이다.  
-(미분가능 rendering을 NN 학습에 통합함으로써)  
-CG와 CV에서 수많은 application을 가지면서 neural rendering은 그래픽스 커뮤니티에서 새로운 분야가 되고있다.  
-본 SOTA 리포트는 neural rendering의 최근 트렌드와 application을 요약한다.  
+(미분가능 rendering을 NN 학습에 통합해서)  
+CG와 CV에서 수많은 application을 가지면서 NR은 그래픽 커뮤니티에서 새로운 분야가 되고있다.  
+본 SOTA 리포트는 NR의 최신 트렌드와 사례를 요약한다.  
   
-control 가능하고 진짜 같은 출력을 얻기 위해 **전통 CG**와 **Deep generative model**을 결합하는 접근법에 집중한다.  
-CG와 ML 컨셉에 대한 개요로 시작해서 우리는 neural rendering 접근법의 중요한 점을 논의한다.  
-특히, control 방식, 파이프라인의 어떤 부분을 학습하는지, 명시적 control 대 암묵적 control, 일반화 및 확률적 대 결정론적 합성에 중점을 둔다.  
+제어 가능하고 사실적인 출력을 얻기 위해 **전통 CG**와 **Deep generative model**을 결합하는 접근법에 집중한다.  
+CG와 ML 컨셉에 대한 개요로 시작해서 NR 접근법의 중요한 점을 논의한다.  
   
-이 SOTA 리포트의 뒤에는 다음의 분야에 집중한다. 
-1. Novel view synthesis
-2. Semantic photo manipulation
-3. Facial and body reenactment
-4. Relighting
-5. Free-viewpoint video
-6. The creation of photo-realistic avatars for virtual and augmented reality telepresence
+특히, 아래 접근방식에 중점을 둔다.   
+1) 제어방식    
+2) 파이프라인의 어떤 부분을 학습하는지  
+3) explicit control vs implicit control  
+4) generalization  
+5) stochastic vs deterministic 합성  
   
-마지막으로, 기술의 사회적 의미에 대한 토론으로 결론을 내리고 공개 연구 문제를 조사한다.
+이 SOTA 리포트의 뒤에는 다음의 분야에 집중한다.  
+1. Novel view synthesis  
+2. Semantic photo manipulation  
+3. Facial and body reenactment  
+4. Relighting  
+5. Free-viewpoint video  
+6. The creation of photo-realistic avatars for virtual and augmented reality telepresence  
+  
+마지막에서 기술의 사회적 의미에 대한 토론으로 결론을 내리고 공개 연구 문제를 조사한다.  
 
 ## 1. Introduction
-가상세계의 진짜같은 이미지 생성은 정교한 CG 개발의 최우선 추진 과제 중 하나다.  
-
-CG 접근은 
-1) (최신 컴퓨터 게임 생성을 가능하게 하는)실시간 rendering부터  
-2) (장편 영화에서의 사진 촬영 디지털 인간 생성을 위한) 정교한 글로벌 조명 시뮬레이션가 있다.  
-두 경우에서의 주요 병목은 content 생성이다.  
+사실적 이미지 생성은 정교한 CG 개발의 최우선 추진 과제 중 하나다.  
+CG 방식은  
+1) (최신 컴퓨터 게임 생성을 가능하게 하는) real-time rendering
+2) (장편 영화에서의 사진 촬영 디지털 인간 생성을 위한) 정교한 글로벌 lighting 시뮬레이션이 있다.  
+여기서 주요 병목은 content 생성이다.  
 Surface geometry, appearance/material, illumination 및 animation 측면에서  
 기본 scene 표현을 만들기 위해 숙련된 예술가의 방대한 양의 지루하고 값 비싼 수작업이 필요하다.  
 동시에, 강력한 Generative 모델이 CV와 ML에 나타나기 시작했다.  
