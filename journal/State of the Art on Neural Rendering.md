@@ -349,25 +349,24 @@ StarGAN은 서로 다른 도메인을 가진 여러 데이터 세트를 기반�
 우리는 독자들이 deep generative model의 완전한 그림을 위해 튜토리얼과 코스 노트를 검토할 것을 촉구한다.  
   
   
-### 4.2.4. Learning without Paired Dat
-위의 목표를 가진 G를 학습하려면 수백에서 수백만 개의 pair 학습 데이터가 필요하다.  
-많은 실제 애플리케이션에서 pair 학습 데이터는 수집이 어렵고 비용이 많이 든다.  
-분류 작업을 위해 이미지에 레이블을 지정하는 것과 달리  annotator는 이미지 합성 작업을 위해  
+### 4.2.4. Learning without Paired Data
+위의 목표함수를 가진 G를 학습하려면 수백개에서 수백만 개의 pair 학습 데이터가 필요하다.  
+실제 많은 애플리케이션에서 pair 학습 데이터는 수집이 어렵고 비용이 많이 든다.  
+분류 작업을 위해 이미지에 레이블을 지정하는 것과 달리 annotator는 이미지 합성 작업을 위해  
 모든 픽셀에 레이블을 지정해야 한다.  
 예를 들어, semantic segmentation과 같은 작업을 위한 몇 개의 작은 데이터 세트만 존재한다.  
 Artistic stylization과 같은 그래픽 작업을 위한 입력-출력 쌍을 얻는 것은 종종 예술적 저작이 필요하고  
 때로는 잘 정의되지도 않기 때문에 훨씬 더 어려울 수 있다.  
-이 설정에서 모델에는 source domain {xi} N i=1(xi x X)과 target domain {y j}j=1(y j y Y)이 지정된다.  
+이 설정에서 모델에는 source domain {xi}(i=1~N)(xi ∈ X)과 target domain {xj}(j=1~N)(yj ∈ Y)이 지정된다.  
 우리가 아는 것은 출력 G(x)가 어느 대상 도메인에서 와야 하는지이다. 즉, 도메인 Y의 이미지와 같다.  
 그러나 특정 입력이 주어지면 출력이 어떤 대상 이미지여야 하는지 알 수 없다.  
 X에서 Y까지의 이미지를 projection하기 위해 무한히 많은 mapping이 있을 수 있다.  
 따라서 우리는 추가적인 제약이 필요하다.  
-Bijective mapping 적용을 위한 cyclic consistency loss, pixel space 또는 feature embeeding 공간에서  
+Bijective mapping 적용을 위한 cyclic consistency loss, pixel space 또는 feature embbeding 공간에서  
 출력이 입력 이미지에 근접하도록 장려하기 위한 distance preserving loss,  
 도메인 간 공유 표현을 학습하기 위한 weight 공유 전략 등을 포함한 여러 제약 조건이 제안되었다.  
-위의 방법은 조건부 GAN의 적용 범위를 넓히고 객체 변환, 도메인 전송 및 CG2real과 같은 많은 그래픽 애플리케이션을 가능하게 한다.  
-
-
+위의 방법은 cGAN의 적용 범위를 넓히고 객체 변환, 도메인 전송 및 CG2real과 같은 많은 그래픽 애플리케이션을 가능하게 한다.  
+  
 ## 5. Neural Rendering
 고품질의 장면 사양을 고려할 때, 고전 rendering 방법은 다양한 복잡한 실제 현상에 대해  
 사실적인 이미지를 rendering할 수 있으며, 장면요소(카메라 시점, 조명, 기하학 및 재료)를 명시적으로 편집할 수 있다.  
@@ -410,7 +409,7 @@ NR은 사용자가 지정한 장면 조건에서 고품질 이미지를 renderin
 다음에서 설명하는 또 다른 옵션은 제어 매개 변수를 그래픽 레이어 입력으로 사용하는 것이다.
 
 ### 5.2. Computer Graphics Modules
-NR의 새로운 경향 중 하나는 CG 지식을 NN 설계에 통합하는 것이다.  
+NR의 새로운 경향 중 하나는 CG 모듈을 NN 구조에 통합하는 것이다.  
 따라서 접근 방식은 시스템에 내장된 "고전적인" CG 지식 수준에 따라 다를 수 있다.  
 예를 들어 장면 파라미터에서 출력 영상으로 직접 매핑하면 그래픽 지식이 사용되지 않는다.  
 그래픽 지식을 통합하는 간단한 방법 중 하나는 미분 불가능한 CG 모듈이다.  
