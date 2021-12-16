@@ -266,22 +266,25 @@ cGAN은 거친 컴퓨터 그래픽 rendering과 해당 실제 이미지 사이�
 y는 영상, 비디오에서 voxel 또는 mesh와 같은 3D 데이터에 이르기까지 다양할 수 있다.  
 (각 애플리케이션에 대해 가능한 NN 입력 및 출력의 전체 목록은 표 1을 참조)  
 여기서는 일반적으로 사용되는 세 가지 G의 구조를 설명한다.(S6의 app.별 세부 사항을 확인하도록 권장된다.)  
+
 1) **FCN**  
 FCN은 임의 크기의 입력 이미지를 촬영하고 동일한 크기로 출력을 예측한다.  
 이미지를 벡터로 매핑하는 AlexNet 및 VGG와 같은 대중적인 이미지 분류 NN에 비해 FCN은 공간 이미지 해상도를 보존하기 위해  
 fractionally-strided convolutions을 사용한다.  
 FCN은 원래 semantic segmentation 및 object detection과 같은 recognition을 위해 설계되었지만 이미지 합성 작업에 널리 사용되었다.  
-(2) **UNet**  
+  
+2) **UNet**  
 Unet은 localization이 향상된 FCN 기반 구조이다.  
 초기 레이어의 고해상도 feature map에서 뒤 레이어의 업샘플링 feature로 이른바 "skip-connection"을 추가한다.  
 입력에서 나오는 고주파 정보는 출력으로 직접 전달될 수 있기 때문에 이러한 skip-connection은 상세한 출력을 생성하는 데 도움이 된다.  
-(3) ResNet  
+
+3) ResNet  
 ResNet기반 G는 residual 블록을 사용하여 고주파 정보를 출력으로 전달하며 style transfer 및 이미지 super-resolution에 사용되었다.  
 
 ### 4.2.2. Learning using Perceptual Distance
 많은 입출력 pair를 수집하고 G를 선택하면, 입력이 주어졌을 때 원하는 출력을 생산하는 G를 어떻게 학습시킬 수 있을까?  
 이 학습 문제에 효과적인 객관적 기능은 무엇인가? 한 가지 간단한 방법은 다음과 같이 G(x)와 y(GT) 사이의 거리를 최소화하는 것이다.  
-![image](https://user-images.githubusercontent.com/40943064/145590791-676fa40c-771f-4858-9443-1244b6f68928.png)
+![image](https://user-images.githubusercontent.com/40943064/145590791-676fa40c-771f-4858-9443-1244b6f68928.png)  
 안타깝게도 학습된 G는 흐릿한 이미지 또는 여러 그럴듯한 출력에 대한 평균 결과를 생성하는 경향이 있다.  
 예를 들어, image colorization에서 학습된 G는 평균화 효과로 인해 때때로 desaturated 결과를 생성한다.  
 이미지  super-resolution에서는 p-norm이 각 픽셀을 독립적으로 보기 때문에 생성기가 구조와 세부 정보를 합성하지 못한다.  
@@ -291,7 +294,7 @@ ResNet기반 G는 residual 블록을 사용하여 고주파 정보를 출력으�
 이러한 loss는 'p-norm'이 각 픽셀의 품질을 독립적으로 평가하는 반면, deep feature representation은  
 전체 이미지를 전체적으로 요약하기 때문에 'pnorm'에 비해 유리하다.  
 G는 다음과 같은 feature matching 목표를 최소화하도록 학습된다.  
-![image](https://user-images.githubusercontent.com/40943064/145592173-2aabccb5-6d79-430c-9d15-ece1f645ef52.png)
+![image](https://user-images.githubusercontent.com/40943064/145592173-2aabccb5-6d79-430c-9d15-ece1f645ef52.png)  
 F(t) :T개 레이어를 가진 사전 학습된 F의 t번째 레이어에서 feature extracter  
 Nt : layer t의 총 feature 수  
 Δt : 각 layer의 weight  
