@@ -84,7 +84,7 @@ FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신�
 ## 3 Method
 Source와 target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
 프레임워크는 ID별 face swap 아키텍처에서 확장되며 임의의 ID에 맞게 조정될 수 있다.  
-1) Sec 3.1 : DeepFakes 원본 아키텍처 한계에 대해 논의  
+1) Sec 3.1 : DeepFakes source 아키텍처 한계에 대해 논의  
 2) Sec 3.2 : 임의의 ID를 위한 프레임워크로 확장  
 3) Sec 3.3 : target의 attribute를 보존하는 데 도움이 되는 Weak Feature Matching Loss 제시  
 4) Sec 3.4 : loss function  
@@ -107,32 +107,31 @@ DeepFakes의 구조는 2개 파트(일반 Encoder Enc, 2개의 ID 특정 Decoder
 ![image](https://user-images.githubusercontent.com/40943064/146665904-cb10cfd4-91d3-4c6f-a7a1-357b10a48739.png)  
   
 Target 𝐼𝑇 가 주어지면 인코더를 통해 전달하여 특징 𝐹𝑒𝑎𝑇 을 추출한다.  
-Target 얼굴을 원본 얼굴로 바꾸는 것이므로 𝐹𝑒𝑎𝑇의 attribute를 변경하지 않고 유지하면서 𝐹𝑒𝑎𝑇의 ID를 원본 얼굴의 ID로 교체해야 한다.  
+Target 얼굴을 source 얼굴로 바꾸는 것이므로 𝐹𝑒𝑎𝑇의 attribute를 변경하지 않고 유지하면서 𝐹𝑒𝑎𝑇의 ID를 source 얼굴의 ID로 교체해야 한다.  
 그러나 𝐹𝑒𝑎𝑇의 ID와 attribute은 매우 결합되어 구별하기 어렵다.  
 그래서 우리는 𝐹𝑒𝑎𝑇 전체에 대해 직접 수정을 수행하고 학습 손실을 사용하여 네트워크가 𝐹𝑒𝑎𝑇의 어느 부분을 변경해야 하고  
 어떤 부분을 보존해야 하는지 암묵적으로 학습하도록 권장한다.  
-ID 주입 모듈은 𝐹𝑒𝑎𝑇의 ID를 원본 얼굴의 ID로 변경하는 작업을 한다.  
+ID 주입 모듈은 𝐹𝑒𝑎𝑇의 ID를 source 얼굴의 ID로 변경하는 작업을 한다.  
 모듈은 ID 추출 부분과 임베딩 부분의 두 부분으로 구성된다.  
 ID 추출 부분에서는 source 얼굴의 ID 및 attribute를 모두 포함하는 입력 source 이미지 𝐼𝑆를 처리한다.  
-전자만 필요하므로 얼굴 인식 네트워크를 사용하여 𝐼𝑆 에서 식별 벡터 𝑣𝑆를 추출한다.  
-임베딩 부분에서는 ID 블록을 사용하여 기능에 ID를 삽입한다.  
-우리의 ID-Block은 Residual Block의 수정된 버전이며 원래 Batch Normalization을 대체하기 위해 AdaIN을 사용하고 있다.  
-우리 작업에서 AdaIN의 공식은 다음과 같이 작성할 수 있다.  
+ID만 필요하므로 얼굴 인식 네트워크를 사용하여 𝐼𝑆 에서 identity vector 𝑣𝑆를 추출한다.  
+임베딩 부분에서는 ID 블록을 사용하여 feature에 ID를 삽입한다.  
+ID Block은 Residual Block의 수정 버전이며 Batch Normalization을 대체하기 위해 AdaIN을 사용한다.  
+AdaIN의 공식은 아래와 같이 정의한다.  
 ![image](https://user-images.githubusercontent.com/40943064/146665925-61673027-db47-4fc7-83d4-162910b81487.png)  
 
 여기서 𝜇(𝐹𝑒𝑎) 및 𝜎(𝐹𝑒𝑎)는 입력 특성 𝐹𝑒𝑎의 채널별 평균 및 표준편차이다.  
-𝜎𝑆 및 𝜇𝑆는 완전 연결 계층을 사용하여 𝑣𝑆에서 생성된 두 개의 변수이다.  
+𝜎𝑆 및 𝜇𝑆는 FC layer를 사용하여 𝑣𝑆에서 생성된 두 개의 변수이다.  
 충분한 ID 임베딩을 보장하기 위해 총 9개의 ID 블록을 사용한다.  
-ID 정보를 주입한 후 Decoder를 통해 수정된 기능을 전달하여 최종 결과 𝐼𝑅를 생성한다.  
-다른 ID의 source 이미지가 훈련에 포함되므로 디코더의 가중치는 특정 ID와 관련이 없어야 한다.  
-디코더는 기능에서 이미지를 복원하는 데만 집중하고 ID 수정 임무는 ID 주입 모듈에 맡기므로 아키텍처를 임의의 ID에 적용할 수 있다.  
-학습 과정에서 생성된 결과 𝐼𝑅에서 항등 벡터 𝑣𝑅를 추출하고 항등 손실을 사용하여 𝑣𝑅 과 𝑣𝑆 사이의 거리를 최소화한다.  
-그러나 ID 손실을 최소화하면 네트워크가 과적합되어 source의 ID가 있는 전면 이미지만 생성되고 target의 모든 속성은 손실될 수 있다.  
-이러한 현상을 피하기 위해 우리는 adversarial training[10, 16, 21, 28]이라는 개념을 활용하고 Discriminator를 사용하여 명백한 오류가 있는 결과를 구별한다.  
+ID 정보를 주입한 후 decoder를 통해 수정된 feature를 전달하여 최종 결과 𝐼𝑅를 생성한다.  
+다른 ID의 source 이미지가 학습에 포함되므로 decoder의 weight는 특정 ID와 관련이 없어야 한다.  
+Decoder는 feature에서 이미지를 복원하는 데만 집중하고 ID 수정 임무는 ID 주입 모듈에 맡기므로  
+아키텍처를 임의의 ID에 적용할 수 있다.  
+학습 과정에서 생성된 결과 𝐼𝑅에서 identity vector 𝑣𝑅를 추출하고 항등 손실을 사용하여 𝑣𝑅 과 𝑣𝑆 사이의 거리를 최소화한다.  
+그러나 ID loss를 최소화하면 네트워크가 과적합되어 source의 ID가 있는 전면 이미지만 생성되고 target의 모든 속성은 손실될 수 있다.  
+이를 피하기 위해 adversarial training이라는 개념을 활용하고 Discriminator를 사용하여 명백한 오류가 있는 결과를 구별한다.  
 Adversarial Loss는 또한 생성된 결과의 품질을 향상시키는 데 중요한 역할을 한다.  
 우리는 D의 patchGAN 버전을 사용한다.  
-
-
 
 ### 3.3 Preserving the Attributes of the Target
 
@@ -215,7 +214,7 @@ ID 주입 모듈의 얼굴 인식 모델은에서 사전 학습된 Arcface를 �
 결과를 보여주기 위해 face matrix를 제시한다.  
 영화 장면에서 8개의 얼굴 이미지를 target 이미지로 선택한다.  
 인터넷에서 10개의 얼굴 이미지를 source 이미지로 다운로드한다.  
-원본 이미지는 ID 벡터만 사용하기 때문에 정면 자세나 중립적인 표정이 필요하지 않다.  
+source 이미지는 ID 벡터만 사용하기 때문에 정면 자세나 중립적인 표정이 필요하지 않다.  
 이 모든 이미지는 학습 세트에서 제외된다.  
 모든 source 및 target 쌍에 대해 face swapping을 수행한다.  
 그림 3과 같이 SimSwap은 target의 attribute(표정, 시선 방향, 자세 및 조명 조건 등)을 유지하면서  
@@ -246,7 +245,7 @@ SimSwap은 attribute 보존에서 더 나은 성능을 달성하면서 그럴듯
 **FaceShifter와의 추가 비교**  
 더 많은 결과를 그림 5에서 FaceShifter와 비교한다.  
 우리가 볼 수 있듯이 FaceShifter는 강력한 ID 수정 기능을 나타내며  
-결과의 얼굴 모양을 원본 얼굴의 얼굴 모양으로 변경할 수 있다.  
+결과의 얼굴 모양을 source 얼굴의 얼굴 모양으로 변경할 수 있다.  
 하지만 ID 부분에 너무 치중해 표정이나 시선 방향과 같은 속성을 유지하지 못하는 경우가 많다.  
 그림 5 행 2에서 대상 얼굴이 눈을 가늘게 하고 있다.  
 SimSwap은 FaceShifter가 실패하는 동안 이러한 미묘한 표현을 재현하는 결과를 생성할 수 있다.  
@@ -263,7 +262,7 @@ FSGAN의 결과는 대상 얼굴의 표정(row 1), 시선 방향(row 1&4)을 재
 결과와 대상 이미지 사이의 조명 조건에 명백한 차이가 있다.  
 SimSwap은 속성 보존에서 더 나은 성능을 달성한다.  
 또한 FSGAN은 입력 소스 이미지에 매우 민감하다.  
-행 2에서 볼 수 있듯이 대상 얼굴은 깨끗한 눈 영역을 갖지만 FSGAN은 원본 얼굴의 그림자를 가져온다.  
+행 2에서 볼 수 있듯이 대상 얼굴은 깨끗한 눈 영역을 갖지만 FSGAN은 source 얼굴의 그림자를 가져온다.  
 코 주변의 4열에서도 비슷한 문제가 발생한다.  
 SimSwap은 입력 소스 이미지에 대해 훨씬 더 강력하고 더 설득력 있는 결과를 생성한다.  
 
@@ -280,10 +279,10 @@ Decoder의 가중치에서 ID 정보를 분리하고 아키텍처를 임의의 I
 FaceForensics++ 에 대해 동일한 quantitative 실험을 수행한다.  
 FaceForensics++의 각 얼굴 비디오에서 무작위로 10개의 프레임을 선택한다.  
 FaceForensics++에서 동일한 source 및 target 쌍을 따라 SimSwap을 사용하여 face swapping을 수행한다.  
-생성된 프레임과 원본 프레임의 id 벡터를 추출하기 위해 다른 얼굴 인식 네트워크를 사용한다.  
-생성된 각 프레임에 대해 원본 프레임에서 가장 가까운 얼굴을 검색하고 해당 얼굴이 올바른 소스 비디오에서 나온 것인지 확인한다.  
+생성된 프레임과 source 프레임의 id 벡터를 추출하기 위해 다른 얼굴 인식 네트워크를 사용한다.  
+생성된 각 프레임에 대해 source 프레임에서 가장 가까운 얼굴을 검색하고 해당 얼굴이 올바른 소스 비디오에서 나온 것인지 확인한다.  
 정확도 비율은 ID 검색이라고 하며 메서드의 ID 성능을 나타내는 역할을 한다.  
-또한 포즈 추정기를 사용하여 생성된 프레임과 원본 프레임의 자세를 추정하고 평균 L2 거리를 계산한다.  
+또한 포즈 추정기를 사용하여 생성된 프레임과 source 프레임의 자세를 추정하고 평균 L2 거리를 계산한다.  
 유효한 재현을 찾을 수 없기 때문에 표정 부분을 무시한다.  
 
 추가 비교를 위해 원래 Feature Matching formula를 사용하는 SimSwap-oFM과 Feature Matching term을  
