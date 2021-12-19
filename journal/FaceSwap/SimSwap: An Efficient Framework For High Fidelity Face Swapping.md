@@ -7,9 +7,9 @@
 다음의 두가지 방법으로 문제를 해결한다.  
   
 1) ID Injection Module (IIM) : feature level의 source ID 정보를 target으로 전송  
-- 특정 ID에 한정으로 학습되는 방식을 임의 ID 적용 방식으로 확장할 수 있다.
+- 특정 ID 한정으로 학습되는 방식을 임의 ID 적용 방식으로 확장할 수 있다.  
 
-2) Weak Feature Matching Loss : Implicit 방식으로 attribute를 보존  
+2) Weak Feature Matching Loss : Implicit하게 target attribute 보존  
   
 여러 wild face set에 대한 다양한 실험은 SOTA 대비 attribute 보존/ID 적용 성능의 경쟁력을 보여준다.  
 ![image](https://user-images.githubusercontent.com/40943064/143544606-8516eb6f-982c-402c-9f6e-f631a53ea930.png)  
