@@ -22,7 +22,7 @@ Face swapping은 target attribute(표정, 자세, 조명)는 보존하면서 sou
 최근, 최신 장비 없이 face swapping을 수행하는 방식은 연구자들의 관심을 끌어왔다.  
 
 face swapping에서 고려되는 주요 어려움들은 다음과 같다.  
-1) 강력한 일반화 능력을 가진 face swap 프레임워크를 임의의 페이스에 맞게 조정해야 한다.  
+1) 강력한 일반화 능력을 가진 face swap 프레임워크를 임의의 얼굴에 맞게 조정해야 한다.  
 2) 결과 face의 ID는 source의 것과 가까워야 한다.  
 3) 결과 face의 attribute(표정, 자세, 조명)는 target의 것과 가까워야 한다.  
 
@@ -39,7 +39,7 @@ GAN 기반의 작업은 source의 ID와 target의 attribute를 feature 수준에
 최근 작접은 2단계의 framework를 활용하며 고품질 결과를 달성한다.  
 그러나 이 방법론들은 ID 수정에 과도하게 집중한다.  
 또한 attribute 보존에 약한 제약을 가하고 종종 표정이나 포즈의 불일치에 직면한다.  
-일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 페이스 스왑 프레임워크를 제안한다.  
+일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 face swap 프레임워크를 제안한다.  
 ID별 얼굴 교환 알고리즘의 아키텍처를 분석하고, Decoder가 하나의 특정 ID에만 적용될 수 있도록 ID를 디코더에 통합함으로써  
 일반화 부족이 발생한다는 것을 알아냈다.  
 
@@ -55,40 +55,39 @@ Weak Feature Matching Loss는 생성된 결과를 high semantic level에서 입�
 ## 2 Related Work
 
 Face Swapping은 오랫동안 연구되어 왔다.
-방법은 크게 이미지 level에서 source에서 작동하는 source 지향 방법과 feature level에서 target 페이스에서 작동하는 target 지향 방법의 두 가지로 나눌 수 있다.
+방법은 크게 이미지 level에서 source에서 작동하는 source 지향 방법과 feature level에서 target face에서 작동하는 target 지향 방법의 두 가지로 나눌 수 있다.
 
 **Source-oriented Methods.**  
 Attribute를 target에서 source로 전송한 다음 source를 target 이미지로 혼합한다.  
 초기 방법은 3D 모델을 사용하여 자세와 조명을 전송했지만 수동 작업이 필요했다.  
 자동 방법이 제안되었지만 특정 얼굴 라이브러리의 ID만 얼굴을 교환할 수 있었다.  
-니르킨은 3D 얼굴 데이터 세트를 사용하여 표정과 자세를 전송한 다음 포아송 블렌딩을 사용하여 source 얼굴을 target 이미지에 병합했다.
-그러나 3D 얼굴 데이터 세트의 표현력이 제한적이기 때문에 3D 모델에 응답하는 방법은 표정을 정확하게 재현하지 못하는 경우가 많다.
+니르킨은 3D 얼굴 데이터 세트를 사용하여 표정/자세를 전송하고 포아송 블렌딩을 사용하여 source 얼굴을 target 이미지에 병합했다.  
+그러나 3D 얼굴 데이터 세트의 표현력이 제한적이기 때문에 3D 모델에 응답하는 방법은 표정을 정확하게 재현하지 못하는 경우가 많다.  
 최근 FSGAN은 face reenactment network로 표정 및 자세 전송을 먼저 수행한 다음  
 다른 face inpainting network를 사용하여 source 얼굴을 target 이미지에 혼합하는 2단계 아키텍처를 제안했다.  
-source 지향 방법의 일반적인 문제는 입력 source 이미지에 민감하다는 것이다.
-source의 과장된 표정이나 큰 자세는 페이스 swapping 결과의 성능에 강한 영향을 미친다.
+이 방법의 일반적인 문제는 입력 source 이미지에 민감하다는 것이다.  
+Source의 과장된 표정이나 큰 자세는 face swapping 결과의 성능에 강한 영향을 미친다.  
 
 **Target-oriented Methods.**  
 NN을 사용하여 target의 feature를 추출한 다음 feature를 수정하고 feature를 출력 face swap 이미지로 복원한다.  
-코르수노바은 G를 학습시키고 하나의 특정 ID으로 얼굴을 교환할 수 있었다.  
+Korshunova는 G를 학습시키고 하나의 특정 ID으로 얼굴을 교환할 수 있었다.  
 유명한 알고리즘 DeepFakes는 encoder-decoder 구조를 활용했다.  
 일단 학습하면 두 개의 특정 ID 사이에서 얼굴을 교환할 수 있었지만 일반화 능력은 부족했다.  
 다른 방법은 source 얼굴영역과 target 얼굴 외 영역의 latent representation을 결합하여 결과를 산출했지만  
-target의 표현을 유지하지는 못했다.  
-IPGAN는 source 이미지에서 identity 벡터를 추출하고 target 이미지에서 attribute 벡터를 추출한 후 decoder로 전송한다.  
-생성된 출력은 source의 ID 전달에는 좋았지만 target 페이스의 표정이나 자세를 유지하지 못하는 경우가 많았다.
-최근에 제안된 FaceShifter 방법은 높은 충실도의 페이스 swap 결과를 생성할 수 있었다.
-FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신원 성능을 달성했다.
-그러나 이전 방법과 마찬가지로 FaceShifter는 attribute에 너무 약한 제약을 가하여 결과가 종종 표정 불일치로 어려움을 겪었다.  
+target의 표정을 유지하지는 못했다.  
+IPGAN은 source 이미지에서 identity vector를 추출하고 target 이미지에서 attribute 벡터를 추출한 후 decoder로 전송한다.  
+생성된 출력은 source의 ID 전달에는 좋았지만 target 얼굴의 표정이나 자세를 유지하지 못하는 경우가 많았다.  
+최근에 제안된 FaceShifter 방법은 높은 충실도의 face swap 결과를 생성할 수 있었다.  
+FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신원 성능을 달성했다.  
+그러나 attribute에 너무 약한 제약을 가하여 결과가 종종 표정 불일치의 어려움을 겪었다.  
 
 ## 3 Method
-
-Source와 target이 주어지면, target 얼굴의 속성을 변경하지 않고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
+Source와 target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
 프레임워크는 ID별 face swap 아키텍처에서 확장되며 임의의 ID에 맞게 조정될 수 있다.  
-먼저 원본 아키텍처의 한계에 대해 논의한다(Sec 3.1).  
-임의의 ID를 위한 프레임워크로 확장하는 방법을 보여준다(Sec 3.2).  
-그런 다음 target의 attribute를 보존하는 데 도움이 되는 Weak Feature Matching Loss를 제시한다(Sec 3.3).  
-마지막으로 loss function을 제공한다(Sec 3.4).  
+1) Sec 3.1 : DeepFakes 원본 아키텍처 한계에 대해 논의  
+2) Sec 3.2 : 임의의 ID를 위한 프레임워크로 확장  
+3) Sec 3.3 : target의 attribute를 보존하는 데 도움이 되는 Weak Feature Matching Loss 제시  
+4) Sec 3.4 : loss function  
 
 ### 3.1 Limitation of the DeepFakes
 DeepFakes의 구조는 2개 파트(일반 Encoder Enc, 2개의 ID 특정 Decoder Decs, EncT)로 구성되어있다.  
