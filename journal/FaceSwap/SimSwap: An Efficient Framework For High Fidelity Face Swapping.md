@@ -109,12 +109,12 @@ DeepFakes의 구조는 2개 파트(일반 Encoder Enc, 2개의 ID 특정 Decoder
 Target 𝐼𝑇 가 주어지면 인코더를 통해 전달하여 특징 𝐹𝑒𝑎𝑇 을 추출한다.  
 Target 얼굴을 source 얼굴로 바꾸는 것이므로 𝐹𝑒𝑎𝑇의 attribute를 변경하지 않고 유지하면서 𝐹𝑒𝑎𝑇의 ID를 source 얼굴의 ID로 교체해야 한다.  
 그러나 𝐹𝑒𝑎𝑇의 ID와 attribute은 매우 결합되어 구별하기 어렵다.  
-그래서 우리는 𝐹𝑒𝑎𝑇 전체에 대해 직접 수정을 수행하고 학습 손실을 사용하여 네트워크가 𝐹𝑒𝑎𝑇의 어느 부분을 변경해야 하고  
-어떤 부분을 보존해야 하는지 암묵적으로 학습하도록 권장한다.  
+그래서 𝐹𝑒𝑎𝑇 전체에 대해 직접 수정을 수행하고 학습 손실을 사용하여  
+네트워크가 𝐹𝑒𝑎𝑇에서 변경/보존해야 하는 부분을 암시적으로 학습하도록 권장한다.  
 ID 주입 모듈은 𝐹𝑒𝑎𝑇의 ID를 source 얼굴의 ID로 변경하는 작업을 한다.  
-모듈은 ID 추출 부분과 임베딩 부분의 두 부분으로 구성된다.  
+모듈은 ID 추출, 임베딩의 두 부분으로 구성된다.  
 ID 추출 부분에서는 source 얼굴의 ID 및 attribute를 모두 포함하는 입력 source 이미지 𝐼𝑆를 처리한다.  
-ID만 필요하므로 얼굴 인식 네트워크를 사용하여 𝐼𝑆 에서 identity vector 𝑣𝑆를 추출한다.  
+ID 정보만 필요하므로 얼굴 인식 네트워크를 사용하여 𝐼𝑆 에서 identity vector 𝑣𝑆를 추출한다.  
 임베딩 부분에서는 ID 블록을 사용하여 feature에 ID를 삽입한다.  
 ID Block은 Residual Block의 수정 버전이며 Batch Normalization을 대체하기 위해 AdaIN을 사용한다.  
 AdaIN의 공식은 아래와 같이 정의한다.  
@@ -127,25 +127,24 @@ ID 정보를 주입한 후 decoder를 통해 수정된 feature를 전달하여 �
 다른 ID의 source 이미지가 학습에 포함되므로 decoder의 weight는 특정 ID와 관련이 없어야 한다.  
 Decoder는 feature에서 이미지를 복원하는 데만 집중하고 ID 수정 임무는 ID 주입 모듈에 맡기므로  
 아키텍처를 임의의 ID에 적용할 수 있다.  
-학습 과정에서 생성된 결과 𝐼𝑅에서 identity vector 𝑣𝑅를 추출하고 항등 손실을 사용하여 𝑣𝑅 과 𝑣𝑆 사이의 거리를 최소화한다.  
-그러나 ID loss를 최소화하면 네트워크가 과적합되어 source의 ID가 있는 전면 이미지만 생성되고 target의 모든 속성은 손실될 수 있다.  
-이를 피하기 위해 adversarial training이라는 개념을 활용하고 Discriminator를 사용하여 명백한 오류가 있는 결과를 구별한다.  
-Adversarial Loss는 또한 생성된 결과의 품질을 향상시키는 데 중요한 역할을 한다.  
+학습 과정에서 생성된 결과 𝐼𝑅에서 identity vector 𝑣𝑅를 추출하고 identity loss를 사용하여 𝑣𝑅 과 𝑣𝑆 사이의 거리를 최소화한다.  
+그러나 이 경우 네트워크가 과적합되어 source의 ID가 있는 전면 얼굴만 생성되고 target의 모든 속성은 손실될 수 있다.  
+이를 피하기 위해 adversarial training을 활용하고 D를 사용하여 명백한 오류가 있는 결과를 구별한다.  
+Adversarial Loss는 또한 생성된 결과의 품질 향상에 중요한 역할을 한다.  
 우리는 D의 patchGAN 버전을 사용한다.  
 
 ### 3.3 Preserving the Attributes of the Target
-
-Face swapping 작업에서 수정은 ID만 수행되어야 하며 target attribute(예: 표정, 자세, 조명 등)은 유지되어야 한다.  
-하지만 target ID와 attribute 정보를 모두 포함하는 𝐹𝑒𝑎𝑇 전체에 대해 직접 수정을 진행하고 있기 때문에  
-attribute 정보는 ID 임베딩에 영향을 받을 가능성이 높다.  
+Face swapping 작업에서 ID만 수정되어야 하며 target attribute(예: 표정, 자세, 조명 등)은 유지되어야 한다.  
+하지만 target ID와 attribute 정보를 모두 포함하는 𝐹𝑒𝑎𝑇 전체에 대해 수정하기 때문에  
+attribute 정보는 ID 임베딩 시 영향받기 쉽다.  
 Attribute 불일치를 방지하기 위해 학습 loss를 사용하여 제한한다.  
-그러나 모든 attribute을 명시적으로 제한하기로 선택한 경우 각 attribute에 대해 하나의 네트워크를 학습해야 한다.  
-Attribute이 너무 많이 고려되어야 하므로 전체 프로세스는 비실용적이어야 한다.  
+그러나 모든 attribute을 명시적으로 제한하면 각 attribute에 대해 하나의 네트워크를 학습해야 한다.  
+Attribute가 너무 많이 고려되어야 하므로 전체 프로세스는 비실용적이다.  
 그래서 암시적 방식으로 제약을 수행하기 위해 Weak Feature Matching Loss를 제안한다.  
-Feature Matching의 아이디어는 D를 사용하여 GT 이미지와 생성된 출력에서  feature의 여러 레이어를 추출하는 pix2pixHD에서 시작되었다.  
+Feature Matching 아이디어는 D를 사용하여 GT 이미지와 생성된 출력에서 feature의 여러 레이어를 추출하는 pix2pixHD에서 시작되었다.  
 원래 Feature Matching Loss는 다음과 같이 작성된다.  
   
-𝐿𝑜𝐹𝑀 (𝐷) = ∑︁ 𝑀 𝑖=1 1 𝑁𝑖 ∥𝐷 (𝑖) (𝐼𝑅) − 𝐷 (𝑖) (2)  
+![image](https://user-images.githubusercontent.com/40943064/146717362-07f711f7-fdf0-46dc-874a-ddac3ef6e585.png)  
   
 여기서 𝐷(𝑖)는 𝐷의 𝑖번째 레이어 feature 추출기를 나타내고 𝑁𝑖는 𝑖번째 레이어의 요소 수를 나타낸다.  
 𝑀는 총 레이어 수이다.  
@@ -154,7 +153,7 @@ Feature Matching의 아이디어는 D를 사용하여 GT 이미지와 생성된 
 처음 몇 개의 레이어를 제거하고 마지막 몇 개의 레이어만 사용하여 Weak Feature Matching Loss를 계산한다.  
 이는 다음과 같이 작성할 수 있다.  
   
-𝐿𝑤𝐹𝑀 (𝐷) = ∑︁ 𝑀 𝑖=𝑚 1 𝑁𝑖 ∥𝐷 (𝑖) (𝐼𝑅) − 𝐷 (𝑖) (𝐼) (𝑖) (3)  
+![image](https://user-images.githubusercontent.com/40943064/146717673-b239a88b-3800-400d-b747-f188462f0d64.png)  
   
 여기 𝑚는 Weak Feature Matching Loss를 계산하기 시작하는 레이어이다.  
 원래 Feature Matching Loss와 Weak Feature Matching Loss는 유사한 공식을 공유하지만 목적이 완전히 다르다.  
@@ -162,12 +161,12 @@ Feature Matching의 아이디어는 D를 사용하여 GT 이미지와 생성된 
 얕은 레이어의 feature는 주로 텍스처 정보를 포함하고 픽셀 수준에서 결과를 제한할 수 있기 때문에 핵심 역할을 한다.  
 그러나 face swapping 작업에서 입력 target 이미지에서 너무 많은 텍스처 정보를 도입하면 target 얼굴과 유사한 결과가 만들어지고  
 ID 수정이 어려워 원래 기능 일치 용어에서 처음 몇 개의 레이어를 제거한다.  
-목표는 attribute 성능을 제한하는 것이다.  
+목표는 attribute 성능을 제약하는 것이다.  
 Attribute는 주로 깊은 feature에 있는 높은 의미 정보이므로 깊은 수준에서 결과 이미지를 입력 target과 정렬해야 하며  
 Weak Feature Matching Loss는 D의 마지막 몇 레이어만 사용하여 Feature Matching term을 계산한다.  
 이러한 손실 함수를 사용하면 특정 attribute에 대해 네트워크를 명시적으로 제한하지 않더라도  
 입력 target 얼굴의 attribute을 유지하는 방법을 암시적으로 학습한다.  
-
+  
 ### 3.4 Overall Loss Function
 Loss 함수는 아래 5가지 구성요소를 가지고 있다.  
 1) Identity Loss
@@ -175,25 +174,24 @@ Loss 함수는 아래 5가지 구성요소를 가지고 있다.
 3) Adversarial Loss
 4) Gradient Penalty
 5) Weak Feature Matching Loss
-
+  
 **Identity Loss**  
-𝑣𝑅 과 𝑣𝑆 사이의 거리를 제한하는 데 사용된다.  
-거리를 계산하기 위해 cosine similarity를 사용하고 있으며 다음과 같이 쓸 수 있다.  
+𝑣𝑅 과 𝑣𝑆 사이의 거리를 제한(cosine similarity 사용)  
 ![image](https://user-images.githubusercontent.com/40943064/146666163-8e7a678c-b07d-4876-b856-dcd3f4048674.png)  
   
 **Reconstruction Loss**   
 Source face와 target face가 동일한 ID에서 나온 경우 생성된 결과는 target face와 같아야 한다.  
-Reconstruction Loss를 다음과 같이 쓸 수 있는 정규화항으로 사용한다.  
+Reconstruction Loss를 다음과 같이 쓸 수 있는 정규화항으로 사용  
 ![image](https://user-images.githubusercontent.com/40943064/146666187-0b403dd6-0e87-4a27-b2e3-adb5dec32687.png)  
 (Source와 target이 서로 다른 ID에서 온 경우 이 항을 0으로 설정한다.)  
   
 **Adversarial Loss and Gradient Penalty**  
 Adversarial Loss의 힌지 버전을 사용한다.  
-큰 자세에서 더 나은 성능을 위해 다중 스케일 Discriminator를 사용한다.  
+큰 자세에서 더 나은 성능을 위해 다중 스케일 D를 사용한다.  
 또한 Gradient Penalty 항을 사용하여 D가 gradient explosion을 방지한다.  
   
 **Weak Feature Matching Loss**  
-다중 스케일 판별기를 사용하기 때문에 Weak Feature Matching Loss는 다음과 같이 쓸 수 있는 모든 D를 사용하여 계산해야 한다.  
+다중 스케일 D를 사용하기 때문에 Weak Feature Matching Loss는 다음과 같이 쓸 수 있는 모든 D를 사용하여 계산해야 한다.  
 ![image](https://user-images.githubusercontent.com/40943064/146666246-e0a39635-ea04-418e-b6aa-14d41f60fdb9.png)  
 
 전체 손실은 다음과 같이 쓸 수 있다.
@@ -202,8 +200,8 @@ Adversarial Loss의 힌지 버전을 사용한다.
   
 ## 4 Experiments
 **Implementation Detail**  
-임의 ID에 대한 face swapping이므로 대량 얼굴 데이터 세트 VGGFace2를 사용한다.  
-학습 세트의 품질을 개선하기 위해 250 × 250보다 작은 크기의 이미지를 제거한다.  
+임의 ID에 대한 face swapping을 위해 대량 얼굴 데이터 세트 VGGFace2를 사용한다.  
+학습 세트의 품질을 개선을 위해 250 × 250보다 작은 크기의 이미지를 제거한다.  
 이미지를 224 × 224 크기의 표준 위치에 정렬하고 자른다.  
 ID 주입 모듈의 얼굴 인식 모델은에서 사전 학습된 Arcface를 사용한다.  
 𝛽1 = 0 및 𝛽2 = 0.999인 Adam optimizer를 사용하여 네트워크를 학습한다.  
@@ -274,7 +272,7 @@ ID 수정 능력에 대한 분석을 제공할 것이다.
 
 **효율적인 ID 임베딩**  
 SimSwap의 아키텍처는 ID 삽입 모듈을 사용하여 ID 임베딩을 수행하므로  
-Decoder의 가중치에서 ID 정보를 분리하고 아키텍처를 임의의 ID로 일반화할 수 있다.  
+Decoder의 weight에서 ID 정보를 분리하고 아키텍처를 임의의 ID로 일반화할 수 있다.  
 아키텍처 효율성을 검증하기 위해 타 연구에서 제안한 기준을 사용하여  
 FaceForensics++ 에 대해 동일한 quantitative 실험을 수행한다.  
 FaceForensics++의 각 얼굴 비디오에서 무작위로 10개의 프레임을 선택한다.  
@@ -290,10 +288,10 @@ FaceForensics++에서 동일한 source 및 target 쌍을 따라 SimSwap을 사�
 우리는 이 2개의 네트워크에 대해 동일한 양적 실험을 수행한다.  
 DeepFakes에서 생성된 프레임도 테스트한다.  
 비교 결과를 표 1에 나타내었다.  
-우리가 볼 수 있듯이 SimSwap-oFM은 얕은 수준에서 결과를 정렬하기 때문에 낮은 세트 ID 검색이 있다.  
-한편 SimSwap-nFM은 모든 수준에서 제약을 제거함으로써 Faceshifter와 매우 유사한 정체성 성능을 갖는다.  
-SimSwap은 정체성이 약간 뒤처져 있지만 비교적 좋은 자세 성능을 보인다.  
-그림 4 및 5의 결과와 결합하여 SimSwap은 FaceShifter보다 약간 약한 ID 성능을 나타내지만 더 나은 속성 보존 능력을 가지고 있다.  
+우리가 볼 수 있듯이 SimSwap-oFM은 얕은 수준에서 결과를 정렬하기 때문에 ID retrieval이 낮다.  
+SimSwap-nFM은 모든 수준에서 제약을 제거함으로써 Faceshifter와 매우 유사한 ID retrieval을 갖는다.  
+SimSwap은 ID retrieval이 약간 낮지만 비교적 좋은 posture성능을 보인다.  
+그림 4 및 5의 결과와 결합하여 SimSwap은 FaceShifter보다 ID retrieval이 낮지만 더 나은 attribute 보존 능력을 가지고 있다.  
 
 **Keeping a Balance between Identity and Attribute**  
 IIM은 target 이미지에서 추출한 𝐹𝑒𝑎𝑇 전체 feature에 대해 직접 작업하기 때문에  
@@ -304,14 +302,14 @@ ID의 삽입은 필연적으로 attribute 보존 성능에 영향을 미친다.
 두 번째는 feature matching term에서 더 많거나 적은 feature를 선택하는 것이다.  
 이 두 가지 접근 방식을 조합하면 광범위한 결과를 얻을 수 있다.  
   
-SimSwap-oFM 및 SimSwap-nFM 외에도 SimSwap-𝑤𝐹𝑀, SimSwap-oFM-FM-, SimSwap-oFMid+ 및 SimSwap-wFM-id+라는  
+SimSwap-oFM/SimSwap-nFM 외에도 SimSwap-𝑤𝐹𝑀/SimSwap-oFM-FM-/SimSwap-oFMid+/SimSwap-wFM-id+ fksms  
 다른 4개의 네트워크를 학습한다.  
 𝑤𝐹𝑀 : Feature Matching term + 초반 몇 개의 레이어를 유지하고 마지막 몇 개를 제거  
 oFM-FM- : Feature Matching term +  𝜆𝑜𝐹𝑀 = 5  
 oFM-id+ : Feature Matching term + 𝜆𝐼𝑑 = 20  
 wFM-id+ :Weak Feature Matching Loss를 SimSwap으로 사용 + 𝜆𝐼𝑑 = 20  
 SimSwap과 동일한 전략에 따라 위의 모든 네트워크를 학습한다.  
-모든 네트워크의 ID 검색을 테스트한다.  
+모든 네트워크의 ID retrieval을 테스트한다.  
 CelebAMaskHQ에 대한 추가 정량 실험을 수행한다.  
 먼저, 서로 다른 ID를 가진 1,000개의 source 및 target 쌍을 무작위로 선택하고 face swapping 결과를 생성한다.  
 ID 수정 기술을 측정하기 위해 결과와 source 간의 평균 ID loss를 사용한다.  
@@ -319,7 +317,7 @@ ID 수정 기술을 측정하기 위해 결과와 source 간의 평균 ID loss�
 우리는 평균 Reconstruction Loss를 사용하여 face swapping 프로세스 동안 target에서 손실된 attribute 정보의 양을 측정한다.  
 비교 결과는 그림 7에 나와 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/146669418-6228fd56-135c-4d1e-9109-276bd6fcd1cb.png)  
-우리가 볼 수 있듯이 oFM, 𝑤𝐹𝑀, oFM-FM- 및 oFM-id+는 모두 SimSwap보다 ID 검색이 낮다.  
+우리가 볼 수 있듯이 oFM, 𝑤𝐹𝑀, oFM-FM- 및 oFM-id+는 모두 SimSwap보다 ID retrieval이 낮다.  
 이는 Feature Matching에서 마지막 몇 개의 레이어를 유지하는 것이 ID 성능에 미치는 영향이 적다는 것을 나타낸다.  
 nFM은 ID 검색이 가장 높지만 Reconstruction Loss가 가장 높아 수정 능력이 강하면 attribute 보존에 어려움이 있음을 알 수 있다.  
 SimSwap은 ID와 attribute 성능 사이의 균형을 잘 유지하는 중간 수준의 재구성 손실을 유지하면서 비교적 높은 ID 검색을 달성하고 있다.  
@@ -327,8 +325,8 @@ Weak Feature Matching Loss의 효과를 더 검증하기 위해 다른 네트워
 ![image](https://user-images.githubusercontent.com/40943064/146669862-f2dd5f5b-2e6d-4627-8514-0c123889d699.png)  
 동일한 Feature Matching loss를 사용한 결과(col 3&4, col 5&6)가 상대적으로 작은 차이를 나타냄을 알 수 있다.  
 의 𝜆𝐼𝑑은 시각적인 외모에 대한 영향이 제한적이다.  
-SimSwap(col 5)과 SimSwap-oFM(col 3)의 결과를 비교하면 SimSwap은 많은 attribute을 잃지 않고 더 나은 식별 성능을 제공한다.  
-SimSwap-nFM(col 7)의 결과는 최고의 식별 성능을 가지며 결과 얼굴의 모양이 source 얼굴의 모양으로 수정되었다.  
+SimSwap(col 5)과 SimSwap-oFM(col 3)의 결과를 비교하면 SimSwap은 많은 attribute을 잃지 않고 더 나은 ID 성능을 제공한다.  
+SimSwap-nFM(col 7)의 결과는 최고의 ID 성능을 가지며 결과 얼굴의 모양이 source 얼굴의 모양으로 수정되었다.  
 그러나 시선 방향이 target 얼굴의 방향에서 벗어나는 경향이 있기 때문에 SimSwap-nFM은 분명히 attribute을 잃어가고 있다.  
 SimSwap 및 wFM-id+의 경우 대부분 매우 유사한 시각적 출력을 생성한다.  
 그러나 그림 7의 wFM-id+ 및 nFM 값과 그림 8의 결과를 비교할 때 wFM-id+의 Identity Loss가 더 적지만  
