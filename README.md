@@ -109,7 +109,7 @@
 ```
 (2021) StyTr^2: Unbiased Image Style Transfer with Transformers
 (2017) Arbitrary Style Transfer in Real-time with Adaptive Instance
-
+(2016) Image Style Transfer Using Convolutional Neural Networks
 ```
 ## Time Series
 ```
