@@ -136,7 +136,7 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
  # Text book 
  [Machine Learning : A Probabilistic Perspective][t_link001] : ML의 바이블이라고 생각하는 책이다. 언젠간 보고 정리해야겠다고 생각했는데, 언제 다볼 수 있을지... 
 
-# 3. Coursera : IBM Machine Learning
+# 3. Coursera
 <p>
  <img src="https://user-images.githubusercontent.com/40943064/147326092-656e97b0-c871-4a7a-a54d-caab6241c2a7.png" width=350 />
  <img src="https://user-images.githubusercontent.com/40943064/147326779-0ef9aa86-9573-4d5c-b8cc-12353b5ed655.png" width=352 />
