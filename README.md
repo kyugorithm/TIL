@@ -54,6 +54,7 @@
 ```
 ## FaceSwap
 ```
+(2021) HifiFace: 3D Shape and Semantic Prior Guided High Fidelity Face Swapping
 (2021) SimSwap: An Efficient Framework For High Fidelity Face Swapping
 (2020) DeepFaceLab: Integrated, flexible and extensible face-swapping framework
 ```
