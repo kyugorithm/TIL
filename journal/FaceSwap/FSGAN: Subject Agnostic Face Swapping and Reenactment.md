@@ -2,27 +2,32 @@
 
 ## Abstract
 Face swapping과 reenactment를 위한 FSGAN을 제시한다. 과거 작업과는 달리 FSGAN은 불가지론적이고 해당 얼굴에 대한 학습을 요구하지 않고 얼굴 쌍에 대해 적용할 수 있다. 결론적으로, 여러 기술적 기여를 설명한다. 자세와 표정 변화 모두에 맞게 조정되고 단일 이미지 또는 비디오 시퀀스에 적용될 수 있는 face reenactment를 위한 새로운 RNN 기반 접근법을 도출한다. 비디오 시퀀스는 reenactment, Delaunay 삼각 측량 및 중입자 좌표를 기반으로 얼굴 뷰의 연속 보간을 도입한다. 폐색된 얼굴 영역은 얼굴 완성 NN에 의해 처리된다. 마지막으로, 얼굴 블렌딩 네트워크를 사용하여 두 얼굴을 원활하게 블렌딩하는 동시에 대상 피부 색상과 조명 조건을 보존한다. 이 네트워크는 poisson optimization과 perceptual loss를 결합한 새로운 poisson blending loss를 사용한다.
-
+  
 ## 1. Inroduction
-Face swapping은 source에서 target 이미지로 얼굴을 전송하여 target에 나타나는 얼굴을 잘 대체하고 사실적 결과를 산출하는 작업이다(그림 1 왼쪽). Face reenactment(aka face transfer or puppeteering)은 한 비디오에서 제어 얼굴의 얼굴 움직임과 표정 변형을 사용하여 비디오 또는 이미지에 나타나는 얼굴의 움직임과 형성을 가이드한다(그림 1 오른쪽). 엔터테인먼트[1, 21, 48], 개인 정보 보호[6, 26, 32] 및 학습 데이터 생성 분야에서 응용되기 때문에 상당한 연구 관심을 끌고 있다. 이전 연구에서 swapping 또는 reenactment를 제안했지만 둘 다 제안하지는 않았다. 이전 방법은 얼굴 외모를 전달하거나 통제하기 위해 기본 3D 얼굴 표현[46]에 의존했다. 얼굴 모양은 입력 이미지 [44, 42, 35]에서 추정되었거나 [35] 고정되었다. 그런 다음 3D 형상을 입력 영상[10]과 정렬하고 강도를 전송하거나 표정 및 시야를 제어할 때 프록시로 사용했다. 최근 얼굴 조작 작업을 위해 DNN 기반 방법이 제안되었다. 예를 들어, GAN은 가짜 얼굴의 사실적인 이미지를 성공적으로 생성한다. cGAN(cGAN)을 사용하여 한 도메인에서 다른 도메인으로 실제 데이터를 묘사하는 이미지를 변환하고 다중 얼굴 재현 체계를 영감을 주었다[37, 50, 40]. 마지막으로 DeepFake 프로젝트[12]는 비디오의 페이스 스왑을 위해 cGAN을 활용하여 비전문가가 스왑을 광범위하게 이용할 수 있도록 했으며 상당한 대중의 관심을 받았다. 이러한 방법은 기존의 그래픽 파이프라인을 대체하여 사실적인 얼굴 이미지를 생성할 수 있다. 그러나 모두 implicit하게 3D 얼굴 표현을 사용한다. 일부 방법은 latent featrue 공간 도메인 분리에 의존한다[45, 34, 33]. 이러한 방법은 나머지 feature에서 얼굴의 ID 구성 요소를 분해하고 ID를 latent feature 벡터의 표현으로 인코딩하므로 상당한 정보 손실이 발생하고 합성 이미지의 품질이 제한된다. 주제별 방법[42, 12, 50, 22]은 각 주제 또는 주제 쌍에 대해 학습 하므로 합리적인 결과를 얻기 위해 값비싼 주제별 데이터(일반적으로 수천 개의 얼굴 이미지)가 필요하고 잠재적 사용이 제한된다. 마지막으로, 이전의 얼굴 합성 방식, 특히 3D 기반 방법이 공유하는 주요 관심사는 부분적으로 가려진 얼굴을 처리할 때 모두 특별한 주의가 필요하다는 것이다. 이미지 및 비디오에서 얼굴 교환 및 재현에 대한 DL 기반 접근법을 제안한다. 이전 연구와 달리, 우리의 접근 방식은 주제 불가지론적이다. 주제별 학습 없이 다양한 주체의 얼굴에 적용할 수 있다. FSGAN은 end-to-end 학습이 가능하며 사실적이고 일시적으로 일관성 있는 결과를 생성한다. 다음과 같은 기여를 한다.  
+이전 연구에서 swapping과 reenactment 모두 제어 하는 방법은 없었다. 외모를 전달하거나 제어하기 위해 기본 3D 얼굴 표현[46]에 의존했다. 얼굴 모양은 입력 이미지 [44, 42, 35]에서 추정하거나 [35] 고정되었다. 그런 다음 3D 형상을 입력 영상[10]과 정렬하고 강도를 전송(face swap)하거나 표정 및 시야를 제어(reenactment)할 때 프록시로 사용했다.  
+  
+최근 얼굴 조작을 위해 DNN 기반 방법이 제안되었다. 예를 들어, GAN은 가짜 얼굴의 사실적인 이미지를 성공적으로 생성한다. cGAN(cGAN)을 사용하여 한 도메인에서 다른 도메인으로 실제 데이터를 묘사하는 이미지를 변환하고 다중 얼굴 재현 체계를 영감을 주었다[37, 50, 40]. 마지막으로 DeepFake 프로젝트[12]는 비디오의 페이스 스왑을 위해 cGAN을 활용하여 비전문가가 스왑을 광범위하게 이용할 수 있도록 했으며 상당한 대중의 관심을 받았다. 이러한 방법은 기존의 그래픽 파이프라인을 대체하여 사실적인 얼굴 이미지를 생성할 수 있다. 그러나 모두 implicit하게 3D 얼굴 표현을 사용한다. 일부 방법은 latent featrue space 도메인 분리에 의존한다[45, 34, 33]. 이러한 방법은 나머지 feature에서 얼굴의 ID 구성 요소를 분해하고 ID를 latent feature 벡터의 표현으로 인코딩하므로 상당한 정보 손실이 발생하고 합성 이미지의 품질이 제한된다.  
+  
+Subject specific methods[42, 12, 50, 22]은 각 주제 또는 주제 쌍에 대해 학습 하므로 합리적인 결과를 얻기 위해 값비싼 주제별 데이터(일반적으로 수천 개의 얼굴 이미지)가 필요하고 잠재적 사용이 제한된다. 마지막으로, 이전의 얼굴 합성 방식, 특히 3D 기반 방법이 공유하는 주요 관심사는 부분적으로 가려진 얼굴을 처리할 때 모두 특별한 주의가 필요하다는 것이다.  
+
+본 논문은 이미지 및 비디오에서 face sawp 및 reenactment에 대한 DL 기반 접근법을 제안한다. 이전과 달리 주제 불가지론적이기 때문에 주제별 학습 없이 다양한 얼굴에 적용할 수 있다. FSGAN은 end-to-end 학습이 가능하며 사실적이고 일시적으로 일관성 있는 결과를 생성한다. 다음과 같은 기여를 한다.  
 - **Subject agnostic swapping and reenactment.** 사람별 또는 쌍별 학습을 요구하지 않고 자세, 표정 및 ID를 동시에 조작하는 최초의 방법이며 고품질과 일시적으로 일관성 있는 결과를 산출  
- 
+  
 - **Multiple view interpolation.** reenactment, Delaunay 삼각 측량 및 무게 중심 좌표를 기반으로 연속적인 방식으로 동일한 얼굴의 여러 뷰 사이를 보간하는 새로운 방식을 제공  
-
-
-
-- **New loss functions**. 1) 작은 단계로 얼굴 reenactment를 점진적으로 학습하기 위한 stepwise consistency loss와 2) source를 새로운 context에 매끄럽게 통합하도록 얼굴 혼합 네트워크를 학습하기 위한 poisson blending loss 도입
-
+  
+- **New loss functions**. 1) 작은 단계로 얼굴 reenactment를 점진적으로 학습하기 위한 stepwise consistency loss와 2) source를 새로운 context에 매끄럽게 통합하도록 얼굴 혼합 네트워크를 학습하기 위한 poisson blending loss 도입  
+  
+![image](https://user-images.githubusercontent.com/40943064/147716873-1d433de1-bd64-4879-8964-150096d424ea.png)  
+  
 ## 2. Related work
-특히 face swapping과 reenactment를 위한 얼굴 이미지의 모양을 조작하는 방법은 거의 20년으로 거슬러 올라가는 오랜 역사를 가지고 있다. 이러한 방법은 원래 개인 정보 보호 문제로 인해 제안되었지만[6, 26, 32] 레크리에이션[21]이나 오락[1, 48]에 점점 더 많이 사용된다.  
 **3D based methods.**  
-초기 스와핑 방법은 수동 개입이 필요했다[6]. 몇 년 후 자동 방법이 제안되었다[4]. 최근에는 Face2Face가 soruce에서 target으로 표정을 전송했다[44]. 트랜스퍼는 3DMM[5, 7, 11]을 양쪽 얼굴에 맞춘 다음 내부 입 영역에 주의를 기울여 한 얼굴의 표현 구성 요소를 다른 얼굴에 적용하여 수행된다. Suwajanakorn의 reenactment 방법. [42]는 Obama의 재구성된 3D 모델을 사용하여 얼굴 랜드마크를 안내하고 Face2Face에서와 유사한 얼굴 내부 채우기 전략을 사용하여 얼굴의 입 부분을 합성했다. 정면 얼굴의 표현은 AverbuchElor에 의해 조작되었다. [3] 2D 랩 및 얼굴 랜드마크를 사용하여 source에서 target 이미지로 입 내부를 전송한다.  
+초기 스와핑 방법은 수동 개입[6]이 필요했으며 몇 년 후 자동 방법이 제안되었다[4]. 최근에는 Face2Face가 soruce에서 target으로 표정을 전송했다[44]. 트랜스퍼는 3DMM[5, 7, 11]을 양쪽 얼굴에 맞춘 다음 내부 입 영역에 주의를 기울여 한 얼굴의 표현 구성 요소를 다른 얼굴에 적용하여 수행된다. Suwajanakorn의 reenactment 방법[42]은 Obama의 재구성된 3D 모델을 사용하여 얼굴 랜드마크를 안내하고 Face2Face에서와 유사한 얼굴 내부 채우기 전략을 사용하여 얼굴의 입 부분을 합성했다. 정면 얼굴의 표현은 AverbuchElor에 의해 조작되었다. [3] 2D 랩 및 얼굴 랜드마크를 사용하여 source에서 target 이미지로 입 내부를 전송한다.  
   
 마지막으로, Nirkin[35]은 현실적인 face swap을 위해 3D 얼굴 모양 추정이 필요하지 않음을 보여주는 face swap 방법을 제안했다. 대신 고정된 3D 얼굴 모양을 프록시로 사용했다[14, 29]. 우리와 마찬가지로 얼굴 분할 방법을 제안했지만 그들의 작업은 end-to-end 학습이 불가능했고 폐색에 특별한 주의가 필요했다.  
-
+  
 **GAN-based methods.**  
-GAN[13]은 target 도메인과 동일한 분포로 가짜 이미지를 생성하는 것으로 나타났다. 사실적인 모양을 생성하는 데는 성공했지만 GAN 교육은 불안정할 수 있으며 저해상도 이미지에 대한 적용을 제한할 수 있다. 그러나 후속 방법은 학습 과정의 안정성을 향상시켰다[28, 2]. Karras[20] 낮은 이미지 해상도에서 높은 이미지 해상도까지 프로그레시브 멀티스케일 방식을 사용하여 GAN을 학습한다. CycleGAN[52]은 cycle consistency loss를 제안하여 서로 다른 도메인 간에 unsupervised 일반 변환을 훈련할 수 있다. L1 손실이 있는 cGAN은 Isola에 의해 적용되었다. [17] pix2pix 방법을 유도하고 모서리를 면으로 변환하는 것과 같은 응용 프로그램에 대해 매력적인 합성 결과를 생성하는 것으로 나타났다.
-
+GAN은 target 도메인과 동일한 분포로 가짜 이미지를 생성한다. 그러나 학습은 불안정할 수 있으며 저해상도 이미지에 대한 적용을 제한될 수 있다. 후속 방법은 학습 과정의 안정성을 향상시켰고[28, 2],  Karras[20]는 낮은 이미지 해상도에서 높은 이미지 해상도까지 프로그레시브 멀티스케일 방식을 사용하여 GAN을 학습한다. CycleGAN[52]은 cycle consistency loss를 제안하여 서로 다른 도메인 간에 unsupervised 일반 변환을 훈련할 수 있다. L1 loss가 있는 cGAN은 Isola에 의해 적용되었다. [17] pix2pix 방법을 유도하고 모서리를 면으로 변환하는 것과 같은 응용 프로그램에 대해 매력적인 합성 결과를 생성하는 것으로 나타났다.  
+  
 **Facial manipulation using GANs.**  
 Pix2pixHD[47]는 다중 스케일 cGAN 아키텍처를 적용하고 perceptual loss를 추가하여 고해상도 이미지 대 이미지 변환에 GAN을 사용했다[18]. GANimation[37]은 attention map을 생성하는 감정 행동 단위를 조건으로 하는 이중 생성기 cGAN을 제안했다. 이 맵은 배경을 보존하기 위해 재연된 이미지와 원본 이미지 사이를 보간하는 데 사용되었다. GANnotation[40]은 얼굴 랜드마크에 의해 구동되는 깊은 얼굴 reenactment를 제안했다. triple consistency loss를 사용하여 점진적으로 이미지를 생성한다. 먼저 랜드마크를 사용하여 이미지를 정면화한 다음 정면 얼굴을 처리한다.  
   
@@ -31,8 +36,20 @@ Kim[22]은 최근에 하이브리드 3D/딥 방법을 제안했다. 고전적인
 마지막으로 얼굴 조작을 위한 수단으로 feature disentanglement가 제안되었다. RSGAN[34]은 얼굴과 머리카락의 잠재된 표현을 분리하는 반면 FSNet[33]은 얼굴 포즈 및 표정과 같은 기하학적 구성 요소와 정체성을 분리하는 잠재 공간을 제안했다.  
 
 ## 3. Face swapping GAN
-In this work we introduce the Face Swapping GAN (FSGAN), illustrated in Fig. 2. Let Is be the source and It the target images of faces Fs ∈ Is and Ft ∈ It, respectively. We aim to create a new image based on It, where Ft is replaced by Fs while retaining the same pose and expression. FSGAN consists of three main components. The first, detailed in Sec. 3.2 (Fig. 2(a)), consists of a reenactment generator Gr and a segmentation CNN Gs. Gr is given a heatmaps encoding the facial landmarks of Ft, and generates the reenacted image Ir, such that Fr depicts Fs at the same pose and expression of Ft. It also computes Sr: the segmentation mask of Fr. Component Gs computes the face and hair segmentations of Ft. The reenacted image, Ir, may contain missing face parts, as illustrated in Fig. 2 and Fig. 2(b). We therefore apply the face inpainting network, Gc, detailed in Sec. 3.4 using the segmentation St, to estimate the missing pixels. The final part of the FSGAN, shown in Fig. 2(c) and Sec. 3.5, is the blending of the completed face Fc into the target image It to derive the final face swapping result. The architecture of our face segmentation network, Gs, is based on U-Net [38], with bilinear interpolation for upsampling. All our other generators—Gr, Gc, and Gb— are based on those used by pix2pixHD [47], with coarseto-fine generators and multi-scale discriminators. Unlike pix2pixHD, our global generator uses a U-Net architecture with bottleneck blocks [15] instead of simple convolutions and summation instead of concatenation. As with the segmentation network, we use bilinear interpolation for upsampling in both global generator and enhancers. The actual number of layers differs between generators.
-Following others [50], training subject agnostic face reenactment is non-trivial and might fail when applied to unseen face images related by large poses. To address this challenge, we propose to break large pose changes into small manageable steps and interpolate between the closest available source images corresponding to a target’s pose. These steps are explained in the following sections.  
+그림 2와 같이 Face Swapping GAN(FSGAN)을 소개한다.  
+Is : source(Fs ∈ Is), It : target(Ft ∈ It).  
+Ft는 Fs로 대체되고 동일한 포즈와 표정을 유지하도록 It을 기반으로 새로운 이미지를 만드는 것을 목표로 한다.  
+FSGAN은 세 가지 주요 구성 요소로 구성된다.  
+  
+첫 번째(그림 2(a), S3.2)는 아래 두개의 요소로 구성된다.  
+1) Gr : reenactment 생성기, 2) Gs : segmentation CNN  
+  
+Gr : Ft의 landmark를 encoding하는 heatmap을 받고 Fr이 Ft의 동일한 포즈와 표정으로 F를 묘사하도록 재연된 이미지 Ir을 생성한다.  
+또한 Fr의 segmentation mask Sr를 계산한다.  
+Gs : Ft의 얼굴 및 머리카락 분할을 계산한다. 재연된 이미지 Ir은 그림 2 및 그림 2(b)와 같이 누락된 얼굴 부분을 포함할 수 있다. 따라서 S3.4 에 자세히 설명된 얼굴 인페인팅 네트워크 Gc를 적용한다. 누락된 픽셀을 추정하기 위해 분할 St를 사용한다. FSGAN의 마지막 부분은 그림 2(c)와 Sec에 나와 있다. 3.5는 최종 얼굴 스와핑 결과를 도출하기 위해 완성된 얼굴 Fc를 대상 이미지 It에 혼합한 것이다. 얼굴 분할 네트워크 Gs의 아키텍처는 U-Net[38]을 기반으로 하며 업샘플링을 위한 쌍선형 보간법이 있다. 다른 모든 생성기(Gr, Gc 및 Gb)는 pix2pixHD[47]에서 사용되는 생성기를 기반으로 하며 조대-미세 생성기 및 다중 스케일 판별기를 포함한다. pix2pixHD와 달리 우리의 전역 생성기는 연결 대신 단순한 conv. 및 합 대신 병목 블록[15]이 있는 U-Net 아키텍처를 사용한다. Segmentation 네트워크와 마찬가지로 글로벌 제너레이터와 인핸서 모두에서 업샘플링을 위해 쌍선형 보간을 사용한다. 실제 레이어 수는 생성기마다 다르다.  
+다른 사람들[50]에 이어 학습 대상 불가지론적 얼굴 reenactment는 사소하지 않으며 큰 포즈와 관련된 보이지 않는 얼굴 이미지에 적용할 때 실패할 수 있다. 이 문제를 해결하기 위해 우리는 큰 포즈 변경을 관리 가능한 작은 단계로 나누고 대상의 포즈에 해당하는 가장 가까운 사용 가능한 소스 이미지 사이를 보간할 것을 제안한다. 이러한 단계는 다음 섹션에서 설명한다.  
+  
+![image](https://user-images.githubusercontent.com/40943064/147720990-3e874a74-b11b-4d2b-96b1-ac0e1384f055.png)  
   
 ### 3.1. Training losses
 **Domain specific perceptual loss.**   
