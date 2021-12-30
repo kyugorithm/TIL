@@ -58,6 +58,7 @@
 (2021) SimSwap: An Efficient Framework For High Fidelity Face Swapping
 (2020) DeepFaceLab: Integrated, flexible and extensible face-swapping framework
 (2019) FSGAN: Subject Agnostic Face Swapping and Reenactment
+(2017) On Face Segmentation, Face Swapping, and Face Perception
 ```
 ## Generative Model
 ```
