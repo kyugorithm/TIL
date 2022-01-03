@@ -12,6 +12,9 @@
 ```
 (2021) StyTr^2: Unbiased Image Style Transfer with Transformers  
 (2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis  
+(2020) Neural Head Reenactment with Latent Pose Descriptors
+(2020)	First Order Model for Image Animation
+(2020)	One-Shot Free-View Neural Talking-Head Synthesis for Video Conferencing 
 ```
 ## Neural Rendering
 ```
