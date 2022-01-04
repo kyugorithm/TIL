@@ -8,20 +8,20 @@ Face swapping과 reenactment를 위한 FSGAN을 제시한다. 과거 작업과�
   
 최근 얼굴 조작을 위해 DNN 기반 방법이 제안되었다. 예를 들어, GAN은 가짜 얼굴의 사실적인 이미지를 성공적으로 생성한다. cGAN(cGAN)을 사용하여 한 도메인에서 다른 도메인으로 실제 데이터를 묘사하는 이미지를 변환하고 다중 얼굴 재현 체계를 영감을 주었다[37, 50, 40]. 마지막으로 DeepFake 프로젝트[12]는 비디오의 페이스 스왑을 위해 cGAN을 활용하여 비전문가가 스왑을 광범위하게 이용할 수 있도록 했으며 상당한 대중의 관심을 받았다. 이러한 방법은 기존의 그래픽 파이프라인을 대체하여 사실적인 얼굴 이미지를 생성할 수 있다. 그러나 모두 implicit하게 3D 얼굴 표현을 사용한다. 일부 방법은 latent featrue space 도메인 분리에 의존한다[45, 34, 33]. 이러한 방법은 나머지 feature에서 얼굴의 ID 구성 요소를 분해하고 ID를 latent feature 벡터의 표현으로 인코딩하므로 상당한 정보 손실이 발생하고 합성 이미지의 품질이 제한된다.  
   
-Subject specific methods[42, 12, 50, 22]은 각 주제 또는 주제 쌍에 대해 학습 하므로 합리적인 결과를 얻기 위해 값비싼 주제별 데이터(일반적으로 수천 개의 얼굴 이미지)가 필요하고 잠재적 사용이 제한된다. 마지막으로, 이전의 얼굴 합성 방식, 특히 3D 기반 방법이 공유하는 주요 관심사는 부분적으로 가려진 얼굴을 처리할 때 모두 특별한 주의가 필요하다는 것이다.  
+Subject specific methods[42, 12, 50, 22]은 각 주제 또는 주제 쌍에 대해 학습 하므로 합리적인 결과를 얻기 위해 값비싼 주제별 데이터(일반적으로 수천 개의 얼굴 이미지)가 필요하고 잠재성이 부족하다. 마지막으로, 이전의 얼굴 합성 방식, 특히 3D 기반 방식의 관심사는 occlusion 처리시 특별한 주의가 필요하다는 것이다.  
 
 본 논문은 이미지 및 비디오에서 face sawp 및 reenactment에 대한 DL 기반 접근법을 제안한다. 이전과 달리 주제 불가지론적이기 때문에 주제별 학습 없이 다양한 얼굴에 적용할 수 있다. FSGAN은 end-to-end 학습이 가능하며 사실적이고 일시적으로 일관성 있는 결과를 생성한다. 다음과 같은 기여를 한다.  
-- **Subject agnostic swapping and reenactment.** 사람별 또는 쌍별 학습을 요구하지 않고 자세, 표정 및 ID를 동시에 조작하는 최초의 방법이며 고품질과 일시적으로 일관성 있는 결과를 산출  
+- **Subject agnostic swapping and reenactment.** 사람별 또는 pair 학습을 요구하지 않고 자세, 표정 및 ID를 동시에 조작하는 최초의 방법이며 고품질과 시간적으로 일관된 결과를 산출  
   
 - **Multiple view interpolation.** reenactment, Delaunay 삼각 측량 및 무게 중심 좌표를 기반으로 연속적인 방식으로 동일한 얼굴의 여러 뷰 사이를 보간하는 새로운 방식을 제공  
   
-- **New loss functions**. 1) 작은 단계로 얼굴 reenactment를 점진적으로 학습하기 위한 stepwise consistency loss와 2) source를 새로운 context에 매끄럽게 통합하도록 얼굴 혼합 네트워크를 학습하기 위한 poisson blending loss 도입  
+- **New loss functions**. 1) 작은 단계로 얼굴 reenactment를 점진적으로 학습하기 위한 stepwise consistency loss와 2) source를 새로운 context에 매끄럽게 통합하도록 face blending network를 학습하기 위한 poisson blending loss 도입  
   
 ![image](https://user-images.githubusercontent.com/40943064/147716873-1d433de1-bd64-4879-8964-150096d424ea.png)  
   
 ## 2. Related work
 **3D based methods.**  
-초기 스와핑 방법은 수동 개입[6]이 필요했으며 몇 년 후 자동 방법이 제안되었다[4]. 최근에는 Face2Face가 soruce에서 target으로 표정을 전송했다[44]. 트랜스퍼는 3DMM[5, 7, 11]을 양쪽 얼굴에 맞춘 다음 내부 입 영역에 주의를 기울여 한 얼굴의 표현 구성 요소를 다른 얼굴에 적용하여 수행된다. Suwajanakorn의 reenactment 방법[42]은 Obama의 재구성된 3D 모델을 사용하여 얼굴 랜드마크를 안내하고 Face2Face에서와 유사한 얼굴 내부 채우기 전략을 사용하여 얼굴의 입 부분을 합성했다. 정면 얼굴의 표현은 AverbuchElor에 의해 조작되었다. [3] 2D 랩 및 얼굴 랜드마크를 사용하여 source에서 target 이미지로 입 내부를 전송한다.  
+초기 swapping은 수동 개입[6]이 필요했으며 몇 년 후 자동 방법이 제안되었다[4]. 최근에는 Face2Face가 soruce에서 target으로 표정을 전송했다[44]. Transfer는 3DMM[5, 7, 11]을 양쪽 얼굴에 맞춘 다음 내부 입 영역에 주의를 기울여 한 얼굴의 표현 구성 요소를 다른 얼굴에 적용하여 수행된다. Suwajanakorn의 reenactment 방법[42]은 Obama의 재구성된 3D 모델을 사용하여 얼굴 랜드마크를 안내하고 Face2Face에서와 유사한 얼굴 내부 채우기 전략을 사용하여 얼굴의 입 부분을 합성했다. 정면 얼굴의 표현은 AverbuchElor에 의해 조작되었다. [3] 2D 랩 및 얼굴 랜드마크를 사용하여 source에서 target 이미지로 입 내부를 전송한다.  
   
 마지막으로, Nirkin[35]은 현실적인 face swap을 위해 3D 얼굴 모양 추정이 필요하지 않음을 보여주는 face swap 방법을 제안했다. 대신 고정된 3D 얼굴 모양을 프록시로 사용했다[14, 29]. 우리와 마찬가지로 얼굴 분할 방법을 제안했지만 그들의 작업은 end-to-end 학습이 불가능했고 폐색에 특별한 주의가 필요했다.  
   
