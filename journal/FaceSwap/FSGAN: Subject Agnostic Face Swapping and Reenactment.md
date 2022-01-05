@@ -17,8 +17,8 @@ Subject specific methods[42, 12, 50, 22]은 각 주제 또는 주제 쌍에 대�
   
 - **New loss functions**. 1) 작은 단계로 얼굴 reenactment를 점진적으로 학습하기 위한 stepwise consistency loss와 2) source를 새로운 context에 매끄럽게 통합하도록 face blending network를 학습하기 위한 poisson blending loss 도입  
   
-![image](https://user-images.githubusercontent.com/40943064/147716873-1d433de1-bd64-4879-8964-150096d424ea.png)  
-  
+![image](https://user-images.githubusercontent.com/40943064/148227722-ec0e61d9-5d51-4d5e-8fc4-6073f6dadf8f.png)    
+
 ## 2. Related work
 **3D based methods.**  
 초기 swapping은 수동 개입[6]이 필요했으며 몇 년 후 자동 방법이 제안되었다[4]. 최근에는 Face2Face가 soruce에서 target으로 표정을 전송했다[44]. Transfer는 3DMM[5, 7, 11]을 양쪽 얼굴에 맞춘 다음 내부 입 영역에 주의를 기울여 한 얼굴의 표현 구성 요소를 다른 얼굴에 적용하여 수행된다. Suwajanakorn의 reenactment 방법[42]은 Obama의 재구성된 3D 모델을 사용하여 얼굴 랜드마크를 안내하고 Face2Face에서와 유사한 얼굴 내부 채우기 전략을 사용하여 얼굴의 입 부분을 합성했다. 정면 얼굴의 표현은 AverbuchElor에 의해 조작되었다. [3] 2D 랩 및 얼굴 랜드마크를 사용하여 source에서 target 이미지로 입 내부를 전송한다.  
