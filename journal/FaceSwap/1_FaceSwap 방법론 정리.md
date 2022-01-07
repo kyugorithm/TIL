@@ -14,3 +14,7 @@ DeepFakes. FaceSwap. https://github.com/ deepfakes/faceswap. Accessed: 2019-02-0
 Reenactgan: Learning to reenact faces via boundary transfer (ECCV 2018)
 Deep video portraits (ACM 2108)
 ```
+
+### 관련 논문 정리중  
+
+![image](https://user-images.githubusercontent.com/40943064/148560813-067e4d7e-ba68-43a5-8024-17e81bfde6d6.png)
