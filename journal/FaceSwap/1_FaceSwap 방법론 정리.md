@@ -17,4 +17,4 @@ Deep video portraits (ACM 2108)
 
 ### 관련 논문 정리중  
 
-![image](https://user-images.githubusercontent.com/40943064/148560813-067e4d7e-ba68-43a5-8024-17e81bfde6d6.png)
+![image](https://user-images.githubusercontent.com/40943064/148560886-fd5d24df-e94a-499f-95f0-cea2e94eb1b1.png)  
