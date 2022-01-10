@@ -5,7 +5,7 @@ Property: 2022년 1월 3일
 Property 1: 이규철
 Tags: 3Dface, Synthesis
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenac%2018852680da9144e19a34a7a6c7f1cae3/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/40943064/148788039-f18ac0c4-8850-47fe-b25e-52361ff6b4c0.png)
 
 ## Abstract
 
@@ -36,7 +36,7 @@ Tags: 3Dface, Synthesis
 - 일반적인 정성적 결과  : 4번째 열의 극단적 차이(Pose와 Expression이 매우 큼)에도 대응가능
 - Yaw 크기에 따른 결과  : 큰 angle 변화에 대해 iterative 방식으로 접근하면 ID와 texture가 더 잘 보존 (의견 : 큰 차이는 없어 보임)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenac%2018852680da9144e19a34a7a6c7f1cae3/Untitled%201.png)
+![Untitled 1](https://user-images.githubusercontent.com/40943064/148788056-0835b479-9d08-4d3c-8efc-0f7dc083a488.png)
 
 ### 2) **Qualitative face swapping results**
 
@@ -44,13 +44,13 @@ Tags: 3Dface, Synthesis
 
 다양한 표정, 얼굴, occlusion 케이스 사용 [35]와 대등한 비교를 위해 target과 가장 유사한 자세의 source 선택( KC 이해안됨)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenac%2018852680da9144e19a34a7a6c7f1cae3/Untitled%202.png)
+![Untitled 2](https://user-images.githubusercontent.com/40943064/148788077-06cadd71-3f5d-4ed2-9ea4-7b5ab6060f09.png)
 
 ### **3) Comparison to Face2Face**
 
 Face2Face와 동일하게 입만 전송하는 문제로 정의 Face2Face는 전반적으로 artifact가 나타나며 target 입 모양을 잘 표현하지 못함
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenac%2018852680da9144e19a34a7a6c7f1cae3/Untitled%203.png)
+![Untitled 3](https://user-images.githubusercontent.com/40943064/148788086-6843f5d3-48ca-42c7-a16c-653199262d14.png)
 
 ### **4) Quantitative results**
 
@@ -60,7 +60,7 @@ source의 ID 보존 & target의 자세/표정 반영 1, 2) 품질  비교   
 
 (규철 : SSIM이 알맞은 performance measure인가?)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenac%2018852680da9144e19a34a7a6c7f1cae3/Untitled%204.png)
+![Untitled 4](https://user-images.githubusercontent.com/40943064/148788099-1d83f94f-4311-43a7-9f8d-3ccf8249c959.png)
 
 ### **5) Ablation Study**
 
@@ -73,7 +73,7 @@ source의 ID 보존 & target의 자세/표정 반영 1, 2) 품질  비교   
 
 SSIM 성능 하락 : 추가 네트워크와 처리단계가 추가가 원인
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenac%2018852680da9144e19a34a7a6c7f1cae3/Untitled%205.png)
+![Untitled 5](https://user-images.githubusercontent.com/40943064/148788109-f699bf50-f696-4762-aa9e-c90175ac4f44.png)
 
 ## 6. Conclusion
 
