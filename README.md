@@ -12,9 +12,16 @@
 ```
 (2021) StyTr^2: Unbiased Image Style Transfer with Transformers  
 (2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis  
+  
 (2020) Neural Head Reenactment with Latent Pose Descriptors
 (2020)	First Order Model for Image Animation
 (2020)	One-Shot Free-View Neural Talking-Head Synthesis for Video Conferencing 
+  
+Face swap/reenactment
+(2018) RSGAN: Face Swapping and Editing using Face and Hair Representation in Latent Spaces
+(2018) ReenactGAN: Learning to Reenact Faces via Boundary Transfer
+(2016) Face2Face: Real-time Face Capture and Reenactment of RGB Videos
+
 ```
 ## Neural Rendering
 ```
