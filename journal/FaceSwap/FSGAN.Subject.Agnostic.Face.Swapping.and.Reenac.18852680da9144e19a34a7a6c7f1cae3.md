@@ -19,6 +19,9 @@ Tags: 3Dface, Synthesis
 1. **Reenactment →** **Swapping** 순서로 pipeline을 구성하여 두 가지 task 모두 가능
 2. 특정 얼굴에 대해 학습 없이 임의 얼굴에 대해 **Swapping** 가능
 
+(L2대신 L1 사용하는 이유 : L2 loss를 사용하면 결과 이미지에서 Splotcy artifacts, 즉 얼룩덜룩해지는 것을 확인할 수 있다. 이는 L2 loss는 큰 error을 중점적으로 penalize하고, 작은 error에는 tolerant하기 때문이다. 그러나 human visual system은 luminance와 color variation에 더 민감하다.)
+
+
 ### **Methodological Novelty**
 
 1. RNN 활용 **단일 이미지 혹은 단일 비디오 sequence**에 대한 Reenactment(**자세, 표정)**
