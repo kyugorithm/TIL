@@ -6,6 +6,9 @@ Property 1: 이규철
 Tags: 3Dface, Synthesis
 
 ![Untitled](https://user-images.githubusercontent.com/40943064/148788039-f18ac0c4-8850-47fe-b25e-52361ff6b4c0.png)
+의문사항  
+1) perceptual loss는 high-frequency 관련 loss이다? -> high-level feature loss 이다.
+2) perceptual loss에 l2가 아닌 l1을 사용한 이유가 무엇인지? 
 
 ## Abstract
 
