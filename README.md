@@ -22,6 +22,7 @@ Face swap/reenactment
 (2018) ReenactGAN: Learning to Reenact Faces via Boundary Transfer
 (2016) Face2Face: Real-time Face Capture and Reenactment of RGB Videos
 
+(2016) Loss Functions for Image Restoration with Neural Networks ; L1 vs L2 vs SSIM family
 ```
 ## Neural Rendering
 ```
