@@ -5,9 +5,8 @@ Property: 2022년 1월 3일
 Property 1: 이규철
 Tags: 3Dface, Synthesis, face reenactment, face swap
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/40943064/149625453-8f1a1463-57e6-41ba-9fbe-173cea06842d.png)  
 
-[https://www.youtube.com/watch?v=BsITEVX6hkE&feature=emb_title](https://www.youtube.com/watch?v=BsITEVX6hkE&feature=emb_title)
 
 ## Abstract
 
@@ -38,13 +37,13 @@ Tags: 3Dface, Synthesis, face reenactment, face swap
 
 - (CVPR2016) Face2Face: real-time face capture and reenactment of rgb videos
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%201.png)
+![Untitled 1](https://user-images.githubusercontent.com/40943064/149625461-a6e034f0-68a7-4bb7-a3b2-92585ed830ff.png)  
 
 - (TOG2017) Synthesizing obama: learning lip sync from audio
 - (FG 2018) On face segmentation, face swapping, and face perception
 : 2D facial landmark detection → 3D fitting(pose+expression) →segmentation → blending
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%202.png)
+![Untitled 2](https://user-images.githubusercontent.com/40943064/149625469-850a4287-17d8-429e-8839-f853d6ebc897.png)  
 
 ### 2) GAN을 활용한 방법
 
@@ -53,11 +52,11 @@ Tags: 3Dface, Synthesis, face reenactment, face swap
 - (ECCV2018) Ganimation: Anatomically-aware facial animation from a single image
 - Triple consistency loss for pairing distributions in gan-based face synthesis
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%203.png)
+![Untitled 3](https://user-images.githubusercontent.com/40943064/149625485-b92ddf03-c62a-4fa0-bc6b-3b84a47c61b0.png)  
 
 - (ECCV2018) Reenactgan: Learning to reenact faces via boundary transfer
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%204.png)
+![Untitled 4](https://user-images.githubusercontent.com/40943064/149625488-c83f6c6a-e327-407b-a91f-f120388fa231.png)  
 
 <aside>
 💡 분야 확장에 큰 기여를 한 DeepFake 도 cGAN과 3D 모델을 활용한 방법임
@@ -70,14 +69,16 @@ Tags: 3Dface, Synthesis, face reenactment, face swap
 
 - (ACCV2018) Fsnet: An identity-aware generative model for image-based face swapping
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%205.png)
+![Untitled 5](https://user-images.githubusercontent.com/40943064/149625494-1b7781b2-6d64-4916-bb62-c90957483566.png)  
+
 
 - Rsgan: face swapping and editing using face and hair representation in latent spaces
-
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%206.png)
+![Untitled 6](https://user-images.githubusercontent.com/40943064/149625502-85ce46ce-4840-4a10-9dd8-d50ffbec1707.png)  
 
 - Cr-gan: learning complete representations for multi-view generation
 : Z space를 전체 학습하도록 하여 complete representations을 만들면 보지못한 입력에도 이미지 생성 가능
+
+![Untitled 7](https://user-images.githubusercontent.com/40943064/149625538-b10d50ed-1cf1-4845-a2a8-4d4ef35c2bce.png)
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%207.png)
 
