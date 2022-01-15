@@ -80,8 +80,6 @@ Tags: 3Dface, Synthesis, face reenactment, face swap
 
 ![Untitled 7](https://user-images.githubusercontent.com/40943064/149625538-b10d50ed-1cf1-4845-a2a8-4d4ef35c2bce.png)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%207.png)
-
 <aside>
 💡 앞서 소개되었던 Synthesizing obama, DeepFake, Deep video portraits, Reenactgan 방법 모두 Subject specific 방법론
 
@@ -100,6 +98,7 @@ Tags: 3Dface, Synthesis, face reenactment, face swap
 ---
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%208.png)
+![Untitled 8](https://user-images.githubusercontent.com/40943064/149626974-6fd359e9-a838-472b-ae18-4fc423a57382.png)
 
 ### 1) 문제 정의
 
@@ -137,6 +136,7 @@ Ft(Target faces)∈ It(Target images)
 + biliear interpolation upsampling(segmentation 과 동일한 upsampling 방식 적용)
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%209.png)
+![Untitled 9](https://user-images.githubusercontent.com/40943064/149626975-96ae2864-6b08-47de-bbe0-5eb66bc397e8.png)
 
 (pix2pixHD의 Generator network 구조)
 
@@ -155,16 +155,19 @@ Ft(Target faces)∈ It(Target images)
 : 얼굴 이미지의 고유정보를 포착하는데 문제가 있어 사전학습된 ImageNet을 사용하지 않고 적용하는 도메인 데이터를 이용하여 얼굴 인식 및 속성 분류문제에 학습하여 활용
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2010.png)
+![Untitled 10](https://user-images.githubusercontent.com/40943064/149626979-c73a6e87-72ef-4458-b6e1-9413df203c2a.png)
 
 - **Reconstruction loss.**
 
 : perceptual loss만 사용하면 low-frequency content의 reconstruction에 해당하는 부정확한 색상의 이미지를 생성하기에 L1 loss 사용
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2011.png)
+![Untitled 11](https://user-images.githubusercontent.com/40943064/149626981-9c868e62-7e7b-462e-b9e8-59784c6fa9ec.png)
 
 따라서 모든 **G 학습**에 사용되는 통합 reconstruction loss는 아래와 같다.
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2012.png)
+![Untitled 12](https://user-images.githubusercontent.com/40943064/149626982-577e0e96-3acf-4115-80ab-1cb3b3e5ceee.png)
 
 - **Adversarial loss.**
 
@@ -173,6 +176,7 @@ Ft(Target faces)∈ It(Target images)
 x : Is, y:It
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2013.png)
+![Untitled 13](https://user-images.githubusercontent.com/40943064/149626984-8dddad3a-17ae-4b93-bc40-d5395c6f8e91.png)
 
 <aside>
 💡 **Multi-scale D**
@@ -188,8 +192,10 @@ multi-scale D가 없으면 생성된 이미지에 반복되는 패턴이 많이 
 사용되는 변수와 그 크기는 아래와 같음
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2014.png)
+![Untitled 14](https://user-images.githubusercontent.com/40943064/149626986-f4f3ea5a-44af-424c-9c37-5779cf9487a0.png)
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2015.png)
+![Untitled 15](https://user-images.githubusercontent.com/40943064/149626989-fbe47976-acd7-4e7d-8ef1-3f2df68545f3.png)
 
 먼저, source와 target의 pose 차이가 큰 경우 해결책으로 제시했던 **분할 방식**을 설명한다.
 
@@ -198,16 +204,19 @@ multi-scale D가 없으면 생성된 이미지에 반복되는 패턴이 많이 
 Is → Ir1 → Ir2 → ... (I rn = Ir)
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2016.png)
+![Untitled 16](https://user-images.githubusercontent.com/40943064/149626992-ddb8b731-b2b7-44c0-90dd-37af03a749c0.png)
 
 기존에 사용되었던 방법인 0/1 mask와 달리 얼굴과 머리카락 영역을 추가로 고려함으로써 얼굴 segmentation 정확도를 향상시킬 수 있다.
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2017.png)
+![Untitled 17](https://user-images.githubusercontent.com/40943064/149626993-bc1f97ec-d3a5-4e3c-8ba4-43e5d0eff987.png)
 
 **Traning.**
 
 기존 정의한 Lrec에 대한 loss 계산 입력으로 rn 버전과 r 버전 모두 사용하며 분할을 통한 loss 계산 term은 stepwise consistency loss라고 정의한다.
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2018.png)
+![Untitled 18](https://user-images.githubusercontent.com/40943064/149626996-5290a4e7-7118-46dd-bdc0-6581192f403d.png)
 
 Gs 에 대해서는 아래와같이 정의 된다.
 Srt(Gr(It;H(pt)))는 source와 target 동일 id로 주어진 경우를 특별히 정의하는 상황이며
@@ -215,6 +224,7 @@ Srt(Gr(It;H(pt)))는 source와 target 동일 id로 주어진 경우를 특별히
 동일 해당 이미지에 대한 Segmentation label이 있기 때문에 학습 가능하다.
 
 ![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2019.png)
+![Untitled 19](https://user-images.githubusercontent.com/40943064/149626998-70cd0a3f-98ee-4ee9-ad43-78e8a56251a5.png)
 
 학습은 Gr과 Gs를 1 epoch씩 번갈아가며 수행하며 이 경우 성능이 가장 잘 나온다.
 
@@ -239,9 +249,7 @@ Srt(Gr(It;H(pt)))는 source와 target 동일 id로 주어진 경우를 특별히
 Query가 되는 et 입력 → 가까운 삼각형을 탐색 → vertex를 구성하는 3개의 x에 대한 Is 추출 → 3개의 무게중심으로 weight 계산 → 아래 수식을 통하여 연산 후 결과 추출 
 (포인트 x가 boundary line에 존재하는 경우 하나의 포인트를 제거하고 lamda를 다시 normalize하여 2개로 계산)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2020.png)
-
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2021.png)
+![Untitled 20](https://user-images.githubusercontent.com/40943064/149627002-374facb8-f927-4fcd-a1cb-53b3bbd23a0c.png)
 
 ### 3.4. Face inpainting
 
@@ -249,15 +257,15 @@ Source에 존재하는 occlusion 영역을 처리해야 제대로 target이미�
 
 저자의 과거 방식에서는 Is와 It에서 occlusion이 없는 영역만을 segmentation으로 탐색해서 swapping 했기 때문에 문제가 있었다.
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%202.png)
+![Untitled 21](https://user-images.githubusercontent.com/40943064/149627004-120d471e-3422-4ab2-8fde-d902903d513e.png)
 
 학습목표 : Fs의 결과인 ~Ir가 Ft의 St 얼굴 영역을 cover 하도록하여  Fs의 occlusion을 Ft의 얼굴에 맞추어 채워줌
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2022.png)
+![Untitled 22](https://user-images.githubusercontent.com/40943064/149627005-c9ba8ab7-517f-4834-ac8c-3b0d00d57095.png)
 
 (저자의 ECCV oral 설명 발췌)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2023.png)
+![Untitled 23](https://user-images.githubusercontent.com/40943064/149627013-4e6ba3d6-8eb3-4145-b883-c9c2a4a29860.png)
 
  
 
@@ -269,7 +277,7 @@ Fs와 Ft는 skin tone과 lighting이 다르기 때문에 해당 차이를 맞추
 
 **poisson blending optimization**를 적용
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2024.png)
+![Untitled 24](https://user-images.githubusercontent.com/40943064/149627014-398969f3-1726-4ff7-8d71-1690d06d955c.png)
 
 ## 4. Datasets and training
 
@@ -305,7 +313,7 @@ VGG-19 학습시
 - 일반적인 정성적 결과  : 4번째 열의 극단적 차이(Pose와 Expression이 매우 큼)에도 대응가능
 - Yaw 크기에 따른 결과  : 큰 angle 변화에 대해 iterative 방식으로 접근하면 ID와 texture가 더 잘 보존 (의견 : 큰 차이는 없어 보임)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2025.png)
+![Untitled 25](https://user-images.githubusercontent.com/40943064/149627018-6927a034-7c1a-4b51-8057-922f833df8a0.png)
 
 ### 2) **Qualitative face swapping results**
 
@@ -313,13 +321,15 @@ VGG-19 학습시
 
 다양한 표정, 얼굴, occlusion 케이스 사용 [35]와 대등한 비교를 위해 target과 가장 유사한 자세의 source 선택( KC 이해안됨)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2026.png)
+![Untitled 26](https://user-images.githubusercontent.com/40943064/149627021-3744c836-0b2a-48eb-acde-1babca332664.png)
+
 
 ### **3) Comparison to Face2Face**
 
 Face2Face와 동일하게 입만 전송하는 문제로 정의 Face2Face는 전반적으로 artifact가 나타나며 target 입 모양을 잘 표현하지 못함
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2027.png)
+![Untitled 27](https://user-images.githubusercontent.com/40943064/149627025-1736a586-ea3e-408e-a6f3-40a15da38b52.png)  
+
 
 ### **4) Quantitative results**
 
@@ -329,7 +339,8 @@ source의 ID 보존 & target의 자세/표정 반영 1, 2) 품질  비교   
 
 (규철 : SSIM이 알맞은 performance measure인가?)
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2028.png)
+![Untitled 28](https://user-images.githubusercontent.com/40943064/149627030-69894ffb-cf19-48da-826a-ad6010d11eca.png)  
+
 
 ### **5) Ablation Study**
 
@@ -342,7 +353,7 @@ source의 ID 보존 & target의 자세/표정 반영 1, 2) 품질  비교   
 
 SSIM 성능 하락 : 추가 네트워크와 처리단계가 추가가 원인
 
-![Untitled](FSGAN%20Subject%20Agnostic%20Face%20Swapping%20and%20Reenacmen%2018852680da9144e19a34a7a6c7f1cae3/Untitled%2029.png)
+![Untitled 29](https://user-images.githubusercontent.com/40943064/149627034-0b7159f4-fe1c-46c8-9cf2-091c3fbe081c.png)  
 
 ## 6. Conclusion
 
