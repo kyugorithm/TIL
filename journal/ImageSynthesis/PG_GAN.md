@@ -73,13 +73,14 @@ CELEBA, LSUN, CIFAR10 데이터 세트를 사용하여 논문의 기여를 평�
 서로의 거울 이미지이며 항상 동기화되어 성장하는 G 및 D를 사용한다.  
 각 네트워크는 학습과정에서 모든 계층이 학습가능 상태로 유지된다.  
 새로운 layer가 네트워크에 추가되면서 그림2와 같이 부드럽게 페이드인 된다.  
+
 <p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150899790-895192d1-036f-445a-aa22-23c075881bf8.png" width = 600></p>  
-이를통해 잘 훈련 된 더 작은 해상도 layer에 대한 갑작스러운 충격을 방지 할 수 있다.  
-Appendix A는 다른 훈련 매개 변수와 함께 G 및 D의 구조를 자세히 설명한다.  
-점진적 학습이 몇 가지 이점이 있음을 관찰한다.  
+
+이를통해 잘 훈련 된 더 낮은 해상도 layer에 대한 갑작스러운 충격을 방지 할 수 있다.  
+PG 학습이 몇 가지 이점이 있음을 알 수 있다.  
 초기에 더 작은 이미지의 생성은 클래스 정보가 적고 모드가 적기 때문에 훨씬 더 **안정적**이다.  
 해상도를 조금씩 늘림으로써 latent 벡터에서 예를 들어 매핑을 발견하는 **최종 목표에 비해 훨씬 더 간단한 질문을 지속**한다.  
-WGAN-GP 손실 및 LSGAN 손실을 사용하여 mega-pixel 스케일 이미지를 안정적으로 합성 할 수 있도록 학습을 충분히 안정화한다.  
+WGAN-GP loss 및 LSGAN loss를 사용하여 mega-pixel 스케일 이미지를 안정적으로 합성 할 수 있도록 학습을 충분히 안정화한다.  
   
 또 다른 이점은 학습시간 단축이다. 점진적으로 증가하는 GAN으로 인해 대부분의 반복은 더 낮은 해상도에서 수행되며  
 최종 출력 해상도에 따라 비슷한 품질을 최대 **2 ~ 6 배 더 빠르게** 얻을 수 있다.  
@@ -122,8 +123,8 @@ Variation 문제에 대한 대안에는 업데이트를 정규화하기 위한 D
 feature 벡터를 orthogonalize화하도록 권장하는 " repelling regularizer"가 포함된다.  
 Ghosh의 여러 G도 비슷한 목표를 달성한다.  
 (이러한 솔루션이 제안 방식보다 훨씬 더 variation을 증가시킬 수 있다.)  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150913174-27ca605e-86cd-4898-ab6d-efe1b5b2d94b.png" width = 600></p>  
 
-<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150685549-c4df7455-c9a0-42b1-8507-3743f8c6be32.png" width = 800></p>  
 reference : https://engineer-mole.tistory.com/89
 
 ## 4. Normalization in Generator and Discriminator
@@ -163,7 +164,7 @@ G 및 D의 크기가 경쟁의 결과로 통제불능하게 되는것을 막기 
 **MS-SSIM의 한계**  
 한 GAN의 결과를 다른 GAN과 비교하려면 지루하고 어렵고 주관적일 수 있는 많은 이미지를 조사해야 한다.  
 따라서 대규모 이미지 컬렉션에서 일부 지표를 계산하는 자동화된 방법에 의존하는 것이 바람직하다.  
-MS-SSIM과 같은 기존 방법은 대규모 mode-collapse를 안정적으로 찾았지만 색상/질감의 변화 손실같은 작은 효과에는 반응하지 않으며  
+MS-SSIM과 같은 기존 방법은 대규모 mode-collapse를 안정적으로 찾았지만 색상/질감의 변화 loss 같은 작은 효과에는 반응하지 않으며  
 학습세트와 유사성 측면에서 이미지 품질을 직접 평가하지 않는다.  
 **Laplacian Pyramid 표현을 이용한 local patch 추출**
 성공적인 G가 모든 스케일에 대한 학습 세트와 유사한 로컬 이미지 구조를 갖는 샘플을 생성할 것이라는 직관을 기반으로 한다.  
