@@ -1,33 +1,31 @@
-# progressive growing of gans for improved quality stability and variation
+# Progressive growing of gans for improved quality, stability, and variation
 
 ## Abstract
 GAN의 새로운 학습방법론 제시  
 낮은 해상도에서부터 학습이 진전됨에 따라 세밀한 디테일들을 **점진적으로 모델링하는 새로운 layer**를 G, D 모두에 더해간다.  
 **높은 품질**의 이미지를 생성하게 되면서 **학습속도가 증가**하고 **안정적**으로 학습을 수행한다.  
-생성 이미지에서의 변화를 증가시키는 간단한 방법도 제안하며 CIFAR10 데이터셋에 대해서 8.8의 inception score를 기록한다.  
+생성 이미지에서의 **variation을 증가**시키는 간단한 방법도 제안하며 CIFAR10 데이터셋에 대해서 8.8의 inception score를 기록한다.  
 추가로 G와 D 사이의 학습에 부정적인 원치않는 경쟁에 있어 중요한 여러 구현 디테일들을 설명한다.  
-마지막으로 결과를 평가하기 위한 **새로운** 이미지 품질과 다양성 **지표**를 소개한다.  
+마지막으로 결과를 평가하기 위한 **새로운** 이미지 품질과 variation **지표**를 소개한다.  
 추가로, 고품질의 CELEBA 데이터셋 버전을 구성한다.  
   
-핵심 : (점진적 layer 추가 학습방식) → 이미지 생성의 (**품질향상**, **학습속도 증가**, **안정성 확보**)  
+1) 점진적 layer 추가 학습방식으로 이미지 품질, 학습속도, 안정성 증가  
+2) Variation을 증가시키는 방법론 제안  
+3) G와 D 학습시 잘못된 경쟁이 되는것을 피하는 테크닉 제안  
+4) 새로운 데이터셋 공유  
 
 ## 1. INTRODUCTION 
 대표적인 방법론은 autoregressive, VAE 및 GAN이 있으며 각자 장단점을 가지고 있다.   
 Autoregressive models : sharp images, slow to evaluate, no latent space  
 VAE : fast to train, blurry images  
-<img src = 'https://user-images.githubusercontent.com/40943064/150683946-d75b96dc-454a-4d3b-b7b5-7bdf2612bd00.png' width = 200>  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150899232-7a6bb5f6-e4b9-40f7-8ade-140fda0d8896.png" width = 350></p>  
+
 GANs : sharp images, low resolutioin, limited variation, unstabble training  
 (세가지 방법의 장점을 결합한 방법도 있으나 품질에서는 GAN에 뒤쳐짐)  
   
-### GAN에 대한 일반적 설명
-G, D 두 네트워크로 구성됨  
-G는 latent code에서 이미지를 생성하며 생성한 이미지의 분포는 이상적으로는 실제 분포와 구분이 불가능하다.  
-실제인지 구분하는 함수를 설계하는것은 불가능하기 때문에 D는 이를 평가하는 방법을 학습한다.  
-D는 미분가능하므로 gradient를 통한 학습이 가능하다.(D는 학습후에 사용되지 않음)  
+### GAN의 구성에 내재하는 잠재 문제
 
-### GAN의 구성에는 내재하는 잠재 문제들
-
-**Distance metric**   
+### Distance metric 
 실제 분포와 생성 분포 사이의 거리를 측정 할 때 분포가 겹쳐지지 않는 경우 기울기는 임의의 방향을 가리킬 수 있다.  
 JS divergence는 거리 메트릭으로 사용되었으며 최근에는 least square, margin을 포함하는 절대편차, Wasserstein 거리를 포함하여  
 여러 안정적인 방법론이 제안되었다.  
@@ -35,30 +33,30 @@ JS divergence는 거리 메트릭으로 사용되었으며 최근에는 least sq
 
 ### 학습 안정성 문제
 고해상도 이미지는 실제/생성이미지 구분이 쉽기 때문에 gradient가 증폭되는 문제가 있어 이미지 생성이 어렵다.  
-해상도가 커지면 batch 크기를 상대적으로 낮춰야하는데 이 때문에 학습 안정성이 저하되기도 한다.  
+해상도가 커지면 batch-size(GPU 메모리)를 상대적으로 낮춰야하는데 이 때문에 학습 안정성이 저하되기도 한다.  
 본 논문의 아이디어는 저해상도 이미지부터 시작하여 G와 D를 점진적으로 학습시키고 학습 진행에 따라  
 고해상도 세부 정보를 도입하는 새로운 layer를 추가 하는 것이다.  
-이는 학습 속도를 크게 높이고 고해상도 안정성을 향상시킨다.(S.2)  
+이는 학습 속도를 크게 높이고 고해상도 안정성을 향상시킨다.  
 
-### 다양성
-이미지 품질과 다양성 사이에 trade-off 관계가 있다는것이 일반적인 지식이나 최근 이에대한 해결책이 제시되고 있다.  
-보존된 다양성수준은 주목을 받고 있으며, inception score, multi-scale structural similarity (MS-SSIM), birthday paradox,  
+### Variation
+이미지 품질과 variation 사이에 trade-off 관계가 있다는것이 일반적인 지식이나 최근 이에대한 해결책이 제시되고 있다.  
+보존된 diversity 수준은 관심을 받고 있으며, inception score, multi-scale structural similarity (MS-SSIM), birthday paradox,  
 explicit tests for the number of discrete modes discovered 등이 측정하기 위한 방법들로 제안되었다.  
-S3 : 다양성을 장려하는 방법 제안
+S3 : variation을 장려하는 방법 제안
 
 ### 학습속도
 S4.1 : 미세한 네트워크 초기화를 통한 여러 layer의 균형 잡힌 학습 속도를 제공  
 
 ### 네트워크 비정상적 경쟁학습
-Mode collapses 현상은 전통적으로 작은 mini-batch에서 매우 빠르게 발생하여 GAN의 학습을 저해하는것을 확인한다.  
+Mode collapses 현상은 전통적으로 작은 mini-batch에서 매우 빠르게 발생하여 GAN의 학습을 저해한다.  
 일반적으로 D가 overshoot하여 과도한 기울기로 이어질 때 시작되며  
 두 네트워크에서 신호 크기가 증가하는 비정상적인 경쟁이 뒤 따른다.  
-S4.2 : G가 이러한 문제에 참여하지 못하도록하여 문제를 극복하는 메커니즘을 제안한다.  
-![image](https://user-images.githubusercontent.com/40943064/150684637-b0db3c98-cd94-4fbc-afb0-8137654dba05.png)
+G가 이러한 문제에 참여하지 못하도록하여 문제를 극복하는 메커니즘을 제안한다.  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150898217-53824ddc-c873-4fb3-85f3-ff133c12969f.png" width = 400></p>  
+
 
 ### 품질 평가 메트릭
-S5 : 품질과 다양성을 평가하기 위한 새로운 메트릭  
-
+S5 : 품질과 variation을 평가하기 위한 새로운 메트릭  
 
 ### 데이터 세트의 적용 
 CELEBA, LSUN, CIFAR10 데이터 세트를 사용하여 논문의 기여를 평가한다. 특히, CIFAR10에 대해 최고의 IS를 제시한다.  
@@ -67,13 +65,15 @@ CELEBA, LSUN, CIFAR10 데이터 세트를 사용하여 논문의 기여를 평�
   
 ## 2 Progressive growing of GANs  
 핵심 아이디어는 저해상도부터 시작해서 layer를 추가하여 해상도를 점진적으로 높이는 GAN 학습 방법론이다.  
-![image](https://user-images.githubusercontent.com/40943064/120928033-044c7d00-c71e-11eb-9535-17c7501c236f.png)  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150899658-32d2bf0b-0874-4939-af75-33a13a63cde9.png" width = 600></p>  
+
+
 점진적 특성을 통해 최초로 큰 스케일의 구조를 학습한다.  
 모든 스케일을 동시에 학습 하지 않고 점점 더 미세한 스케일 세부 사항으로 확장한다.  
 서로의 거울 이미지이며 항상 동기화되어 성장하는 G 및 D를 사용한다.  
 각 네트워크는 학습과정에서 모든 계층이 학습가능 상태로 유지된다.  
 새로운 layer가 네트워크에 추가되면서 그림2와 같이 부드럽게 페이드인 된다.  
-![image](https://user-images.githubusercontent.com/40943064/120928049-13332f80-c71e-11eb-85c2-34344b86a202.png)  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150899790-895192d1-036f-445a-aa22-23c075881bf8.png" width = 600></p>  
 이를통해 잘 훈련 된 더 작은 해상도 layer에 대한 갑작스러운 충격을 방지 할 수 있다.  
 Appendix A는 다른 훈련 매개 변수와 함께 G 및 D의 구조를 자세히 설명한다.  
 점진적 학습이 몇 가지 이점이 있음을 관찰한다.  
@@ -84,17 +84,19 @@ WGAN-GP 손실 및 LSGAN 손실을 사용하여 mega-pixel 스케일 이미지�
 또 다른 이점은 학습시간 단축이다. 점진적으로 증가하는 GAN으로 인해 대부분의 반복은 더 낮은 해상도에서 수행되며  
 최종 출력 해상도에 따라 비슷한 품질을 최대 **2 ~ 6 배 더 빠르게** 얻을 수 있다.  
 점진적으로 GAN을 성장시키는 아이디어는 pix2pixHD에서 여러 해상도에 서로다른 D를 사용하는 방식과 관련이 있다.  
-<img src = "https://user-images.githubusercontent.com/40943064/150685549-c4df7455-c9a0-42b1-8507-3743f8c6be32.png" width = 400>  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150685549-c4df7455-c9a0-42b1-8507-3743f8c6be32.png" width = 400></p>  
 위 아이디어는 하나의 G와 여러 D를 사용하는 Durugkar의 연구나 여러개의 G와 하나의 D를 사용하는 Ghosh의 연구에서 참고하였다.  
-![image](https://user-images.githubusercontent.com/40943064/150685714-eb356a06-9700-4194-aaa1-e9e52aa41d17.png)
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150685714-eb356a06-9700-4194-aaa1-e9e52aa41d17.png" width = 400></p>  
 Hierarchical GAN은 이미지 피라미드의 각 수준에 대해 G와 D를 정의한다.  
-<img src = https://user-images.githubusercontent.com/40943064/150685939-a5d5db36-a553-4cad-a838-56a5b4189666.png width = 600>  
+<p align="center"><img src = https://user-images.githubusercontent.com/40943064/150685939-a5d5db36-a553-4cad-a838-56a5b4189666.png width = 400></p>  
+  
 이러한 방법은 latent에서 고해상도 이미지로의 복잡한 매핑이 단계적으로 학습하기 더 쉽다는 우리 작업과  
 동일한 관찰을 기반으로하지만 중요한 차이점은 계층 구조 대신 단일 GAN 만 있다는 것이다.  
 Adaptive하게 성장하는 네트워크에 대한 초기 작업,  
 예를 들어 성장하는 neural gas 및 네트워크를 탐욕스럽게 성장시키는 증강 토폴로지의 neuro evolution과는 대조적으로,  
 단순히 미리 구성된 layer의 도입을 사용한다. 그런 의미에서 AE의 layer 별 학습과 유사하다.  
-![image](https://user-images.githubusercontent.com/40943064/150679673-06591815-a7cc-4f5c-b8cc-1405f5c17818.png)
+
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150679673-06591815-a7cc-4f5c-b8cc-1405f5c17818.png" width = 500></p>  
 
 https://github.com/happy-jihye/happy-jihye.github.io/blob/master/_posts/images/gan/pggan1.gif?raw=1
 
@@ -121,8 +123,7 @@ feature 벡터를 orthogonalize화하도록 권장하는 " repelling regularizer
 Ghosh의 여러 G도 비슷한 목표를 달성한다.  
 (이러한 솔루션이 제안 방식보다 훨씬 더 variation을 증가시킬 수 있다.)  
 
-<img src = 'https://user-images.githubusercontent.com/40943064/150768735-49175016-ea47-4760-952e-1fde36bb7b6c.png' width = 800>  
-
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150685549-c4df7455-c9a0-42b1-8507-3743f8c6be32.png" width = 800></p>  
 reference : https://engineer-mole.tistory.com/89
 
 ## 4. Normalization in Generator and Discriminator
@@ -199,9 +200,8 @@ Benchmark : WGAN-GP
 Dataset(128x128) :  
 1) CelebA(학습 이미지 자체가 관측가능한 artifact(aliasing, compression, blur)를 가지므로 검증하기 좋음)  
 2) LSUN bedroom   
-![image](https://user-images.githubusercontent.com/40943064/150807402-725bd490-ab96-4eed-9708-902190bab98e.png)  
-![image](https://user-images.githubusercontent.com/40943064/150807662-d136d024-3b67-4e53-b2b0-eb1ca299a6cf.png)  
-
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150807402-725bd490-ab96-4eed-9708-902190bab98e.png"></p>  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150807662-d136d024-3b67-4e53-b2b0-eb1ca299a6cf.png"></p>  
 **실험조건**
 (a) Batchnorm in G, Layernorm in D, minibatch = 64  
 (b) + progressive growing  
@@ -241,9 +241,7 @@ SWD는 학습셋과의 유사성 측면에서 더 잘 나타낸다.
 점점 더 작은 규모의 효과로 표현을 수정하는 작업만 수행한다.  
 실제로, (b)에서 16이 최적의 값에 매우 빠르게 도달하고 나머지 시간 동안 유지된다는 것을 알 수 있다.  
 32, 64, 128은 해상도가 증가함에 따라 하나씩 평평해 지지만 각 곡선의 수렴은 동일하게 일관된다.  
-
-![image](https://user-images.githubusercontent.com/40943064/150812244-ab538e0a-3199-4485-a30a-ebab4164082b.png)  
-  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150812244-ab538e0a-3199-4485-a30a-ebab4164082b.png"></p>  
 (a)에서 SWD의 각 scale은 예상대로 대략 일치하게 수렴한다.  
 (b)의 속도 향상은 출력 해상도가 증가함에 따라 증가한다.   
 
@@ -260,20 +258,17 @@ PG가 96시간 동안 약 640만 이미지에 도달하는 것을 보여주지�
 (부록 C 참조)  
 
 그림 5는 생성된 선택된 1024 × 1024 이미지를 보여준다.  
-![image](https://user-images.githubusercontent.com/40943064/150816981-a8c14a49-640d-4d75-abc6-c6cc64426023.png)  
-
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150816981-a8c14a49-640d-4d75-abc6-c6cc64426023.png"></p>  
 1024 해상도에 대한 GAN 결과는 다른 데이터 세트(Marchesi, 2017)에서 이전에 표시되었지만  
 본 결과는 훨씬 더 다양하고 더 높은 지각 품질을 제공한다.  
 
 **Appendix F1 : 학습 데이터에서 찾은 가장 가까운 이웃**  
-![image](https://user-images.githubusercontent.com/40943064/150818249-8bc6cc54-f413-402c-a030-23259f2f46ff.png)
-
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150818249-8bc6cc54-f413-402c-a030-23259f2f46ff.png"></p>  
 **Appendix F2 : CelebA-HQ에 대한 추가 결과**  
 (설명 비디오에 interpolation 결과 확인가능)  
 SWD : 16: 7.48, 7.24, 6.08, 3.51, 3.55, 3.02, 7.22, (average is 5.44)  
 FID : 7.3 (50k 샘플)  
-![image](https://user-images.githubusercontent.com/40943064/150818943-0bf1f95a-17ec-4d9c-9a9a-8e4ca270def3.png)
-
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150818943-0bf1f95a-17ec-4d9c-9a9a-8e4ca270def3.png"></p>  
 loss function의 선택(LS or WGAN-GP)에 관계없이 고품질을 얻을 수 있으며 figure. 1의 결과가 LS loss로부터 얻은 결과이다.  
 LS를 적용하기 위해 몇가지 추가 작업이 필요하다.(Appendix B.)
 
@@ -282,8 +277,9 @@ Figure 6 : 초기 결과와 본 방법의 시각적 비교
 Figure 7 : 다양한 category의 256 해상도 샘플에 대한 결과 
 (G에 30개의 LSUN category의 더 크고 무작위 결과 확인 가능)    
 
-![image](https://user-images.githubusercontent.com/40943064/150820578-8f17bd22-9067-479f-a8b7-40336236c25c.png)  
-![image](https://user-images.githubusercontent.com/40943064/150820746-1f1833fd-f8d0-448e-bf26-708325e765c3.png)  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150820578-8f17bd22-9067-479f-a8b7-40336236c25c.png"></p>  
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150820746-1f1833fd-f8d0-448e-bf26-708325e765c3.png"></p>  
+
 
 
 ## 6.5 CIFAR10 Inception scores
@@ -293,4 +289,4 @@ CIFAR10(32 × 32 RGB 이미지의 10개 범주) SOTA(Grinblat, 2017)
 두 숫자 사이의 큰 차이는 주로 unsupervised 환경에서 class 사이에 나타나는 "ghost"에 의해 발생하지만  
 label 조절은 이러한 많은 전환을 제거할 수 있다.  
 본 연구의 모든 contribution을 적용하면 unsupervised setting에서 8.80을 얻는다.(Labeled 학습과 거의 유사)  
-![image](https://user-images.githubusercontent.com/40943064/150822751-004db170-4f02-4639-9657-1608af49f646.png)
+<p align="center"><img src = "https://user-images.githubusercontent.com/40943064/150822751-004db170-4f02-4639-9657-1608af49f646.png"></p>  
