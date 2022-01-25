@@ -1,4 +1,6 @@
-### Abstract
+# progressive growing of gans for improved quality stability and variation
+
+## Abstract
 GAN의 새로운 학습방법론 제시  
 낮은 해상도에서부터 학습이 진전됨에 따라 세밀한 디테일들을 **점진적으로 모델링하는 새로운 layer**를 G, D 모두에 더해간다.  
 **높은 품질**의 이미지를 생성하게 되면서 **학습속도가 증가**하고 **안정적**으로 학습을 수행한다.  
@@ -9,7 +11,7 @@ GAN의 새로운 학습방법론 제시
   
 핵심 : (점진적 layer 추가 학습방식) → 이미지 생성의 (**품질향상**, **학습속도 증가**, **안정성 확보**)  
 
-### 1. INTRODUCTION 
+## 1. INTRODUCTION 
 대표적인 방법론은 autoregressive, VAE 및 GAN이 있으며 각자 장단점을 가지고 있다.   
 Autoregressive models : sharp images, slow to evaluate, no latent space  
 VAE : fast to train, blurry images  
@@ -17,7 +19,7 @@ VAE : fast to train, blurry images
 GANs : sharp images, low resolutioin, limited variation, unstabble training  
 (세가지 방법의 장점을 결합한 방법도 있으나 품질에서는 GAN에 뒤쳐짐)  
   
-**GAN에 대한 일반적 설명**  
+### GAN에 대한 일반적 설명
 G, D 두 네트워크로 구성됨  
 G는 latent code에서 이미지를 생성하며 생성한 이미지의 분포는 이상적으로는 실제 분포와 구분이 불가능하다.  
 실제인지 구분하는 함수를 설계하는것은 불가능하기 때문에 D는 이를 평가하는 방법을 학습한다.  
@@ -31,39 +33,39 @@ JS divergence는 거리 메트릭으로 사용되었으며 최근에는 least sq
 여러 안정적인 방법론이 제안되었다.  
 본 논문은 진행중인 논의에 대체로 독립적이며 **향상된 Wasserstein loss**를 주로 사용하지만 least-squre loss를 실험한다.  
 
-**학습 안정성 문제**   
+### 학습 안정성 문제
 고해상도 이미지는 실제/생성이미지 구분이 쉽기 때문에 gradient가 증폭되는 문제가 있어 이미지 생성이 어렵다.  
 해상도가 커지면 batch 크기를 상대적으로 낮춰야하는데 이 때문에 학습 안정성이 저하되기도 한다.  
 본 논문의 아이디어는 저해상도 이미지부터 시작하여 G와 D를 점진적으로 학습시키고 학습 진행에 따라  
 고해상도 세부 정보를 도입하는 새로운 layer를 추가 하는 것이다.  
 이는 학습 속도를 크게 높이고 고해상도 안정성을 향상시킨다.(S.2)  
 
-**다양성**  
+### 다양성
 이미지 품질과 다양성 사이에 trade-off 관계가 있다는것이 일반적인 지식이나 최근 이에대한 해결책이 제시되고 있다.  
 보존된 다양성수준은 주목을 받고 있으며, inception score, multi-scale structural similarity (MS-SSIM), birthday paradox,  
 explicit tests for the number of discrete modes discovered 등이 측정하기 위한 방법들로 제안되었다.  
 S3 : 다양성을 장려하는 방법 제안
 
-**학습속도**  
+### 학습속도
 S4.1 : 미세한 네트워크 초기화를 통한 여러 layer의 균형 잡힌 학습 속도를 제공  
 
-**네트워크 비정상적 경쟁학습**  
+### 네트워크 비정상적 경쟁학습
 Mode collapses 현상은 전통적으로 작은 mini-batch에서 매우 빠르게 발생하여 GAN의 학습을 저해하는것을 확인한다.  
 일반적으로 D가 overshoot하여 과도한 기울기로 이어질 때 시작되며  
 두 네트워크에서 신호 크기가 증가하는 비정상적인 경쟁이 뒤 따른다.  
 S4.2 : G가 이러한 문제에 참여하지 못하도록하여 문제를 극복하는 메커니즘을 제안한다.  
 ![image](https://user-images.githubusercontent.com/40943064/150684637-b0db3c98-cd94-4fbc-afb0-8137654dba05.png)
 
-**품질 평가 메트릭**  
+### 품질 평가 메트릭
 S5 : 품질과 다양성을 평가하기 위한 새로운 메트릭  
 
 
-**데이터 세트의 적용**  
+### 데이터 세트의 적용 
 CELEBA, LSUN, CIFAR10 데이터 세트를 사용하여 논문의 기여를 평가한다. 특히, CIFAR10에 대해 최고의 IS를 제시한다.  
 생성 방법을 벤치마킹하는 데 일반적으로 사용되는 데이터 세트는 상당히 낮은 해상도로 제한되어 있으므로  
 최대 1024 × 1024 픽셀의 출력 해상도로 실험 할 수있는 CELEBA 데이터 세트의 고품질 버전도 생성한다.  
   
-### 2 Progressive growing of GANs  
+## 2 Progressive growing of GANs  
 핵심 아이디어는 저해상도부터 시작해서 layer를 추가하여 해상도를 점진적으로 높이는 GAN 학습 방법론이다.  
 ![image](https://user-images.githubusercontent.com/40943064/120928033-044c7d00-c71e-11eb-9535-17c7501c236f.png)  
 점진적 특성을 통해 최초로 큰 스케일의 구조를 학습한다.  
@@ -186,7 +188,6 @@ MS-SSIM과 같은 기존 방법은 대규모 mode-collapse를 안정적으로 �
 즉, 학습 이미지와 생성기 샘플이 이 공간 해상도에서 **모양**과 **변형** 모두에서 유사하게 나타난다.  
 특히, 가장 낮은 해상도의 16 × 16 이미지에서 추출한 패치 세트 간의 거리는 대규모 이미지 **구조**에서 유사성을 나타내는 반면,  
 가장 정밀한 패치는 가장자리의 **선명도 및 노이즈와 같은 픽셀 수준 속성**에 대한 정보를 인코딩한다.  
-
 
 ## 6 Experiments
 
