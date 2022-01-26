@@ -36,21 +36,21 @@ Target의 feature를 수정하고 source의 변화에 잘 적응 할 수 있다.
   
 open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생성할 수 있지만 일반화는 부족하다.  
 GAN 기반의 작업은 source의 ID와 target의 attribute를 feature 수준에서 결합하고 임의의 ID에 대해 확장된다.  
-최근 작접은 2단계의 framework를 활용하며 고품질 결과를 달성한다.  
+최근 작업은 2단계의 framework를 활용하며 고품질 결과를 달성한다.  
 그러나 이 방법론들은 ID 수정에 과도하게 집중한다.  
 또한 attribute 보존에 약한 제약을 가하고 종종 표정이나 포즈의 불일치에 직면한다.  
 일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 face swap 프레임워크를 제안한다.  
 ID별 얼굴 교환 알고리즘의 아키텍처를 분석하고, Decoder가 하나의 특정 ID에만 적용될 수 있도록 ID를 디코더에 통합함으로써  
 일반화 부족이 발생한다는 것을 알아냈다.  
 
-이러한 통합을 방지하기 위해 ID 주입 모듈을 제시한다.  
-우리 모듈은 source의 ID를 내장하여 target의 attribute를 수정하므로, ID와 decoder의 weight 사이의 관련성을 제거하고  
+이러한 통합을 방지하기 위해 ID injection module을 제시한다.  
+IIM은 source의 ID를 내장하여 target의 attribute를 수정하므로, ID와 decoder의 weight 사이의 관련성을 제거하고  
 임의 ID에 아키텍처를 적용할 수 있다.  
 또한 ID와 attribute 정보는 feature 수준에서 크게 결합되어 있다.  
 전체 feature를 직접 수정하면 attribute 성능이 저하되므로 영향을 완화하기 위해 training loss를 사용해야 한다.  
 target의 attribute를 match하기 위해 결과 이미지의 attribute를 각각 명시적으로 제한하는 대신 Weak Feature Matching Loss를 제안한다.  
-Weak Feature Matching Loss는 생성된 결과를 high semantic level에서 입력 대상에 정렬하고 아키텍처가 대상의 속성을 보존하는 데 암시적으로 도움이 된다.  
-이 loss를 통해 SimSwap은 이전의 SOTA보다 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 IT 성능을 달성할 수 있다.  
+Weak Feature Matching Loss는 생성된 결과를 high semantic level에서 입력 대상에 정렬하고 아키텍처가 target attribute를 보존하는 데 암시적으로 도움이 된다.  
+이 loss를 통해 SimSwap은 이전의 SOTA보다 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 ID performance를 달성할 수 있다.  
 
 ## 2 Related Work
 
@@ -83,14 +83,14 @@ FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신�
 
 ## 3 Method
 Source와 target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
-프레임워크는 ID별 face swap 아키텍처에서 확장되며 임의의 ID에 맞게 조정될 수 있다.  
-1) Sec 3.1 : DeepFakes source 아키텍처 한계에 대해 논의  
+프레임워크는 ID별 face swap 아키텍처에서 확장되며 임의 ID에 맞게 조정될 수 있다.  
+1) Sec 3.1 : DeepFakes source 아키텍처 한계  
 2) Sec 3.2 : 임의의 ID를 위한 프레임워크로 확장  
 3) Sec 3.3 : target의 attribute를 보존하는 데 도움이 되는 Weak Feature Matching Loss 제시  
 4) Sec 3.4 : loss function  
 
 ### 3.1 Limitation of the DeepFakes
-DeepFakes의 구조는 2개 파트(일반 Encoder Enc, 2개의 ID 특정 Decoder Decs, EncT)로 구성되어있다.  
+DeepFakes의 구조는 2개 파트(일반 Encoder **Enc**, 2개의 ID 특정 Decoder **Decs**, **EncT**)로 구성되어있다.  
 학습 단계에서 𝐸𝑛𝑐-𝐷𝑒𝑐𝑆 아키텍처는 왜곡된 소스 이미지를 가져와 원래의 왜곡되지 않은 소스 이미지로 복원한다.  
 동일 과정이 target에 대해서도 𝐸𝑛𝑐-𝐷𝑒𝑐𝑇 구조에 대해 적용된다.  
 테스트 단계에서 target은 𝐸𝑛𝑐-𝐷𝑒𝑐𝑆에 넘겨질 것이다.  
