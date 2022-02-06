@@ -1,15 +1,15 @@
 # SimSwap: An Efficient Framework For High Fidelity Face Swapping
 
 ## Abstract
-일반화된 고성능의 face swapping을 목적으로 하는 효율적 framework를 제안  
+**일반화**된 **high fidelity** face swapping을 목적으로 하는 효율적 framework 제안  
 임의 ID를 일반화하는 능력이 부족하거나 표정/시선등의 특성들을 보존하지 못하는 과거 연구결과와 달리  
 임의의 source face의 **ID**를 전달하면서 target face의 attribute를 보존할 수 있다.  
 다음의 두가지 방법으로 문제를 해결한다.  
   
 1) ID Injection Module (IIM) : feature level의 source ID 정보를 target으로 전송  
-- 특정 ID 한정으로 학습되는 방식을 임의 ID 적용 방식으로 확장할 수 있다.  
+- 특정 ID -> 임의 ID 확장  
 
-2) Weak Feature Matching Loss : Implicit하게 target attribute 보존  
+2) Weak Feature Matching Loss : Implicit target attribute conservation  
   
 여러 wild face set에 대한 다양한 실험은 SOTA 대비 attribute 보존/ID 적용 성능의 경쟁력을 보여준다.  
 ![image](https://user-images.githubusercontent.com/40943064/143544606-8516eb6f-982c-402c-9f6e-f631a53ea930.png)  
@@ -18,13 +18,13 @@
 Face swapping은 target attribute(표정, 자세, 조명)는 보존하면서 source ID를 전달하는 유망한 기술이다.  
 이 기술은 존재하지 않는 twin을 생성하는 영화산업에서 광범위하게 사용된다.  
 산업에서의 face swapping 방식은 배우의 얼굴모델을 재현하기 위한 최신 장비를 이용하고  
-대부분의 사람이 접근할 수 없는 장면의 조명조건을 재구성한다.  
+대부분의 사람이 접근할 수 없는 장면의 **조명조건**을 재구성한다.  
 최근, 최신 장비 없이 face swapping을 수행하는 방식은 연구자들의 관심을 끌어왔다.  
 
-face swapping에서 고려되는 주요 어려움들은 다음과 같다.  
-1) 강력한 일반화 능력을 가진 face swap 프레임워크를 임의의 얼굴에 맞게 조정해야 한다.  
-2) 결과 face의 ID는 source의 것과 가까워야 한다.  
-3) 결과 face의 attribute(표정, 자세, 조명)는 target의 것과 가까워야 한다.  
+face swapping에서 고려되는 어려움은 다음과 같다.  
+1) 강력한 일반화 능력을 가진 face swap 프레임워크를 **임의의 얼굴에 맞게 조정**해야 한다.  
+2) ID는 source에 가까워야 한다.  
+3) attribute(표정, 자세, 조명)는 target에 가까워야 한다.  
 
 swapping 방법은 주로 두가지로 나뉜다.  
 1) Source-oriented : image level로 source에서 작업  
@@ -35,9 +35,9 @@ Source의 자세와 조명에 영향을 크게 받고 target의 표정을 정확
 Target의 feature를 수정하고 source의 변화에 잘 적응 할 수 있다.  
   
 open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생성할 수 있지만 일반화는 부족하다.  
-GAN 기반의 작업은 source의 ID와 target의 attribute를 feature 수준에서 결합하고 임의의 ID에 대해 확장된다.  
-최근 작업은 2단계의 framework를 활용하며 고품질 결과를 달성한다.  
-그러나 이 방법론들은 ID 수정에 과도하게 집중한다.  
+GAN 방식은 source의 ID와 target의 attribute를 feature 수준에서 결합하고 임의의 ID로 확장한다.  
+최근 작업은 2단계의 framework를 활용하며 고품질 결과를 달성한다.(Face shifter)  
+그러나 이 방법론은 ID 수정에 과도하게 집중한다.  
 또한 attribute 보존에 약한 제약을 가하고 종종 표정이나 포즈의 불일치에 직면한다.  
 일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 face swap 프레임워크를 제안한다.  
 ID별 얼굴 교환 알고리즘의 아키텍처를 분석하고, Decoder가 하나의 특정 ID에만 적용될 수 있도록 ID를 디코더에 통합함으로써  
