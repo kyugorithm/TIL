@@ -63,11 +63,11 @@ Face Swapping은 오랫동안 연구되어 왔다.
 Attribute를 target에서 source로 전송한 다음 source를 target 이미지로 혼합한다.  
 초기 방법은 3D 모델을 사용하여 자세와 조명을 전송했지만 수동 작업이 필요했다.  
 자동 방법이 제안되었지만 특정 얼굴 라이브러리의 ID만 얼굴을 교환할 수 있었다.  
-니르킨은 3D 얼굴 데이터 세트를 사용하여 표정/자세를 전송하고 포아송 블렌딩을 사용하여 source 얼굴을 target 이미지에 병합했다.  
+Nirkin은 3D 얼굴 데이터 세트를 사용하여 표정/자세를 전송하고 포아송 블렌딩을 사용하여 source 얼굴을 target 이미지에 병합했다.  
 그러나 3D 얼굴 데이터 세트의 표현력이 제한적이기 때문에 3D 모델에 응답하는 방법은 표정을 정확하게 재현하지 못하는 경우가 많다.  
-최근 FSGAN은 face reenactment network로 표정 및 자세 전송을 먼저 수행한 다음  
+FSGAN은 face reenactment network로 표정 및 자세 전송을 먼저 수행한 다음  
 다른 face inpainting network를 사용하여 source 얼굴을 target 이미지에 혼합하는 2단계 아키텍처를 제안했다.  
-이 방법의 일반적인 문제는 입력 source 이미지에 민감하다는 것이다.  
+이 방법의 일반적인 문제는 입력 **source 이미지에 민감**하다는 것이다.  
 Source의 과장된 표정이나 큰 자세는 face swapping 결과의 성능에 강한 영향을 미친다.  
 
 **Target-oriented Methods.**  
@@ -81,7 +81,7 @@ IPGAN은 source 이미지에서 identity vector를 추출하고 target 이미지
 생성된 출력은 source의 ID 전달에는 좋았지만 target 얼굴의 표정이나 자세를 유지하지 못하는 경우가 많았다.  
 최근에 제안된 FaceShifter 방법은 높은 충실도의 face swap 결과를 생성할 수 있었다.  
 FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신원 성능을 달성했다.  
-그러나 attribute에 너무 약한 제약을 가하여 결과가 종종 표정 불일치의 어려움을 겪었다.  
+그러나 **attribute에 너무 약한 제약**을 가하여 결과가 종종 **표정 불일치**의 어려움을 겪었다.  
 
 ## 3 Method
 Source와 target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
