@@ -2,34 +2,34 @@
 
 ## Abstract
 **일반화**된 **high fidelity** face swapping을 목적으로 하는 효율적 framework 제안  
-임의 ID를 일반화하는 능력이 부족하거나 표정/시선등의 특성들을 보존하지 못하는 과거 연구결과와 달리  
-임의의 source face의 **ID**를 전달하면서 target face의 attribute를 보존할 수 있다.  
+임의 ID 일반화가 안되거나 표정/시선등의 attribute를 보존하지 못하는 연구와 달리  
+임의의 source의 **ID**를 전달하면서 target의 attribute를 보존할 수 있다.  
 다음의 두가지 방법으로 문제를 해결한다.  
   
-1) ID Injection Module (IIM) : feature level의 source ID 정보를 target으로 전송  
-- 특정 ID -> 임의 ID 확장  
+1) **ID Injection Module (IIM)** : feature level의 source ID 정보를 target으로 전송  
+- 특정 ID → 임의 ID 확장  
 
-2) Weak Feature Matching Loss : Implicit target attribute conservation  
+2) **Weak Feature Matching Loss** : Implicit target attribute conservation  
   
-여러 wild face set에 대한 다양한 실험은 SOTA 대비 attribute 보존/ID 적용 성능의 경쟁력을 보여준다.  
+여러 wild face set에 대한 실험은 SOTA 대비 attribute 보존 및 ID 적용 성능의 경쟁력을 보여준다.  
 ![image](https://user-images.githubusercontent.com/40943064/143544606-8516eb6f-982c-402c-9f6e-f631a53ea930.png)  
   
 ## Introduction
 Face swapping은 target attribute(표정, 자세, 조명)는 보존하면서 source ID를 전달하는 유망한 기술이다.  
 이 기술은 존재하지 않는 twin을 생성하는 영화산업에서 광범위하게 사용된다.  
 산업에서의 face swapping 방식은 배우의 얼굴모델을 재현하기 위한 최신 장비를 이용하고  
-대부분의 사람이 접근할 수 없는 장면의 **조명조건**을 재구성한다.  
+일반적으로 사람이 접근할 수 없는 scence의 **lighting condition**을 재구성한다.  
 최근, 최신 장비 없이 face swapping을 수행하는 방식은 연구자들의 관심을 끌어왔다.  
-
-face swapping에서 고려되는 어려움은 다음과 같다.  
+  
+face swapping에서 어려움은 다음과 같다.  
 1) 강력한 일반화 능력을 가진 face swap 프레임워크를 **임의의 얼굴에 맞게 조정**해야 한다.  
 2) ID는 source에 가까워야 한다.  
 3) attribute(표정, 자세, 조명)는 target에 가까워야 한다.  
 
-swapping 방법은 주로 두가지로 나뉜다.  
-1) Source-oriented : image level로 source에서 작업  
+swapping 방법은 두가지로 나뉜다.  
+1) **Source-oriented** : image level로 source에서 작업  
 target에서 source로 attribute(표정/자세)를 전달하고 source를 target에 섞는다.  
-Source의 자세와 조명에 영향을 크게 받고 target의 표정을 정확하게 재생성할 수 없다.  
+**Source의 자세와 조명**에 영향을 크게 받고 **target의 표정을 정확하게 재생성할 수 없다**.  
 
 2) Target-oriented : feature level로 target에서 작업  
 Target의 feature를 수정하고 source의 변화에 잘 적응 할 수 있다.  
