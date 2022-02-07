@@ -27,8 +27,11 @@ face swapping에서 어려움은 다음과 같다.
 3) attribute(표정, 자세, 조명)는 target에 가까워야 한다.  
 
 swapping 방법은 두가지로 나뉜다.  
-1) **Source-oriented** : image level로 source에서 작업  
-target에서 source로 attribute(표정/자세)를 전달하고 source를 target에 섞는다.  
+1) **Source-oriented** :  
+- image 수준에서 작업 source 이미지에서 작업  
+- target의 attribute(표정/자세)를 반영하여 source 이미지 변환 → 변환한 source 이미지 얼굴 target에 적용  
+![image](https://user-images.githubusercontent.com/40943064/152810405-bafcbecc-d4b1-475b-a276-7cf94da756c6.png)  
+Fig. FSGAN  
 **Source의 자세와 조명**에 영향을 크게 받고 **target의 표정을 정확하게 재생성할 수 없다**.  
 
 2) Target-oriented : feature level로 target에서 작업  
@@ -36,21 +39,20 @@ Target의 feature를 수정하고 source의 변화에 잘 적응 할 수 있다.
   
 open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생성할 수 있지만 일반화는 부족하다.  
 GAN 방식은 source의 ID와 target의 attribute를 feature 수준에서 결합하고 임의의 ID로 확장한다.  
-최근 작업은 2단계의 framework를 활용하며 고품질 결과를 달성한다.(Face shifter)  
-그러나 이 방법론은 ID 수정에 과도하게 집중한다.  
-또한 attribute 보존에 약한 제약을 가하고 종종 표정이나 포즈의 불일치에 직면한다.  
+Face shifter는 두 단계의 framework을 활용하며 고품질 결과를 달성한다.  
+**그러나 이 방법론은 ID 수정에 과도하게 집중하며 attribute 보존에 약한 제약을 가하여 표정/자세 불일치를 겪는다.**  
 일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 face swap 프레임워크를 제안한다.  
-ID별 얼굴 교환 알고리즘의 아키텍처를 분석하고, Decoder가 하나의 특정 ID에만 적용될 수 있도록 ID를 디코더에 통합함으로써  
+ID별 얼굴 교환 알고리즘의 아키텍처를 분석하고, Decoder가 단일 ID에만 적용되도록 ID를 디코더에 통합함으로써  
 일반화 부족이 발생한다는 것을 알아냈다.  
 
 이러한 통합을 방지하기 위해 ID injection module을 제시한다.  
 IIM은 source의 ID를 내장하여 target의 attribute를 수정하므로, ID와 decoder의 weight 사이의 관련성을 제거하고  
 임의 ID에 아키텍처를 적용할 수 있다.  
-또한 ID와 attribute 정보는 feature 수준에서 크게 결합되어 있다.  
+또한 ID와 attribute 정보는 feature level에서 크게 결합되어 있다.  
 전체 feature를 직접 수정하면 attribute 성능이 저하되므로 영향을 완화하기 위해 training loss를 사용해야 한다.  
-target의 attribute를 match하기 위해 결과 이미지의 attribute를 각각 명시적으로 제한하는 대신 Weak Feature Matching Loss를 제안한다.  
+Target attribute를 match하기 위해 결과 이미지의 attribute를 각각 명시적으로 제한하는 대신 Weak Feature Matching Loss를 제안한다.  
 Weak Feature Matching Loss는 생성된 결과를 high semantic level에서 입력 대상에 정렬하고 아키텍처가 target attribute를 보존하는 데 암시적으로 도움이 된다.  
-이 loss를 통해 SimSwap은 이전의 SOTA보다 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 ID performance를 달성할 수 있다.  
+이 loss를 통해 SimSwap은 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 ID performance를 달성할 수 있다.  
 
 ## 2 Related Work
 
