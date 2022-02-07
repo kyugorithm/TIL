@@ -92,7 +92,7 @@ Source와 target이 주어지면, target의 attribute를 유지하고 source ID�
 4) Sec 3.4 : loss function  
 
 ### 3.1 Limitation of the DeepFakes
-DeepFakes의 구조는 2개 파트(일반 Encoder **Enc**, 2개의 ID 특정 Decoder **Decs**, **EncT**)로 구성되어있다.  
+DeepFakes의 구조는 2개 파트(일반 Encoder **Enc**, 2개의 ID 특정 Decoder **Decs**, **DecT**)로 구성되어있다.  
 학습 단계에서 𝐸𝑛𝑐-𝐷𝑒𝑐𝑆 아키텍처는 왜곡된 소스 이미지를 가져와 원래의 왜곡되지 않은 소스 이미지로 복원한다.  
 동일 과정이 target에 대해서도 𝐸𝑛𝑐-𝐷𝑒𝑐𝑇 구조에 대해 적용된다.  
 테스트 단계에서 target은 𝐸𝑛𝑐-𝐷𝑒𝑐𝑆에 넘겨질 것이다.  
@@ -100,7 +100,9 @@ DeepFakes의 구조는 2개 파트(일반 Encoder **Enc**, 2개의 ID 특정 Dec
 이러한 과정동안, Enc는 target의 ID, attribute 정보를 포함하는 feature를 추출한다.  
 디코더 𝐷𝑒𝑐𝑆 가 target의 feature를 source의 ID가 있는 이미지로 변환하므로 source의 ID 정보가 𝐷𝑒𝑐𝑆 의 weight에 통합되어야 한다.  
 그러므로 Deepface의 Decoder는 특정 ID에만 적용될 수 있다.  
-
+  
+![image](https://user-images.githubusercontent.com/40943064/152814051-3bfaa420-c46a-485b-a77f-f0267678b72a.png)  
+  
 
 ### 3.2 Generalization to Arbitrary Identity
 이러한 한계를 극복하기 위해 Decoder에서 ID를 분리하여 전체 아키텍처를 임의의 ID으로 일반화할 수 있는 방법을 찾는다.  
