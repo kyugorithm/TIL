@@ -2,34 +2,35 @@
 Object detection에서 **localization과 classification을 결합**하는 복잡한 특성은 성공적인 개발을 가져왔다.  
 이전 작품은 다양한 object detection head의 성능을 향상시키기 위해 노력했지만 통합된 관점을 제시하지 못했다.  
 본 논문에서, object detection head를 attention과 통합하기 위한 새로운 **dynamic head framework**를 제시한다.  
-Scale 인식을 위한 feature level 간, spatial 인식을 위한 공간 위치 간, task 인식을 위한 출력 채널 내에서  
-여러 self-attention 메커니즘을 일관되게 결합함으로써 제안된 접근 방식은 계산 오버헤드 없이 object detection head의 표현 능력을 크게 향상시킨다.  
+Scale-aware를 위한 feature level 간, spatial-aware를 위한 공간 위치 간, task-aware를 위한 출력 채널 내에서  
+여러 self-attention mechanism을 일관되게 결합함으로써 제안된 접근 방식은 계산 overhead 없이 object detection head의 표현 능력을 크게 향상시킨다.  
 표준 ResNeXt-101-DCN 백본을 사용하여 널리 사용되는 object detector보다 성능을 크게 개선하고 54.0 AP에서 새로운 SOTA를 달성한다.  
 
 ## 1. Introduction
 CV분야에서 object detection은 "어디에 어떤 물체가 있는가"에 대한 답변이다. [11, 23, 12, 35, 28, 31, 33]
-DL의 시대에서, 거의 모든 object detector는 동일 패러다임을 공유한다. : Backbone(feature 추출), Head(localization & classification).  
-Obejct detection 작업에서 head 성능을 어떻게 향상시킬지 고민하는 것은 매우 중요한 문제가 되었다.  
+DL의 시대에서, 거의 모든 object detector는 동일 패러다임을 공유한다.  
+(Backbone : feature 추출, Head : localization & classification)  
+Obejct detection에서 head 성능 향상 방안을 고민하는 것은 매우 중요한 문제가 되었다.  
 좋은 object detection head를 개발하는데 있어 어려운 도전과제는 세가지로 요약할 수 있다.  
 1) Scale-aware : 물체는 이미지 내에 다양하게 구분되는 스케일로 존재  
-2) Spatial-aware : 물체는 다양한 시점에서 엄청나게 다른 모양, 회전, 위치로 존재  
+2) Spatial-aware : 물체는 다양한 시점에서 엄청나게 다른 shape, rotation, location로 존재  
 3) Task-aware : 완전 다른 목적과 제약을 가지는 bounding box, center, corner point등 다양한 표현  
-최근 연구는 전술한 세가지 문제중 다양한 방식으로 한가지에 대해서만 집중한다.  
+최근 연구는 전술한 세가지 문제 중 한가지에 대해서만 집중한다.  
 세가지 문제를 한번에 다루는 통합된 head를 개발하는 것은 열린 문제로 남아있다.  
 본 논문에서, 세가지를 한번에 통합하는 dynamic head라고 하는새로운 detection head를 제안한다.  
 만약 우리가 backbone 출력을 level x space x channel의 3차원 tensor로 고려한다면,  
 우리는 통합 head가 attention 학습문제로 여겨질 수 있다는 것을 알아냈다.  
-직관적 해법은 이 tensor에 걸쳐 완전한 self-attention mechanism을 구축하는 것이다.  
+Naive한 해법은 이 tensor에 걸쳐 완전한 self-attention mechanism을 구축하는 것이다.  
 그러나 최적화 문제는 풀기 어렵고 계산 비용이 감당하기 어려울 것이다.  
 대신, 우리는 attention mechanism을 각 3가지 feature 차원에 분리하여 배치할 수 있다.  
 
-Scale-aware attention module :  
-다양한 semantic 수준의 상대적 중요성을 배워 개별 물체에 대한 적절한 수준에서의 그 scale을 기반하여 feature를 향상시킨다.  
-The spatial-aware attention module :  
-공간 차원(i.e., height × width)에 대해 적용되며 공간 위치에서의 일관성있게 분별되는 표현을 학습한다.  
-Task-aware attention module :  
+**Scale-aware attention module**  
+다양한 semantic level의 상대적 중요성을 학습하여 개별 물체에 대해 적절한 level에서의 feature를 향상시킨다.  
+**The spatial-aware attention module :**. 
+공간 차원(i.e., height × width)에 대해 적용되며 공간 위치에서 일관적으로 분별되는 표현을 학습한다.  
+**Task-aware attention module :**  
 채널에 대해 적용되며 object의 다양한 conv. 커널 응답을 기반으로 서로 다른 feature 채널이  
-서로 다른 작업(예: 분류, 상자 회귀 및 중심/핵심 학습)을 개별적으로 선호하도록 지시한다.  
+여러 작업(예: 분류, 상자 회귀 및 중심/핵심 학습)을 개별적으로 선호하도록 지시한다.  
 
 이러한 방식으로, 우리는 통합된 attention mechanism을 detection head에 대해 명시적으로 구현한다.  
 이 attention mechanism들이 feature tensor에 대한 서로다른 차원들에 분리되어 적용되었어도, 서로간에 성능 보완이 가능하다.  
@@ -40,38 +41,37 @@ EfficientDet와 SpineNet과 비교하여 dynamic head는 1/20의 학습시간을
 그리고 최신 transformer backbone과 self-training을 통한 추가 데이터를 가지고 COCO에 대해 SOTA 성능을 얻을 수 있다.  
 
 ## 2. Related Work
-
-최근 연구에서는 scale-aware, spatial-aware, task-aware 등 다양한 관점에서 object detector를 개선하는 데 중점을 둔다.  
+최근 연구에서는 scale-aware, spatial-aware, task-aware등 다양한 관점에서 object detector를 개선하는 데 중점을 둔다.  
   
 ### Scale-awareness.
 자연 이미지에는 서로 다른 scale을 가진 obejct가 공존하는 경우가 많기 때문에 많은 연구에서 object detection에서 scale-aware의 중요성을 공감했다.  
 초기 연구는 multi-scale 학습을 위한 image pyramid 방법을 이용하는 중요성을 제시해 왔다. (6, 24, 25 : 2016, 2018)  
-image pyramid 대신에 feature pyramid[15]는 다운샘플된 conv. feature pyramid를 연결하여 효율성을 향상시키기 위해 제안되었으며 현대 obejct detector의 표준 구성 요소가 되었다.  
-그러나 여러 level의 feature는 네트워크의 서로다른 깊이로부터 추출되며 이는 인지가능한 의미적 차이를 야기한다.  
-이러한 불일치를 해결하기 위해 [18]은 feature pyramid에서 상향식 경로 증대를 통해 하위 레이어의 피쳐를 향상시킬 것을 제안했다.  
+Image pyramid 대신 feature pyramid는 downsampled conv. feature pyramid를 연결하여 효율성을 향상시키며 현대 obejct detector의 표준 구성 요소가 되었다.  
+그러나 여러 level의 feature는 네트워크의 서로 다른 깊이로부터 추출되며 이는 인지가능한 의미적 차이를 야기한다.  
+이러한 불일치를 해결하기 위해 [18]은 feature pyramid에서 상향식 경로 증대를 통해 하위 레이어의 feature를 향상시킬 것을 제안했다.  
 나중에 [20]은 balanced sampling과 balanced feature pyramid를 도입하여 이를 개선했다.  
-최근 [31]은 수정된 3차원 conv.를 기반으로 scale과 spatial feature를 동시에 추출하는 pyramid conv. 를 제안했다.  
-이 작업에서는 다양한 feature level의 중요성을 입력에 맞게 조정하는 detection head의 scale-aware attention을 제시한다.  
+최근 [31]은 수정된 3차원 conv.를 기반으로 scale과 spatial feature를 동시에 추출하는 pyramid conv.를 제안했다.  
+본 작업에서는 다양한 feature level의 중요성을 입력에 맞게 조정하는 detection head의 scale-aware attention을 제시한다.  
   
 **Spatial-awareness.**
-과거 작업들은 더 나은 의미적 학습을 위해 object detection에서 spatial-awareness를 향상하기 위해 노력해왔다.  
+과거 작업은 더 나은 의미론적 학습을 위해 object detection에서 spatial-awareness를 향상하기 위해 노력해왔다.  
 Conv. nn은 이미지에 존재하는 공간적 변환을 학습하는데 제한된 것으로 알려져 있다[41].  
 일부 작업들은 이문제를 모델용량[13, 32]을 키우거나 추론과 학습에서 극단적으로 높은 계산 비용이 드는 값비싼 data augmentation[14]를 활용해서 완화한다.  
 이후, 새로운 conv. 연산자들은 공간변환 학습을 향상하기 위해 제안되어 왔다.  
 [34]는 지수적으로 확장되는 receptive field로부터 문맥적 정보를 통합하는 dilated conv.를 사용할 것을 제안했다.  
 [7]은 추가적인 self-learned offset을 가지는 공간위치를 sample하는 deformable conv.를 제안하였다. 
 [37]은 학습된 feature amplitude를 도입하여 오프셋을 재구성하고 그 능력을 더욱 향상시켰다.
-이 작업에서 우리는 detection head에서 spatial-aware attentiondmf 제시한다.  
+이 작업에서 우리는 detection head에서 spatial-aware attention을 제시한다.  
 이 attetntion은 각 spatial location에 attention을 적용할 뿐 아니라  
 보다 구별적인 표현을 학습하기 위해 여러 feature level을 함께 적응적으로 집계한다.  
 
 **Task-awareness.** 
-Object detection은 먼저 object proposal을 생성한 다음 proposal을 다른 클래스와 배경으로 분류하는 2단계 패러다임[39, 6]에서 시작되었다.  
-[23]은 두 단계를 단일 conv. 네트워크로 공식화하기 위해 RPN(Region Proposal Networks)을 도입하여 현대적인 2단계 프레임워크를 공식화했다.  
-이후에 1단 object detector[22]는 높은 효율로 인해 대중화되었다.  
+Object detection은 먼저 object proposal을 생성한 다음 proposal을 다른 class와 background로 분류하는 2단계 패러다임[39, 6]에서 시작되었다.  
+[23]은 두 단계를 단일 conv. 네트워크로 formulation하기 위해 RPN(Region Proposal Networks)을 도입하여 현대적인 2단계 프레임워크를 공식화했다.  
+이후에 1단계 object detector[22]는 높은 효율로 인해 대중화되었다.  
 [16]은 이전 1단계 detector의 속도를 유지하면서 2단계 detector의 정확도를 능가하는 작업별 분기를 도입하여 아키텍처를 더욱 개선했다.  
-최근에는 다양한 object representation이 잠재적으로 성능을 향상시킬 수 있다는 것을 발견한 더 많은 작업이 있습다.  
-[12]는 먼저 bounding box와 와 object의 segmentation mask를 결합하면 성능을 더욱 향상시킬 수 있음을 보여주었다.  
+최근에는 다양한 object representation이 잠재적으로 성능을 향상시킬 수 있다는 것을 발견한 더 많은 작업이 있다.  
+[12]는 먼저 bounding box와 object의 segmentation mask를 결합하면 성능을 더욱 향상시킬 수 있음을 보여주었다.  
 [28]은 픽셀 단위 예측 방식으로 obejct detection을 해결하기 위해 center representation을 사용하도록 제안했다.  
 [35]는 개체의 통계적 특성에 따라 양성 및 음성 샘플을 자동으로 선택하여 중심 기반 방법의 성능을 더욱 향상시켰다.  
 [33]은 학습을 용이하게 하기 위해 object detection을 대표적인 key-point로 공식화했다.  
@@ -90,11 +90,11 @@ object detection head의 이전 개선 사항을 일반적으로 이해해야 �
   
 Fin = {Fi}(i=1~L)에서 feature의 연결이 주어졌을 때 feature pyramid의 다른 레벨에서 upsampling 또는 downsampling을 사용하여  
 중간 레벨 feature의 scale로 연속 레벨 feature의 크기를 조정할 수 있다.  
-크기 조정된 feature pyramid는 4차원 텐서 F ∈ RL×H×W×C로 표시할 수 있다.  
-(L:pyramid level 수, H, W, C : 높이, 너비, 채널)  
-S = H × W를 추가로 정의하여 tensor를 3차원 텐서 F ∈ RL×S×C 로 재구성한다.  
+크기 조정된 feature pyramid는 4차원 텐서 F ∈ R^(L×H×W×C)로 표시할 수 있다.  
+(L, H, W, C : pyramid level, 높이, 너비, 채널)  
+S = H × W를 추가로 정의하여 tensor를 3차원 텐서 F ∈ R^(L×S×C)로 재구성한다.  
 이 표현을 기반으로 각 텐서 차원의 역할을 탐색한다.  
-• object scale의 불일치는 다양한 수준의 feature와 관련이 있다. 다양한 F 수준에서 표현 학습을 개선하면  
+• object scale의 불일치는 다양한 수준의 feature와 관련이 있다. 다양한 F level에서 표현 학습을 개선하면  
 object detection에 대한 scale-aware에 도움이 될 수 있다.  
 • 서로다른 물체 모양으로부터 다양한 기하학적 변환은 다양한 공간 위치의 feature와 관련된다.  
 F의 서로 다른 공간 위치에서 표현 학습을 개선하면 물체 감지의 spatial-aware에 도움이 될 수 있다.  
@@ -104,12 +104,12 @@ F의 다른 채널에서 표현 학습을 개선하면 object detection의 작�
 우리의 작업은 개선을 극대화하기 위해 통합된 head를 공식화하기 위해 3차원 모두에 대한 다중 attention을 결합하려는 첫 번째 시도이다.
 
 ### 3.2. Dynamic Head: Unifying with Attentions
-Feature tensor F ∈ RL×S×C 가 주어지면 self-attention을 적용하는 일반적인 공식은 다음과 같다.
+Feature tensor F ∈ R^(L×S×C) 가 주어지면 self-attention을 적용하는 일반적인 공식은 다음과 같다.
 W(F) = π(F) · F
 (π(·) :attention function).  
 이 attention 함수에 가벼운 해는 Fully connected로 구현된다.
 그러나 직접적으로 attetention을 전체 차원에 대해 학습하는것은 계산적으로 값비싸고 실제적으로는 차원이 크기 때문에 불가능하다.  
-대신, attention feature를 세 개의 순차적 attention으 변환하며, 각각은 하나의 관점에만 초점을 맞춘다.  
+대신, attention feature를 세 개의 순차적 attention으로 변환하며, 각각은 하나의 관점에만 초점을 맞춘다.  
 <img src="https://user-images.githubusercontent.com/40943064/155842954-7641680a-2d96-4428-a7af-81e37489eef7.png" width = 200>. 
 
 #### Scale-aware Attention πL
@@ -122,14 +122,14 @@ W(F) = π(F) · F
 spatial location과 feature level 모두에서 일관되게 공존하는 discriminative 영역에 초점을 맞춘다.  
 S의 높은 차원을 고려하여 이 모듈을 두 단계로 분해한다. 먼저 demormable conv.를 사용하여 attention 학습을 희소하게 만든 다음  
 [7] 동일한 공간 위치에서 수준에 걸쳐 feature를 집계한다.  
-<img src="https://user-images.githubusercontent.com/40943064/155845090-94ed6534-891f-471a-9150-8b5388ef2110.png" width = 200>  
+<img src="https://user-images.githubusercontent.com/40943064/155845090-94ed6534-891f-471a-9150-8b5388ef2110.png" width = 300>  
 (K : 희소 샘플링 위치의 수, pk + ∆pk : 판별 영역에 초점을 맞추기 위해 자체 학습된 공간 오프셋 ∆pk만큼 이동된 위치, ∆mk : pk에서 자체 학습된 중요도 스칼라). 
-둘 다 F의 중앙값 수준에서 입력 기능에서 학습된다.
+둘 다 F의 중앙값 수준에서 입력 feature에서 학습된다.
 
 #### Task-aware Attention πC
 공동 학습을 가능하게 하고 object의 다양한 표현을 일반화하기 위해 마지막에 task-aware attention을 배치한다.  
-다른 작업을 선호하도록 featre 채널을 동적으로 켜고 끈다.
-<img src="https://user-images.githubusercontent.com/40943064/155845493-0c6ac930-53db-4ffc-bfc2-effa6a5023fd.png" width = 200>  
+다른 작업을 선호하도록 feature 채널을 동적으로 켜고 끈다.  
+<img src="https://user-images.githubusercontent.com/40943064/155845493-0c6ac930-53db-4ffc-bfc2-effa6a5023fd.png" width = 300>  
 (Fc : c번째 채널의 feature 슬라이스, [α1, α2, β1, β2]T = θ(·) : activation 임계값을 제어하는 방법을 학습하는 hyper function)  
 θ(·)는 [3]과 유사하게 구현되며, 먼저 차원을 줄이기 위해 L × S 차원에 대한 전역 평균 풀링을 수행한 다음 두 개의 FC layer와 정규화 계층을 사용하고  
 마지막으로 이동된 시그모이드 함수를 적용하여 -1~1로 정규화한다.  
@@ -138,7 +138,7 @@ S의 높은 차원을 고려하여 이 모듈을 두 단계로 분해한다. 먼
 Dynamic head (즉, 단순화를 위한 Dy-Head) 블록의 자세한 구성은 그림 2(a)에 나와 있다.  
   
 요약하면, 제안한 dynamic head를 사용한 object detection의 전체 패러다임이 그림 1에 나와있다.  
-모든 종류의 backbone 네트워크를 사용하여 동일한 규모로 크기를 조정하여 3차원 Tensor F ∈ RL×S×C를 형성하는 feature 피라미드를 추출할 수 있다.  
+모든 종류의 backbone 네트워크를 사용하여 동일한 규모로 크기를 조정하여 3차원 Tensor F ∈ R^(L×S×C)를 형성하는 feature 피라미드를 추출할 수 있다.  
 그런 다음 dynamic head에 대한 입력으로 사용된다.  
 다음으로 scale-aware, spatial-aware, task-aware attention을 포함한 여러 Dy-Head 블록이 순차적으로 쌓인다.  
 동적 헤드의 출력은 classification, center/box regression 등과 같은 object detection의 다양한 작업 및 표현에 사용될 수 있다.  
