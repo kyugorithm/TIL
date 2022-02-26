@@ -1,5 +1,5 @@
 ## Abstract
-Object detection에서 **localization과 classification을 결합**하는 복잡한 특성은 방법의 성공적인 개발을 가져왔다.  
+Object detection에서 **localization과 classification을 결합**하는 복잡한 특성은 성공적인 개발을 가져왔다.  
 이전 작품은 다양한 object detection head의 성능을 향상시키기 위해 노력했지만 통합된 관점을 제시하지 못했다.  
 본 논문에서, object detection head를 attention과 통합하기 위한 새로운 **dynamic head framework**를 제시한다.  
 Scale 인식을 위한 feature level 간, spatial 인식을 위한 공간 위치 간, task 인식을 위한 출력 채널 내에서  
