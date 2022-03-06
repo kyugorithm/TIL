@@ -74,7 +74,8 @@ Z[x] 및 s가 주어지면 Whittaker-Shannon 보간 공식[51]에 따르면 해�
 이것은 2차원 Dirac comb IIIs 으로 곱셈으로 표현할 수 있다.  
 <img src='https://user-images.githubusercontent.com/40943064/156923152-e23128ea-3365-4e94-b7c8-25ff7be31b46.png' width=400>
   
-![image](https://user-images.githubusercontent.com/40943064/156923181-e6d450d5-7982-47fc-895b-68f7ce59c133.png)
+![image](https://user-images.githubusercontent.com/40943064/156923244-669442a0-5112-4b7d-9f0a-fdb3ab1e8142.png)
+
 
 
 
