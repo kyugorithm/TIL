@@ -13,3 +13,5 @@ Our main goal was to develop such an approach that could solve these problems an
 We introduce a new face swap pipeline that is based on FaceShifter architecture and fixes the problems stated above. 
 With a new eye loss function, super-resolution block, and Gaussian-based face mask generation leads to improvements 
 in quality which is confirmed during evaluation.
+
+https://arxiv.org/pdf/2202.03046.pdf
