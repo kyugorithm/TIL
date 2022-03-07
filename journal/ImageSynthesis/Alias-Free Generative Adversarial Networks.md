@@ -95,16 +95,14 @@ downsampling을 위해 사용되는 bandlimiting과 마찬가지로 초기 네�
   
 #### Convolution
 Discrete kernel K를 가지는 표준 conv.를 고려해보자. 우리는 K를 sampling rate s를 가지고 입력 feature map와 동일한 grid에 존재한다고 해석할 수 있다.  
-아래의 이유로 Discrete-domain 연산은 **F**conv(Z) = K * Z이며 우리는 그에 상응하는 continuous 연산을 Eq.1로부터 얻을 수 있다.  
+1) conv.의 commutativity.  
+2) 동일 sampling rate s에 대한 이산화 -> 연속화(conv. with low-pass filter)는 identity operation이라는 사실  
+의 이유로 Discrete-domain 연산은 **F**conv(Z) = K * Z이며 우리는 그에 상응하는 continuous 연산을 Eq.1로부터 얻을 수 있다.  
+(identity operation : 항등작용소)  
 ![image](https://user-images.githubusercontent.com/40943064/157000736-aca79053-3b68-4afa-97c4-ad8f44ca4eda.png)  
-이유 :  
-1) conv.의 commutativity
-2) 이산화 -> conv.(with low-pass filter) ; 동일 sampling rate s
+다시말해, conv.는 
 
 
-
-### 2.1 Equivariant network layer
-#### Convolution
 #### Upsampling and downsampling
 #### Nonlinearity
 
