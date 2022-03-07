@@ -100,10 +100,19 @@ Discrete kernel K를 가지는 표준 conv.를 고려해보자. 우리는 K를 s
 의 이유로 Discrete-domain 연산은 **F**conv(Z) = K * Z이며 우리는 그에 상응하는 continuous 연산을 Eq.1로부터 얻을 수 있다.  
 (identity operation : 항등작용소)  
 ![image](https://user-images.githubusercontent.com/40943064/157000736-aca79053-3b68-4afa-97c4-ad8f44ca4eda.png)  
-다시말해, conv.는 
-
+다시말해, conv.는 연속적으로 이산화된 kernel을 연속적인 feature map 표현에 sliding함으로써 동작한다.  
+이러한 conv.는 어떠한 새로운 주파수도 도입하지 않으므로, 변환과 회전 등분산성에 대한 bandlimit 요구사항은 trivial하게 충족된다.  
+Conv.는 마찬가지로 연속 도메인에서 변환과 commute 하고 이때문에 연산이 변환에 등분산이다.  
+회전 등분산성에 대해서, 이산 kernel K는 방사적으로 대칭이다.  
+(3.2절에서 symmetric 1 x 1 conv. kernel은 단순성에도 불구하고 등분산 생성 네트워크를 위해 실행가능한 선택임을 보인다.)  
 
 #### Upsampling and downsampling
+이상적인 upsampling은 연속표현을 수정하지 않는다. 유일한 목적은 출력 sampling rate (s' > s)를 증가시켜 후속 레이어가 추가 contents를 도입할 수 있는 스펙트럼에서 헤드룸을 추가하는 것이다.  
+번역과 회전 등분산성은 업샘플링이 연속 도메인에서 등가 연산이 되는 것에서 직접 나타난다.  
+fup(z) = z 과 함께, eq1.에 따른 discrete 연산은 <img src='https://user-images.githubusercontent.com/40943064/157023950-660792f6-b716-46d9-af68-71c31af36e50.png' width = 200> 이다. s, = ns를 정수 n으로 선택하는 경우, 이 연산은 Z를 0으로인 interleave하여 샘플링 rate를 높인 다음 이산화된 필터(<img src= 'https://user-images.githubusercontent.com/40943064/157030643-dadc1e08-36d1-400c-aae5-f8faed46ffd8.png' width = 150 >)로 컨볼루션하여 구현할 수 있다.
+  
+dfdfdddfsdㅇ
+
 #### Nonlinearity
 
 ## 3 Practical application to generator network
