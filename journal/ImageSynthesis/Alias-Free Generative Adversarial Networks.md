@@ -42,23 +42,23 @@ Aliasing은 미묘하고 중요한 문제[44]에도 불구하고 GAN 문헌에�
 100dB 이상의 감쇠를 갖는 매우 고품질의 필터가 필요하다는 놀라운 발견이 포함된다.  
 또한, continuous 영역에서의 효과를 고려하고 결과를 적절하게 저역 통과 필터링함으로써  
 pointwise 비선형성[5]으로 인한 aliasing에 대한 원칙적 솔루션을 제시한다.  
-우리는 또한 정밀 검사 후에 1x1 conv.를 기반으로 하는 모델이 강력한 회전 등변량 G를 생성한다는 것을 보여준다.  
+우리는 또한 정밀 검사 후에 1x1 conv.를 기반으로 하는 모델이 강력한 회전 등변 G를 생성한다는 것을 보여준다.  
   
 모델이 보다 자연스러운 계층적 개선을 구현하도록 alasing이 적절히 억제되면 작동 모드가 크게 변경된다.  
 이제 새로운 내부 표현에는 세부 사항을 기본 표면에 올바르게 부착할 수 있는 좌표계가 포함된다.  
 이것은 비디오 및 애니메이션을 생성하는 모델에 대한 상당한 개선을 약속한다.  
 새로운 StyleGAN3 생성기는 FID [26] 측면에서 StyleGAN2와 일치하지만 계산적으로 약간 더 무거워진다.  
-몇몇 최근 연구는 주로 분류의 맥락에서 CNN에서 번역 등분산의 부족을 연구했다.  
+몇몇 최근 연구는 주로 분류의 맥락에서 CNN에서 번역 등변의 부족을 연구했다.  
 우리는 이 문헌에서 anti-aliasing 조치를 크게 확장하고 그렇게 하면 근본적으로 변경된 이미지 생성 동작을 유도한다는 것을 보여준다.  
 그룹 등가 CNN은 변환 가중치 공유의 효율성 이점을 회전 및 스케일로 일반화하는 것을 목표로 한다.  
 우리의 1x1 컨볼루션은 예를 들어 채널별 ReLU 비선형성 및 변조와 호환되는 연속 E(2)-equivariant 모델 [62]의 인스턴스를 볼 수 있다.  
-GAN에 90º 회전 및 뒤집기 등변량 CNN[16]을 적용하여 향상된 데이터 효율성을 보여준다.  
+GAN에 90º 회전 및 뒤집기 등변 CNN[16]을 적용하여 향상된 데이터 효율성을 보여준다.  
 우리의 작업은 상호 보완적이며 효율성에 의해 동기가 부여되지 않는다.  
 최근의 implicit 네트워크 기반 GAN은 유사한 1x1 conv.을 통해 각 픽셀을 독립적으로 생성한다.  
-등변량이지만 이러한 모델은 업샘플링 계층을 사용하지 않거나 얕은 anti-aliasing 되지 않은 계층을 구현하지 않기 때문에 텍스처 고정에 도움이 되지 않는다.  
+등변이지만 이러한 모델은 업샘플링 계층을 사용하지 않거나 얕은 antialiasing 되지 않은 계층을 구현하지 않기 때문에 텍스처 고정에 도움이 되지 않는다.  
 
 ## 2. Equivariance via continuous signal interpretation
-CNNs에서 등분산성에 대한 분석을 시작하기 위해 네트워크를 통해 흐르는 신호가 무엇인지에 대한 우리의 관점을 재고해보자. 
+CNNs에서 등변성에 대한 분석을 시작하기 위해 네트워크를 통해 흐르는 신호가 무엇인지에 대한 우리의 관점을 재고해보자. 
 pixel grid에 데이터가 저장될 수 있지만, 신호를 직접적으로 나타내기 위해 이런 값을 순진하게 유지할 수는 없다.  
 그렇게 하면 feature map의 내용을 0.5픽셀로 변환하는 것과 같은 사소한 작업을 고려하지 않게 된다.  
   
@@ -80,11 +80,11 @@ Z[x] 및 s가 주어지면 Whittaker-Shannon 보간 공식[51]에 따르면 해�
 
 
 ### 2.1 Equivariant network layers
-연산 **f**는 아래 조건을 만족하는 경우 2D 평면의 공간 변환 **t**에 대해 등분산이다.  
+연산 **f**는 아래 조건을 만족하는 경우 2D 평면의 공간 변환 **t**에 대해 등변이다.  
 연속 도메인에서 상호교환가능(commute)하다(t o f = f o t). 
-우리는 입력이 s/2에 bandlimitted될 때, 등분산 연산이 출력 bandlimit s'/2의 주파수성분을 넘도록 생성하지 못함을 주목한다. 그렇지 않으면 충실한 이산 출력 표현이 존재하지 않는다.  
+우리는 입력이 s/2에 bandlimitted될 때, 등변 연산이 출력 bandlimit s'/2의 주파수성분을 넘도록 생성하지 못함을 주목한다. 그렇지 않으면 충실한 이산 출력 표현이 존재하지 않는다.  
   
-본 논문에서는 두가지 타입의 등분산성에 대해 집중한다. (변환 / 회전). 
+본 논문에서는 두가지 타입의 등변성에 대해 집중한다. (변환 / 회전). 
 회전의 경우 stepctral 제약이 다소 엄격하다.  
 : 이미지를 회전하는것은 spectrum을 회전하는 것에 상응하며 수평/수직 방향에서의 대역 제한을 보장하기 위해서  
 : spectrum은 s/2 지름을 가지는 disc에 제한되어야 한다. 
@@ -101,17 +101,19 @@ Discrete kernel K를 가지는 표준 conv.를 고려해보자. 우리는 K를 s
 (identity operation : 항등작용소)  
 ![image](https://user-images.githubusercontent.com/40943064/157000736-aca79053-3b68-4afa-97c4-ad8f44ca4eda.png)  
 다시말해, conv.는 연속적으로 이산화된 kernel을 연속적인 feature map 표현에 sliding함으로써 동작한다.  
-이러한 conv.는 어떠한 새로운 주파수도 도입하지 않으므로, 변환과 회전 등분산성에 대한 bandlimit 요구사항은 trivial하게 충족된다.  
-Conv.는 마찬가지로 연속 도메인에서 변환과 commute 하고 이때문에 연산이 변환에 등분산이다.  
-회전 등분산성에 대해서, 이산 kernel K는 방사적으로 대칭이다.  
-(3.2절에서 symmetric 1 x 1 conv. kernel은 단순성에도 불구하고 등분산 생성 네트워크를 위해 실행가능한 선택임을 보인다.)  
+이러한 conv.는 어떠한 새로운 주파수도 도입하지 않으므로, 변환과 회전 등변성에 대한 bandlimit 요구사항은 trivial하게 충족된다.  
+Conv.는 마찬가지로 연속 도메인에서 변환과 commute 하고 이때문에 연산이 변환에 등변이다.  
+회전 등변성에 대해서, 이산 kernel K는 방사적으로 대칭이다.  
+(3.2절에서 symmetric 1 x 1 conv. kernel은 단순성에도 불구하고 등변 생성 네트워크를 위해 실행가능한 선택임을 보인다.)  
 
 #### Upsampling and downsampling
 이상적인 upsampling은 연속표현을 수정하지 않는다. 유일한 목적은 출력 sampling rate (s' > s)를 증가시켜 후속 레이어가 추가 contents를 도입할 수 있는 스펙트럼에서 헤드룸을 추가하는 것이다.  
-번역과 회전 등분산성은 업샘플링이 연속 도메인에서 등가 연산이 되는 것에서 직접 나타난다.  
+번역과 회전 등변성은 업샘플링이 연속 도메인에서 등가 연산이 되는 것에서 직접 나타난다.  
 fup(z) = z 과 함께, eq1.에 따른 discrete 연산은 <img src='https://user-images.githubusercontent.com/40943064/157023950-660792f6-b716-46d9-af68-71c31af36e50.png' width = 200> 이다. s, = ns를 정수 n으로 선택하는 경우, 이 연산은 Z를 0으로인 interleave하여 샘플링 rate를 높인 다음 이산화된 필터(<img src= 'https://user-images.githubusercontent.com/40943064/157030643-dadc1e08-36d1-400c-aae5-f8faed46ffd8.png' width = 150 >)로 컨볼루션하여 구현할 수 있다.
   
-dfdfdddfsdㅇ
+다운샘플링에서는 신호가 더 coarse한 이산화에 충실하게 표현될 수 있도록 z를 low-pass filter하여 출력 대역 한계 이상의 주파수를 제거해야 한다.  
+연속 도메인에서의 연산은 fdown(z) 이며 여기서 이상적인 low-pass filter psi=s2phi는 
+~ 수식 ~
 
 #### Nonlinearity
 
@@ -121,7 +123,15 @@ dfdfdddfsdㅇ
 #### Boundaries and upsampling (config E)
 #### Filtered nonlinearities (config F)
 #### Non-critical sampling (config G)
-#### Transformed Fourier features (config H) 
+Filter cutoff가 정확히 bandlimit에 설정된 critial sampling 방식은 antialiasing과 고주파 detail 유지 사이에 균형을 맞추기 때문에 많은 영상 처리 애플리케이션에 이상적이다[58]. 그러나 aliasing은 G의 등변성에 매우 해롭기 때문에 우리의 목표는 현저하게 다르다. 고주파 디테일이 출력 이미지와 따라서 고해상도 계층에서 중요하지만, 정확한 해상도가 처음에는 다소 임의적이라는 점을 고려할 때 초기 계층에서는 덜 중요하다.  
+  
+Aliasing을 억제하기 위해 cutoff 주파수를 fc = s/2 - fh로 낮추면 s/2 이상의 모든 alias 주파수가 stopband에 있도록 할 수 있다. 예를 들어 그림 4a에서 파란색 필터의 컷오프를 낮추면 주파수 응답이 왼쪽으로 이동하여 aliasing 주파수의 worst-case 감쇠가 6dB에서 40dB로 개선된다. 현재 동일한 수의 샘플을 사용하여 이전보다 느린 가변 신호를 표현하기 때문에 이 오버샘플링은 더 나은 antialiasing의 계산 비용으로 볼 수 있다. 실제로, G는 결국 교육 데이터와 일치하도록 선명한 이미지를 생성할 수 있어야 하기 때문에 우리는 고해상도 레이어를 제외한 모든 레이어에서 fc를 낮추기로 선택한다. 이제 신호에 공간 정보가 덜 포함되므로, 우리는 feature map의 수를 샘플링 속도 s 대신 fc에 반비례하도록 결정하는 데 사용되는 휴리스틱을 수정한다. 이러한 변경 사항(구성 G)은 변환 등변성을 더욱 개선하고 FID를 원래 StyleGAN2 아래로 밀어넣는다.  
+![image](https://user-images.githubusercontent.com/40943064/157044287-b4d796a0-54e5-4bdf-b6a2-dbd95508acb5.png)
+
+#### Transformed Fourier features (config H)
+등변 G 레이어는 중간 feature에 도입된 기하학적 변환이 최종 이미지 zN으로 직접 전달되기 때문에 비정렬 및 임의 지향 데이터 세트에 매우 적합하다. 그러나 입력 피처는 계층 자체의 전역 변환을 도입하는 제한된 능력으로 인해res z0는 zN의 전역 방향을 정의하는데 중요한 역할을 한다. 이미지별로 방향이 달라지도록 하기 위해, G는 w를 기반으로 z0을 변환할 수 있는 능력을 가져야 한다. 이것은 입력 푸리에 기능에 대한 전역 변환 및 회전 매개 변수를 출력하는 학습된 아핀 레이어를 도입하도록 동기를 부여한다(그림 4b 및 부록 F). 계층은 정체성 변환을 수행하기 위해 초기화되지만 시간이 지남에 따라 유익할 때 메커니즘을 사용하는 방법을 학습한다. 구성 H에서 이것은 FID를 약간 개선한다.
+![image](https://user-images.githubusercontent.com/40943064/157048029-cd3bcb92-f6ac-4b3e-958f-7170543908f3.png)
+
 #### Flexible layer specifications (config T) 
 #### Rotation equivariance (config R)
 
