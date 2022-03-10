@@ -1,3 +1,5 @@
+Github link : https://github.com/ox-vgg/vgg_face2
+
 ## Abstract
 Larget scale 얼굴 데이터셋 VGGFace2를 소개한다.  
 데이터셋은 **9131명**으로부터 **331만장**의 이미지를 포함하며 1인당 **362.6**장의 이미지가 있다.  
