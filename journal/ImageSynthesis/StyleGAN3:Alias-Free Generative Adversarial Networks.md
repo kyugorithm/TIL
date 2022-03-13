@@ -20,7 +20,7 @@ Coarse feature는 주로 미세한 특징의 존재를 제어하지만 정확한
 견고하고 일관된 object가 공간에서 움직일것으로 예상되는 환상을 깨뜨린다.  
 목표는 각 feature의 정확한 subpixel 위치가 기본 coarse feature에서 독점적으로 **상속**되는 보다 자연스러운 변환 및 계층 구조를 나타내는 아키텍쳐이다.  
 
-현재 네트워크는 이미지 bourder[28, 35, 66], per-pixel noise input[33] 및 positional encoding, aliasing을 통해  
+현재 네트워크는 이미지 border[28, 35, 66], per-pixel noise input[33] 및 positional encoding, aliasing을 통해  
 중간 레이어에서 사용할 수 있는 의도치 않은 위치 참조를 사용하여 이상적인 계층 구조를 **부분적으로 우회할 수 있다**[5, 69].  
 (근본적으로 해결되는것이 아니라 우회해서 주먹구구식으로 해결함). 
 Aliasing은 미묘하고 중요한 문제[44]에도 불구하고 GAN 문헌에서 거의 주목받지 못했다.  
