@@ -37,7 +37,7 @@ open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생�
 
 이러한 통합을 방지하기 위해 ID injection module을 제시한다. IIM은 source의 ID를 내장하여 target의 attribute를 수정하므로, ID와 decoder의 weight 사이의 관련성을 제거하고 임의 ID에 아키텍처를 적용할 수 있다. 또한 ID와 attribute 정보는 feature level에서 크게 결합되어 있다. 전체 feature를 직접 수정하면 attribute 성능이 저하되므로 영향을 완화하기 위해 training loss를 사용해야 한다. Target attribute를 match하기 위해 결과 이미지의 attribute를 각각 명시적으로 제한하는 대신 Weak Feature Matching Loss를 제안한다. Weak Feature Matching Loss는 생성된 결과를 high semantic level에서 입력 대상에 정렬하고 아키텍처가 target attribute를 보존하는 데 암시적으로 도움이 된다. 이 loss를 통해 SimSwap은 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 ID performance를 달성할 수 있다. 
 
-1) ID injection을 decoder에서 배제하는것이 임의 source입력에 도움 준다는 주장에 대한 판단근거는?
+Q) ID injection을 decoder에서 배제하는것이 임의 source입력에 도움 준다는 주장에 대한 판단근거는?
  - Faceshifter는 decoder에 ID injection 했지만 임의 입력에 대해서도 문제없이 작동함
 
 ## 2 Related Work
@@ -45,7 +45,7 @@ open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생�
 Face Swapping은 오랫동안 연구되어 왔다.
 방법은 크게 이미지 수준에서 source에서 작동하는 source 지향 방법과 feature level에서 target face에서 작동하는 target 지향 방법의 두 가지로 나눌 수 있다.
 
-**Source-oriented Methods.**  
+#### Source-oriented Methods
 Attribute를 target에서 source로 전송한 다음 source를 target 이미지로 혼합한다.  
 초기 방법은 3D 모델을 사용하여 자세와 조명을 전송했지만 수동 작업이 필요했다.  
 자동 방법이 제안되었지만 특정 얼굴 라이브러리의 ID만 얼굴을 교환할 수 있었다.  
@@ -56,7 +56,7 @@ FSGAN은 face reenactment network로 표정 및 자세 전송을 먼저 수행�
 이 방법의 일반적인 문제는 입력 **source 이미지에 민감**하다는 것이다.  
 Source의 과장된 표정이나 큰 자세는 face swapping 결과의 성능에 강한 영향을 미친다.  
 
-**Target-oriented Methods.**  
+#### Target-oriented Methods
 NN을 사용하여 target의 feature를 추출한 다음 feature를 수정하고 feature를 출력 face swap 이미지로 복원한다.  
 Korshunova는 G를 학습시키고 하나의 특정 ID으로 얼굴을 교환할 수 있었다.  
 유명한 알고리즘 DeepFakes는 encoder-decoder 구조를 활용했다.  
@@ -68,6 +68,8 @@ IPGAN은 source 이미지에서 identity vector를 추출하고 target 이미지
 최근에 제안된 FaceShifter 방법은 높은 충실도의 face swap 결과를 생성할 수 있었다.  
 FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신원 성능을 달성했다.  
 그러나 **attribute에 너무 약한 제약**을 가하여 결과가 종종 **표정 불일치**의 어려움을 겪었다.  
+
+Q) Faceshifter와의 attribute 제약 정도의 차이만 있는것이라면 att.제약 정도를 강화시키면 성능이 같아지는건지?
 
 ## 3 Method
 Source와 target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
@@ -112,7 +114,7 @@ AdaIN의 공식은 아래와 같이 정의한다.
 
 여기서 𝜇(𝐹𝑒𝑎) 및 𝜎(𝐹𝑒𝑎)는 입력 특성 𝐹𝑒𝑎의 채널별 평균 및 표준편차이다.  
 𝜎𝑆 및 𝜇𝑆는 FC layer를 사용하여 𝑣𝑆에서 생성된 두 개의 변수이다.  
-충분한 ID 임베딩을 보장하기 위해 총 9개의 ID 블록을 사용한다.  
+충분한 ID 임베딩을 보장하기 위해 총 **9개의 ID 블록을 사용**한다.  
 ID 정보를 주입한 후 decoder를 통해 수정된 feature를 전달하여 최종 결과 𝐼𝑅를 생성한다.  
 다른 ID의 source 이미지가 학습에 포함되므로 decoder의 weight는 특정 ID와 관련이 없어야 한다.  
 Decoder는 feature에서 이미지를 복원하는 데만 집중하고 ID 수정 임무는 ID 주입 모듈에 맡기므로  
