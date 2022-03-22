@@ -257,14 +257,13 @@ SimSwap은 입력 소스 이미지에 대해 훨씬 더 강력하고 더 설득�
 
 
 ### 4.3 Analysis of SimSwap
-ID 수정 능력에 대한 분석을 제공할 것이다.  
-그런 다음 face swapping 작업에서 ID와 attribute 성능 사이의 균형을 유지하는 방법을 보여주기 위해  
-몇 가지 ablation 테스트를 수행한다.  
+ID 수정 능력에 대한 분석을 수행한다. 그리고 ID와 attribute 성능 사이의 균형을 유지하는 방법을 보여주기 위해 몇 가지 ablation 테스트를 수행한다.  
 
 **효율적인 ID 임베딩**  
-SimSwap의 아키텍처는 ID 삽입 모듈을 사용하여 ID 임베딩을 수행하므로 Decoder의 weight에서 ID 정보를 분리하고 아키텍처를 임의의 ID로 일반화할 수 있다. 아키텍처 효율성을 검증하기 위해 타 연구에서 제안한 기준을 사용하여 FaceForensics++ 에 대해 동일한 quantitative 실험을 수행한다. FaceForensics++의 각 얼굴 비디오에서 무작위로 10개의 프레임을 선택한다. FaceForensics++에서 동일한 source 및 target 쌍을 따라 SimSwap을 사용하여 face swapping을 수행한다. 생성된 프레임과 source 프레임의 id 벡터를 추출하기 위해 다른 얼굴 인식 네트워크를 사용한다. 생성된 각 프레임에 대해 source 프레임에서 가장 가까운 얼굴을 검색하고 해당 얼굴이 올바른 소스 비디오에서 나온 것인지 확인한다. 정확도 비율은 ID 검색이라고 하며 메서드의 ID 성능을 나타내는 역할을 한다. 또한 포즈 추정기를 사용하여 생성된 프레임과 source 프레임의 자세를 추정하고 평균 L2 거리를 계산한다. 유효한 재현을 찾을 수 없기 때문에 표정 부분을 무시한다.  
+SimSwap은 IID를 사용하여 ID 임베딩을 수행하므로 decoder의 weight에서 ID 정보를 분리하고 아키텍처를 임의의 ID로 일반화할 수 있다. 구조 효율성 검증을 위해 타 연구에서 제안한 기준을 사용하여 FaceForensics++ 에 대해 동일한 정량적 실험을 수행한다. FaceForensics++의 각 얼굴 비디오에서 무작위로 10개의 프레임을 선택한다. FaceForensics++에서 동일한 source 및 target 쌍을 따라 SimSwap을 사용하여 face swapping을 수행한다. 생성된 프레임과 source 프레임의 id 벡터를 추출하기 위해 다른 얼굴 인식 네트워크를 사용한다. 생성된 각 프레임에 대해 source 프레임에서 가장 가까운 얼굴을 검색하고 해당 얼굴이 올바른 소스 비디오에서 나온 것인지 확인한다. 정확도 비율은 ID retrieval이며 ID 성능을 나타낸다. 또한 포즈 추정기를 사용하여 생성된 프레임과 source 프레임의 자세를 추정하고 평균 L2 거리를 계산한다. 유효한 재현을 찾을 수 없기 때문에 표정 부분을 무시한다.  
 
-추가 비교를 위해 원래 Feature Matching formula를 사용하는 SimSwap-oFM과 Feature Matching term을 사용하지 않는 SimSwap-nFM이라는 또 다른 2개의 네트워크를 훈련한다. 우리는 이 2개의 네트워크에 대해 동일한 양적 실험을 수행한다. DeepFakes에서 생성된 프레임도 테스트한다. 비교 결과를 표 1에 나타내었다. 우리가 볼 수 있듯이 SimSwap-oFM은 얕은 수준에서 결과를 정렬하기 때문에 ID retrieval이 낮다. SimSwap-nFM은 모든 수준에서 제약을 제거함으로써 Faceshifter와 매우 유사한 ID retrieval을 갖는다. SimSwap은 ID retrieval이 약간 낮지만 비교적 좋은 posture성능을 보인다. 그림 4 및 5의 결과와 결합하여 SimSwap은 FaceShifter보다 ID retrieval이 낮지만 더 나은 attribute 보존 능력을 가지고 있다.  
+추가 비교를 위해 원래 Feature Matching formula를 사용하는 SimSwap-oFM과 Feature Matching term을 사용하지 않는 SimSwap-nFM 네트워크를 학습한다. 이 2개의 네트워크에 대해 동일한 실험을 수행한다. DeepFakes에서 생성된 프레임도 테스트한다. 비교 결과를 표 1에 나타내었다. SimSwap-oFM은 얕은 수준에서 결과를 정렬하기 때문에 ID retrieval이 낮다. SimSwap-nFM은 모든 수준에서 제약을 제거함으로써 Faceshifter와 매우 유사한 ID retrieval을 갖는다. SimSwap은 ID retrieval이 약간 낮지만 비교적 좋은 posture성능을 보인다. 그림 4 및 5의 결과와 결합하여 SimSwap은 FaceShifter보다 ID retrieval이 낮지만 더 나은 attribute 보존 능력을 가지고 있다.  
+![image](https://user-images.githubusercontent.com/40943064/159407419-6d30cbac-83c7-4340-8e53-cd50ad1e4ab1.png). 
 
 **Keeping a Balance between Identity and Attribute**  
 IIM은 target 이미지에서 추출한 𝐹𝑒𝑎𝑇 전체 feature에 대해 직접 작업하기 때문에 ID의 삽입은 필연적으로 attribute 보존 성능에 영향을 미친다. 따라서 ID 수정과 attribute 보존 사이의 균형을 찾아야 한다. 우리의 프레임워크에는 ID와 attribute 사이의 균형을 조정하는 두 가지 방법이 있다. 첫 번째는 더 강력한 수정 기술을 장려하기 위해 𝜆𝐼𝑑에 대해 더 높은 가중치를 명시적으로 설정하는 것이다. 두 번째는 feature matching term에서 더 많거나 적은 feature를 선택하는 것이다. 이 두 가지 접근 방식을 조합하면 광범위한 결과를 얻을 수 있다.  
