@@ -262,76 +262,28 @@ ID 수정 능력에 대한 분석을 제공할 것이다.
 몇 가지 ablation 테스트를 수행한다.  
 
 **효율적인 ID 임베딩**  
-SimSwap의 아키텍처는 ID 삽입 모듈을 사용하여 ID 임베딩을 수행하므로  
-Decoder의 weight에서 ID 정보를 분리하고 아키텍처를 임의의 ID로 일반화할 수 있다.  
-아키텍처 효율성을 검증하기 위해 타 연구에서 제안한 기준을 사용하여  
-FaceForensics++ 에 대해 동일한 quantitative 실험을 수행한다.  
-FaceForensics++의 각 얼굴 비디오에서 무작위로 10개의 프레임을 선택한다.  
-FaceForensics++에서 동일한 source 및 target 쌍을 따라 SimSwap을 사용하여 face swapping을 수행한다.  
-생성된 프레임과 source 프레임의 id 벡터를 추출하기 위해 다른 얼굴 인식 네트워크를 사용한다.  
-생성된 각 프레임에 대해 source 프레임에서 가장 가까운 얼굴을 검색하고 해당 얼굴이 올바른 소스 비디오에서 나온 것인지 확인한다.  
-정확도 비율은 ID 검색이라고 하며 메서드의 ID 성능을 나타내는 역할을 한다.  
-또한 포즈 추정기를 사용하여 생성된 프레임과 source 프레임의 자세를 추정하고 평균 L2 거리를 계산한다.  
-유효한 재현을 찾을 수 없기 때문에 표정 부분을 무시한다.  
+SimSwap의 아키텍처는 ID 삽입 모듈을 사용하여 ID 임베딩을 수행하므로 Decoder의 weight에서 ID 정보를 분리하고 아키텍처를 임의의 ID로 일반화할 수 있다. 아키텍처 효율성을 검증하기 위해 타 연구에서 제안한 기준을 사용하여 FaceForensics++ 에 대해 동일한 quantitative 실험을 수행한다. FaceForensics++의 각 얼굴 비디오에서 무작위로 10개의 프레임을 선택한다. FaceForensics++에서 동일한 source 및 target 쌍을 따라 SimSwap을 사용하여 face swapping을 수행한다. 생성된 프레임과 source 프레임의 id 벡터를 추출하기 위해 다른 얼굴 인식 네트워크를 사용한다. 생성된 각 프레임에 대해 source 프레임에서 가장 가까운 얼굴을 검색하고 해당 얼굴이 올바른 소스 비디오에서 나온 것인지 확인한다. 정확도 비율은 ID 검색이라고 하며 메서드의 ID 성능을 나타내는 역할을 한다. 또한 포즈 추정기를 사용하여 생성된 프레임과 source 프레임의 자세를 추정하고 평균 L2 거리를 계산한다. 유효한 재현을 찾을 수 없기 때문에 표정 부분을 무시한다.  
 
-추가 비교를 위해 원래 Feature Matching formula를 사용하는 SimSwap-oFM과 Feature Matching term을  
-사용하지 않는 SimSwap-nFM이라는 또 다른 2개의 네트워크를 훈련한다.  
-우리는 이 2개의 네트워크에 대해 동일한 양적 실험을 수행한다.  
-DeepFakes에서 생성된 프레임도 테스트한다.  
-비교 결과를 표 1에 나타내었다.  
-우리가 볼 수 있듯이 SimSwap-oFM은 얕은 수준에서 결과를 정렬하기 때문에 ID retrieval이 낮다.  
-SimSwap-nFM은 모든 수준에서 제약을 제거함으로써 Faceshifter와 매우 유사한 ID retrieval을 갖는다.  
-SimSwap은 ID retrieval이 약간 낮지만 비교적 좋은 posture성능을 보인다.  
-그림 4 및 5의 결과와 결합하여 SimSwap은 FaceShifter보다 ID retrieval이 낮지만 더 나은 attribute 보존 능력을 가지고 있다.  
+추가 비교를 위해 원래 Feature Matching formula를 사용하는 SimSwap-oFM과 Feature Matching term을 사용하지 않는 SimSwap-nFM이라는 또 다른 2개의 네트워크를 훈련한다. 우리는 이 2개의 네트워크에 대해 동일한 양적 실험을 수행한다. DeepFakes에서 생성된 프레임도 테스트한다. 비교 결과를 표 1에 나타내었다. 우리가 볼 수 있듯이 SimSwap-oFM은 얕은 수준에서 결과를 정렬하기 때문에 ID retrieval이 낮다. SimSwap-nFM은 모든 수준에서 제약을 제거함으로써 Faceshifter와 매우 유사한 ID retrieval을 갖는다. SimSwap은 ID retrieval이 약간 낮지만 비교적 좋은 posture성능을 보인다. 그림 4 및 5의 결과와 결합하여 SimSwap은 FaceShifter보다 ID retrieval이 낮지만 더 나은 attribute 보존 능력을 가지고 있다.  
 
 **Keeping a Balance between Identity and Attribute**  
-IIM은 target 이미지에서 추출한 𝐹𝑒𝑎𝑇 전체 feature에 대해 직접 작업하기 때문에  
-ID의 삽입은 필연적으로 attribute 보존 성능에 영향을 미친다.  
-따라서 ID 수정과 attribute 보존 사이의 균형을 찾아야 한다.  
-우리의 프레임워크에는 ID와 attribute 사이의 균형을 조정하는 두 가지 방법이 있다.  
-첫 번째는 더 강력한 수정 기술을 장려하기 위해 𝜆𝐼𝑑에 대해 더 높은 가중치를 명시적으로 설정하는 것이다.  
-두 번째는 feature matching term에서 더 많거나 적은 feature를 선택하는 것이다.  
-이 두 가지 접근 방식을 조합하면 광범위한 결과를 얻을 수 있다.  
-  
-SimSwap-oFM/SimSwap-nFM 외에도 SimSwap-𝑤𝐹𝑀/SimSwap-oFM-FM-/SimSwap-oFMid+/SimSwap-wFM-id+ fksms  
-다른 4개의 네트워크를 학습한다.  
+IIM은 target 이미지에서 추출한 𝐹𝑒𝑎𝑇 전체 feature에 대해 직접 작업하기 때문에 ID의 삽입은 필연적으로 attribute 보존 성능에 영향을 미친다. 따라서 ID 수정과 attribute 보존 사이의 균형을 찾아야 한다. 우리의 프레임워크에는 ID와 attribute 사이의 균형을 조정하는 두 가지 방법이 있다. 첫 번째는 더 강력한 수정 기술을 장려하기 위해 𝜆𝐼𝑑에 대해 더 높은 가중치를 명시적으로 설정하는 것이다. 두 번째는 feature matching term에서 더 많거나 적은 feature를 선택하는 것이다. 이 두 가지 접근 방식을 조합하면 광범위한 결과를 얻을 수 있다.  
+
+SimSwap-oFM/SimSwap-nFM 외에도 SimSwap-𝑤𝐹𝑀/SimSwap-oFM-FM-/SimSwap-oFMid+/SimSwap-wFM-id+ 4개의 네트워크를 학습한다.  
 𝑤𝐹𝑀 : Feature Matching term + 초반 몇 개의 레이어를 유지하고 마지막 몇 개를 제거  
 oFM-FM- : Feature Matching term +  𝜆𝑜𝐹𝑀 = 5  
 oFM-id+ : Feature Matching term + 𝜆𝐼𝑑 = 20  
 wFM-id+ :Weak Feature Matching Loss를 SimSwap으로 사용 + 𝜆𝐼𝑑 = 20  
-SimSwap과 동일한 전략에 따라 위의 모든 네트워크를 학습한다.  
-모든 네트워크의 ID retrieval을 테스트한다.  
-CelebAMaskHQ에 대한 추가 정량 실험을 수행한다.  
-먼저, 서로 다른 ID를 가진 1,000개의 source 및 target 쌍을 무작위로 선택하고 face swapping 결과를 생성한다.  
-ID 수정 기술을 측정하기 위해 결과와 source 간의 평균 ID loss를 사용한다.  
-그런 다음 무작위로 1,000개의 이미지를 선택하고 각 이미지를 source와 target으로 사용하여 자체 교체를 수행한다.  
-우리는 평균 Reconstruction Loss를 사용하여 face swapping 프로세스 동안 target에서 손실된 attribute 정보의 양을 측정한다.  
-비교 결과는 그림 7에 나와 있다.  
+SimSwap과 동일한 전략에 따라 위의 모든 네트워크를 학습한다. 모든 네트워크의 ID retrieval을 테스트한다. CelebAMaskHQ에 대한 추가 정량 실험을 수행한다. 먼저, 서로 다른 ID를 가진 1,000개의 source 및 target 쌍을 무작위로 선택하고 face swapping 결과를 생성한다. ID 수정 기술을 측정하기 위해 결과와 source 간의 평균 ID loss를 사용한다. 그런 다음 무작위로 1,000개의 이미지를 선택하고 각 이미지를 source와 target으로 사용하여 자체 교체를 수행한다. 우리는 평균 Reconstruction Loss를 사용하여 face swapping 프로세스 동안 target에서 손실된 attribute 정보의 양을 측정한다. 비교 결과는 그림 7에 나와 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/146669418-6228fd56-135c-4d1e-9109-276bd6fcd1cb.png)  
-우리가 볼 수 있듯이 oFM, 𝑤𝐹𝑀, oFM-FM- 및 oFM-id+는 모두 SimSwap보다 ID retrieval이 낮다.  
-이는 Feature Matching에서 마지막 몇 개의 레이어를 유지하는 것이 ID 성능에 미치는 영향이 적다는 것을 나타낸다.  
-nFM은 ID 검색이 가장 높지만 Reconstruction Loss가 가장 높아 수정 능력이 강하면 attribute 보존에 어려움이 있음을 알 수 있다.  
-SimSwap은 ID와 attribute 성능 사이의 균형을 잘 유지하는 중간 수준의 재구성 손실을 유지하면서 비교적 높은 ID 검색을 달성하고 있다.  
-Weak Feature Matching Loss의 효과를 더 검증하기 위해 다른 네트워크에서 생성된 결과가 그림 8에 나와 있다.  
+우리가 볼 수 있듯이 oFM, 𝑤𝐹𝑀, oFM-FM- 및 oFM-id+는 모두 SimSwap보다 ID retrieval이 낮다. 이는 Feature Matching에서 마지막 몇 개의 레이어를 유지하는 것이 ID 성능에 미치는 영향이 적다는 것을 나타낸다. nFM은 ID 검색이 가장 높지만 Reconstruction Loss가 가장 높아 수정 능력이 강하면 attribute 보존에 어려움이 있음을 알 수 있다. SimSwap은 ID와 attribute 성능 사이의 균형을 잘 유지하는 중간 수준의 재구성 손실을 유지하면서 비교적 높은 ID 검색을 달성하고 있다. Weak Feature Matching Loss의 효과를 더 검증하기 위해 다른 네트워크에서 생성된 결과가 그림 8에 나와 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/146669862-f2dd5f5b-2e6d-4627-8514-0c123889d699.png)  
-동일한 Feature Matching loss를 사용한 결과(col 3&4, col 5&6)가 상대적으로 작은 차이를 나타냄을 알 수 있다.  
-의 𝜆𝐼𝑑은 시각적인 외모에 대한 영향이 제한적이다.  
-SimSwap(col 5)과 SimSwap-oFM(col 3)의 결과를 비교하면 SimSwap은 많은 attribute을 잃지 않고 더 나은 ID 성능을 제공한다.  
-SimSwap-nFM(col 7)의 결과는 최고의 ID 성능을 가지며 결과 얼굴의 모양이 source 얼굴의 모양으로 수정되었다.  
-그러나 시선 방향이 target 얼굴의 방향에서 벗어나는 경향이 있기 때문에 SimSwap-nFM은 분명히 attribute을 잃어가고 있다.  
-SimSwap 및 wFM-id+의 경우 대부분 매우 유사한 시각적 출력을 생성한다.  
-그러나 그림 7의 wFM-id+ 및 nFM 값과 그림 8의 결과를 비교할 때 wFM-id+의 Identity Loss가 더 적지만  
-ID 검색 및 시각적 보기를 통해 nFM이 실제로 더 나은 ID 성능을 달성함을 알 수 있다.  
-이는 wFM-id+가 Identity Loss에 대해 과적합되었음을 나타낸다.  
-게다가, wFM-id+는 source 얼굴에서 머리카락에 도입될 가능성이 더 높다(그림 9 참조).  
+동일한 Feature Matching loss를 사용한 결과(col 3&4, col 5&6)가 상대적으로 작은 차이를 나타냄을 알 수 있다. 의 𝜆𝐼𝑑은 시각적인 외모에 대한 영향이 제한적이다. SimSwap(col 5)과 SimSwap-oFM(col 3)의 결과를 비교하면 SimSwap은 많은 attribute을 잃지 않고 더 나은 ID 성능을 제공한다. SimSwap-nFM(col 7)의 결과는 최고의 ID 성능을 가지며 결과 얼굴의 모양이 source 얼굴의 모양으로 수정되었다.  
+그러나 시선 방향이 target 얼굴의 방향에서 벗어나는 경향이 있기 때문에 SimSwap-nFM은 분명히 attribute을 잃어가고 있다. SimSwap 및 wFM-id+의 경우 대부분 매우 유사한 시각적 출력을 생성한다. 그러나 그림 7의 wFM-id+ 및 nFM 값과 그림 8의 결과를 비교할 때 wFM-id+의 Identity Loss가 더 적지만 ID 검색 및 시각적 보기를 통해 nFM이 실제로 더 나은 ID 성능을 달성함을 알 수 있다. 이는 wFM-id+가 Identity Loss에 대해 과적합되었음을 나타낸다. 게다가, wFM-id+는 source 얼굴에서 머리카락에 도입될 가능성이 더 높다(그림 9 참조).  
 ![image](https://user-images.githubusercontent.com/40943064/146669874-99cddf5c-da15-4046-8cd0-b6d27bde50dc.png)  
 
-우리는 face만 교체하기 때문에 이것은 필요하지 않다.  
-따라서 보다 안정적인 결과를 위해 SimSwap을 선택한다.  
+우리는 face만 교체하기 때문에 이것은 필요하지 않다. 따라서 보다 안정적인 결과를 위해 SimSwap을 선택한다.  
   
 
 ## 5 Conclusion
-일반화되고 충실도가 높은 face swapping을 목표로 하는 효율적인 프레임워크인 SimSwap을 제안한다.  
-ID 주입 모듈은 feature 수준에서 ID를 전송하고 ID별 face swapping을 임의의 face swapping으로 확장한다.  
-Weak Feature Matching Loss는 프레임워크가 우수한 attribute 보존 능력을 갖도록 도와준다.  
-광범위한 결과에 따르면 시각적으로 매력적인 결과를 생성할 수 있으며 우리 방법은 이전 방법보다 attribute를 더 잘 보존할 수 있다.
+일반화되고 충실도가 높은 face swapping을 목표로 하는 효율적인 프레임워크인 SimSwap을 제안한다. ID 주입 모듈은 feature 수준에서 ID를 전송하고 ID별 face swapping을 임의의 face swapping으로 확장한다. Weak Feature Matching Loss는 프레임워크가 우수한 attribute 보존 능력을 갖도록 도와준다. 광범위한 결과에 따르면 시각적으로 매력적인 결과를 생성할 수 있으며 우리 방법은 이전 방법보다 attribute를 더 잘 보존할 수 있다.
