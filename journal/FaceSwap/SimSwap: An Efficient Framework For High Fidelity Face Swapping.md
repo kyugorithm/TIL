@@ -95,11 +95,10 @@ DeepFakes의 구조는 2개 파트(일반 Encoder **Enc**, 2개의 ID 특정 Dec
 ### 3.2 Generalization to Arbitrary Identity
 이러한 한계를 극복하기 위해 Decoder에서 ID를 분리하여 전체 아키텍처를 임의의 ID으로 일반화할 수 있는 방법을 찾는다.  
 인코더와 디코더 사이에 추가 ID 주입 모듈을 추가하여 아키텍처를 개선한다.  
-프레임워크는 그림 2에 나와 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/146665904-cb10cfd4-91d3-4c6f-a7a1-357b10a48739.png)  
   
-Target 𝐼𝑇 가 주어지면 인코더를 통해 전달하여 특징 𝐹𝑒𝑎𝑇 을 추출한다.  
-Target 얼굴을 source 얼굴로 바꾸는 것이므로 𝐹𝑒𝑎𝑇의 attribute를 변경하지 않고 유지하면서 𝐹𝑒𝑎𝑇의 ID를 source 얼굴의 ID로 교체해야 한다.  
+𝐼𝑇 가 주어지면 인코더를 통해 𝐹𝑒𝑎𝑇 을 추출한다.  
+Target 얼굴을 source 얼굴로 바꾸는 것이므로 𝐹𝑒𝑎𝑇의 attribute를 유지하면서 𝐹𝑒𝑎𝑇의 ID를 source ID로 교체해야 한다.  
 그러나 𝐹𝑒𝑎𝑇의 ID와 attribute은 매우 결합되어 구별하기 어렵다.  
 그래서 𝐹𝑒𝑎𝑇 전체에 대해 직접 수정을 수행하고 학습 손실을 사용하여  
 네트워크가 𝐹𝑒𝑎𝑇에서 변경/보존해야 하는 부분을 암시적으로 학습하도록 권장한다.  
@@ -186,16 +185,16 @@ Adversarial Loss의 힌지 버전을 사용한다.
 다중 스케일 D를 사용하기 때문에 Weak Feature Matching Loss는 다음과 같이 쓸 수 있는 모든 D를 사용하여 계산해야 한다.  
 ![image](https://user-images.githubusercontent.com/40943064/146666246-e0a39635-ea04-418e-b6aa-14d41f60fdb9.png)  
 
-전체 손실은 다음과 같이 쓸 수 있다.
-λ𝐼𝑑*𝐿𝐼𝑑 + λ𝑅𝑒𝑐𝑜𝑛*𝐿𝑅𝑒𝑐𝑜𝑛 + 𝐿𝐴𝑑𝑣 + λ𝐺𝑃*𝐿𝐺𝑃 + λ𝑤𝐹𝑀𝐿𝑤𝐹𝑀𝑠𝑢𝑚 (7)  
-(λ𝐼𝑑 = 10, 10 = λ𝑅𝑒𝑐𝑜𝑛, λ𝐺𝑃 = 10-5, λ𝑤𝐹𝑀 = 10)  
+전체 손실은 다음과 같이 쓸 수 있다.  
+λ𝐼𝑑 *. 𝐿𝐼𝑑 + λ𝑅𝑒𝑐𝑜𝑛 *. 𝐿𝑅𝑒𝑐𝑜𝑛 + 𝐿𝐴𝑑𝑣 + λ𝐺𝑃 * 𝐿𝐺𝑃 + λ𝑤𝐹𝑀 * 𝐿𝑤𝐹𝑀_sum (7)  
+(λ𝐼𝑑 = 10, λ𝑅𝑒𝑐𝑜𝑛 = 10, λ𝐺𝑃 = 10-5, λ𝑤𝐹𝑀 = 10)  
   
 ## 4 Experiments
-**Implementation Detail**  
+#### Implementation Detail
 임의 ID에 대한 face swapping을 위해 대량 얼굴 데이터 세트 VGGFace2를 사용한다.  
 학습 세트의 품질을 개선을 위해 250 × 250보다 작은 크기의 이미지를 제거한다.  
 이미지를 224 × 224 크기의 표준 위치에 정렬하고 자른다.  
-ID 주입 모듈의 얼굴 인식 모델은에서 사전 학습된 Arcface를 사용한다.  
+ID 주입 모듈의 얼굴 인식 모델은 사전 학습된 Arcface를 사용한다.  
 𝛽1 = 0 및 𝛽2 = 0.999인 Adam optimizer를 사용하여 네트워크를 학습한다.  
 동일한 ID를 가진 이미지 쌍에 대해 하나의 배치를 훈련하고 다른 ID를 가진 이미지 쌍에 대해 다른 배치를 교대로 학습한다.  
 500 이상의 Epoch 학습을 수행한다.  
@@ -211,7 +210,7 @@ source 이미지는 ID 벡터만 사용하기 때문에 정면 자세나 중립�
 source 얼굴의 ID를 target 얼굴로 전송할 수 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/146669032-9a70271f-bf77-4975-a58c-e4fb63a88eb1.png)  
   
-방법은 다양한 ID를 잘 처리할 수 있다.  
+Simswap은 다양한 ID를 잘 처리할 수 있다.  
 과장된 표현(행 4), 얼굴 줄무늬(행 4), 큰 얼굴 회전(행 7)과 같은 어려운 대상 조건이 주어지더라도  
 SimSwap은 여전히 높은 충실도의 face swapping 결과를 생성한다.  
 
