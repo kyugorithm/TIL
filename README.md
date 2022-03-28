@@ -11,11 +11,13 @@
 # 정리필요 목록 : Last updated 2022/01/11
 ```
 (2021) StyTr^2: Unbiased Image Style Transfer with Transformers  
+(2021) GPEN : GAN Prior Embedded Network for Blind Face Restoration in the Wild
 (2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis  
   
 (2020) Neural Head Reenactment with Latent Pose Descriptors
-(2020)	First Order Model for Image Animation
-(2020)	One-Shot Free-View Neural Talking-Head Synthesis for Video Conferencing 
+(2020) First Order Model for Image Animation
+(2020) One-Shot Free-View Neural Talking-Head Synthesis for Video Conferencing 
+(2020) DataAugmentation : Fair Attribute Classification through Latent Space De-biasing
   
 Face swap/reenactment
 (2018) RSGAN: Face Swapping and Editing using Face and Hair Representation in Latent Spaces
@@ -24,6 +26,7 @@ Face swap/reenactment
 
 (2016) Loss Functions for Image Restoration with Neural Networks ; L1 vs L2 vs SSIM family
 ```
+
 ## Neural Rendering
 ```
 (2020) State of the Art on Neural Rendering
@@ -53,6 +56,7 @@ Face swap/reenactment
 ```
 ## Classification
 ```
+(2020) How Much Position Information Do Convolutional Neural Networks Encode?
 (2018) ArcFace: Additive Angular Margin Loss for Deep Face Recognition
 ```
 ## Colorization
@@ -68,7 +72,9 @@ Face swap/reenactment
 (2021) HifiFace: 3D Shape and Semantic Prior Guided High Fidelity Face Swapping
 (2021) SimSwap: An Efficient Framework For High Fidelity Face Swapping
 (2020) DeepFaceLab: Integrated, flexible and extensible face-swapping framework
+(2019) FaceShifter: Towards High Fidelity And Occlusion Aware Face Swapping
 (2019) FSGAN: Subject Agnostic Face Swapping and Reenactment
+
 (2017) On Face Segmentation, Face Swapping, and Face Perception
 ```
 ## Generative Model
@@ -89,7 +95,7 @@ Face swap/reenactment
 ```
 ## Image Synthesis
 ```
-(2021) Alias-Free Generative Adversarial Networks : **TBD**
+(2021) StyleGAN v3 : Alias-Free Generative Adversarial Networks
 (2021) StyleMapGAN : Exploiting Spatial Dimensions of Latent in GAN for Real-time Image Editing : TBD
 (2020) A U-Net Based Discriminator for Generative Adversarial Networks
 (2020) StyleGAN v2 : Analyzing and Improving the Image Quality of StyleGAN
@@ -107,8 +113,10 @@ Face swap/reenactment
 ```
 (2016) Layer Normalization
 ```
-## Pose Estimation
+## 3D Human Pose Estimation
 ```
+(2022) MixSTE: Seq2seq Mixed Spatio-Temporal Encoder for 3D Human Pose Estimation in Video
+(2021) Improving Robustness and Accuracy via Relative Information Encoding in 3D Human Pose Estimation
 (2021) MoVNect : Lightweight 3D Human Pose Estimation Network Training Using Teacher-Student Learning
 (2017) VNect: Real-time 3D Human Pose Estimation with a Single RGB Camera
 (2006) Recovering 3D Human Pose from Monocular Images
@@ -124,6 +132,7 @@ Face swap/reenactment
 (2021) StyTr^2: Unbiased Image Style Transfer with Transformers
 (2017) Arbitrary Style Transfer in Real-time with Adaptive Instance
 (2016) Image Style Transfer Using Convolutional Neural Networks
+(2001) Image Analogies
 ```
 ## Time Series
 ```
@@ -139,6 +148,31 @@ Face swap/reenactment
 ```
 (2019) Stand-Alone Self-Attention in Vision Models
 ```
+
+
+## Object Detection
+```
+(2021) Dynamic Head: Unifying Object Detection Heads with Attentions
+```
+
+## Dataset
+```
+(2017) VGGFace2: A dataset for recognising faces across pose and age
+```
+
+## Animation
+```
+(2020) First Order Motion Model for Image Animation
+```
+
+## Novel View Synthesis
+```
+(2020) NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis
+```
+
+
+
+
 
 # 2. 그외 이론및 모델
 
