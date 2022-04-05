@@ -21,10 +21,19 @@ Blind face restoration은 저해상도, 노이즈 블러, 압축 아티팩트 �
 
 ## 2. Related Work
 #### Image Restoration
+일반적으로 image restoration에는 SR, denoising, deblurring 및 compression removal이 포함된다. 시각적으로 만족스러운 결과를 얻기 위해, GAN은 보통 natural manifold에 solution을 더 가깝게 하기 위해 loss supervision으로 사용되는 반면, 우리의 작업은 사전 학습된 face GAN을 GFP로 활용하려고 시도한다. 
 #### Face Restoration.
+일반적인 얼굴 환각을 기반으로 geometry prior와 refernce prior의 두 가지 전형적인 얼굴 고유 prior가 통합되어 성능을 더욱 향상시킨다. Geometry prior는 face landmark, face parsing map과 face component heatmap을 포함한다. 그러나 1) 그러한 우선 사항은 저품질 입력으로부터의 추정을 필요로 하며 실제 시나리오에서는 필연적으로 저하된다. 2) 주로 기하학적 제약에 초점을 맞추고 복원을 위한 적절한 세부사항을 포함하지 않을 수 있다. 대신에, 채용되고 있는 GFP는, 저하된 이미지로부터의 명시적인 geometric 추정을 수반하지 않고, 사전 검증된 네트워크내에 적절한 텍스처를 포함하고 있다.  
+Reference prior는 일반적으로 동일한 ID의 reference image에 의존한다. 이 문제를 극복하기 위해, DFDNet은 복원을 안내하는 CNN feature로 각 구성 요소(예: 눈, 입)의 얼굴 prior를 구성할 것을 제안한다. 그러나 DFDNet은 주로 prior의 구성 요소에 초점을 맞추고 prior 범위를 벗어난 영역(예: 머리카락, 귀 및 얼굴 윤곽)에서 저하되며, 대신 GFP-GAN은 복원하기 위해 얼굴 전체를 처리할 수 있다. 게다가, GFP는 기하학, 텍스처, 색채 등 풍부하고 다양한 선험을 제공할 수 있는 반면, prior의 크기가 한정되어 있기 때문에 diversity와 richness가 제한된다. 
+
 #### Generative Priors
+사전 학습된 GAN의 generative prior는 입력 이미지가 주어진 가장 가까운 latent code를 찾는 것이 주된 목표인 GAN inversion에 의해 이전에 이용되었다. PLUST는 출력과 입력 사이의 거리가 임계값 미만이 될 때까지 StyleGAN의 latent code를 반복적으로 최적화한다. mGAN prior는 reconstruction 품질을 개선하기 위해 여러 code를 최적화하려고 시도한다. 그러나 이러한 방법은 저차원 latent code가 reconstruction을 안내하기에 불충분하기 때문에 일반적으로 낮은 fidelity로 이미지를 생성한다. 이와는 대조적으로, 우리가 제안한 CS-SFT modulation 레이어는 높은 fidelity를 달성하기 위해 다중 해상도 공간 feature에 prior 통합을 가능하게 한다. 또한 추론 중에 GFP-GAN에서 높은 계산량의 반복 최적화가 필요하지 않다. 
+
 #### Channel Split Operation
+일반적으로 소형 모델을 설계하고 모델 표현 능력을 향상시키기 위해 탐색된다. MobileNet은 깊이 있는 conv.를 제안하고 GhostNet은 conv.를 두 부분으로 분할하여 본질적인 feature map을 생성하기 위해 더 적은 수의 filter를 사용한다. DPN의 dual path 구조에서는, 각 패스의 기능의 재이용과 새로운 feature의 탐색이 가능하게 되어, 그 표현 능력이 향상된다. SR에서도 비슷한 아이디어가 사용된다. 델의 CS-SFT 레이어는, 같은 정신을 공유하지만, 운용과 용도는 다르다. Realness와 fidelity의 균형을 맞추기 위해 하나의 분할에 공간적 feature 변환을 채택하고 왼쪽 분할을 ID 남긴다.
+
 #### Local Component Discriminators.
+로컬 패치 분포에 초점을 맞추도록 제안된다. 얼굴에 적용될 때, 그러한 discriminative loss는 별개의 semantic facial 영역에 부과된다. 우리가 도입한 facial component loss도 그러한 디자인을 채택하지만 학습된 discriminative feature에 기초한 추가적인 스타일의 supervision을 가지고 있다.
 
 ## 3. Methodology
 ### 3.1. Overview of GFP-GAN
