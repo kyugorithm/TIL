@@ -39,7 +39,10 @@ Reference prior는 일반적으로 동일한 ID의 reference image에 의존한�
 ### 3.1. Overview of GFP-GAN
 이 섹션에서는 GFP-GAN 프레임워크에 대해 설명한다. 불명확한 열화에 시달리는 입력 얼굴 화상 x에 대해 blind face restoration의 목적은 realness나 fidelity 면에서 GT image y와 가능한 한 유사한 고품질 이미지 y^를 추정하는 것이다.  
 
-GFP-GAN의 전체적인 프레임워크는 그림 2와 같다. GFP-GAN은 이전과 같이 열화 제거 모듈(U-Net)과 사전 훈련된 face GAN으로 구성되어 있다. 이들 레이어는 latent code mapping과 여러 Channel-Split Spatial Feature Transform(CS-SFT; 채널 분할 공간 기능 변환) layer에 의해 브리징된다. 특히 열화 제거 모듈은 복잡한 열화를 제거하고 두 가지 종류의 feature를 추출하도록 설계되어 있다. 1) latent feature **F_spatial**는 입력 이미지를 Style의 가장 가까운 StyleGAN2에서의 latent code에 mapping한다. 그리고 2) StyleGAN2 feature를 변조하기 위한 다중 해상도 공간 feature **F_spatial** 
+GFP-GAN의 전체적인 프레임워크는 그림2와 같다. GFP-GAN은 이전과 같이 열화 제거 모듈(U-Net)과 사전 훈련된 face GAN으로 구성되어 있다. 이들 레이어는 latent code mapping과 여러 Channel-Split Spatial Feature Transform(CS-SFT; 채널 분할 공간 기능 변환) layer에 의해 브리징된다. 특히 열화 제거 모듈은 복잡한 열화를 제거하고 두 가지 종류의 feature를 추출하도록 설계되어 있다. 1) latent feature **F_spatial**는 입력 이미지를 Style의 가장 가까운 StyleGAN2에서의 latent code에 mapping한다. 그리고 2) StyleGAN2 feature를 변조하기 위한 다중 해상도 공간 feature **F_spatial**  
+
+![image](https://user-images.githubusercontent.com/40943064/161704873-4c5507a7-11dd-41b8-a9fc-7c3ad2e1e1e8.png)
+
 
 그 후 **F_latent**는 몇 개의 선형 레이어에 의해 중간 latent code W에 매핑된다. 입력 이미지에 근접한 latent code를 지정하면 StyleGAN2는 FGAN으로 나타나는 중간 conv. feature를 생성할 수 있다. 이러한 feature는 사전 학습된 GAN의 weight로 캡처된 풍부한 얼굴 디테일을 제공한다. F_spacial은 face GAN feature FGAN을 제안된 CS-SFT 레이어와 함께 공간적으로 조정하여 높은 fidelity를 유지하면서 현실적인 결과를 달성한다.  
 
@@ -101,27 +104,78 @@ Phi : pretrained VGG-19 & use (conv1 ~ conv5) feature map before activation
 ## 4 Experiments
 ### 4.1. Datasets and Implementation
 #### Training Datasets.
+70k 이미지가 있는 FFHQ를 이용하여 학습하며 512x512로 이미지를 조정한다. 실제 세계의 저품질 이미지에 근사하는 합성 데이터에 대해 학습되며 추론동안 실제 세계 이미지에 일반화 한다.  [46, 44]에서 사용하는 방식을 적용하고 다음의 degradation model를 학습데이터를 합성하기 위해 사용한다.  
+![image](https://user-images.githubusercontent.com/40943064/161707446-17e87f4b-0506-41a7-80ec-3357622e5452.png)  
+고품질 이미지 y -> gaussian blur kernel k𝛔 convolution -> r 비율만큼 downsampling  
+-> nδ gaussian noise 추가 -> q압축율로 JPEG 압축  
+[44]와 유사하게 각 파라미터를 무작위로 샘플한다. 𝛔,r,δ,q : {0.2:10},{1:8},{0:15},{60:100}  
+Color enhancement 학습시에 color jittering도 적용한다. 
 #### Testing Datasets.
+하나의 합성 데이터셋과 세개의 실제 이미지 데이터셋을 서로 다른 소스로 구성한다. 모든 데이터 셋은 학습 데이터셋과 겹치지 않는다. 간략한 소개를 한다. 
+CelebA-Test는 테스트 파티션에서 3,000개의 CelebA-HQ 이미지가 포함된 합성 데이터 세트이다. 생성 방식은 학습과 같다.
+
+LFW-Test. LFW에는 야생의 저품질 이미지가 포함되어 있다. 검증 파티션의 각 ID에 대한 모든 첫 번째 이미지를 그룹화하여 1711개의 테스트 이미지를 형성한다.
+
+Celeb Child-Test에는 인터넷에서 수집한 연예인의 180명의 어린이 얼굴이 포함되어 있다. 품질이 낮고, 많은 것들이 흑백의 오래된 사진이다.
+
+Web Photo-테스트. 인터넷에서 실생활에서 188장의 저품질 사진을 크롤링하고 407장의 얼굴을 추출하여 WebPhoto 테스트 데이터 세트를 구성했다. 이 사진은 다양하고 복잡한 열화가 있으며 일부는 디테일과 색상 모두 매우 심각하게 열화된 오래된 사진이다.
+
 #### Implementation.
+사전학습된 512 출력의 StyleGAN2을 face prior로 사용한다. StyleGAN2의 채널 승수는 소형 모델 크기에 대해 1로 설정된다. 열화 제거를 위한 UNet은 7xdownsample/7 x upsample로 구성되며, 각 다운샘플에는 residual block이 있다. 각 CS-SFT 레이어에 대해 2개의 conv. 레이어를 사용하여 각각 affine parameter를 생성한다. 미니 배치 사이즈는 12이다. Horizontal flip, color jitter로 학습 데이터를 증강한다. 얼굴의 구성 요소가 지각적으로 중요하므로 왼쪽 눈, 오른쪽 눈, 입의 세 가지 구성 요소를 고려한다. 각 구성요소는 원본 학습 데이터 세트에 제공된 얼굴 랜드마크와 ROI 정렬[24]로 잘린다. Adam Optimizer를 사용하여 모델을 총 800k 반복 학습한다. 학습 속도는 2 10^-3으로 설정되었고 700k번째, 750k번째 반복에서 2배 감소하였다. PyTorch 프레임워크로 모델을 구현하고 4대의 NVIDIA Tesla P40 GPU를 사용하여 모델을 학습한다.
 
 ### 4.2. Comparisons with State-of-the-art Methods
+GFP-GAN을 몇 가지 최신 얼굴 복원 방법과 비교한다. : HiFaceGAN, DFDNet, PSFRGAN, Super-FAN, Wan.  
+얼굴 복원을 위한 GAN 반전 방법: 비교를 위해 PLUST 및 mGAN prior도 포함되어 있다. 또한 GFP-GAN을 이미지 복원 방법인 RCAN, ESRGAN 및 DeblurGANv2와 비교하고 얼굴 트레이닝 세트를 미세 조정하여 공정하게 비교한다. Super-FAN을 제외하고 공식 코드를 채택하며 Super-FAN의 경우 re-implementation 한다.  
+
+평가를 위해 널리 사용되는 비기준 지각 지표인 FID와 NIQE를 사용한다. CelebA-Test with GT를 위해 픽셀 단위 메트릭(PSNR 및 SSIM)과 지각 메트릭(LPIPS)을 채택한다. 작은 값이 GT에 가까운 식별성을 나타내는 ArcFace feature 임베딩에서 angle과 식별 거리를 측정한다.  
+
 #### Synthetic CelebA-Test.
+비교는 1) 입력과 출력이 동일한 해상도를 갖는 블라인드 얼굴 복원과 2)2) 4x face SR 두가지에서 수행한다. 이 방법은 얼굴 SR 입력으로 upsampling 이미지를 가져올 수 있다.  
+
+각 설정에 대한 정량적 결과는 표 1과 표 2에 나와 있다. 두 가지 설정 모두에서 GFP-GAN은 가장 낮은 LPIPS를 달성하며, 이는 우리의 결과가 지각적으로 GT에 가깝다는 것을 나타낸다. 또한 GFP-GAN은 최저 FID 및 NIQE를 취득하여 각각 실제 얼굴 분포 및 자연 화상 분포에 근접한 거리를 가지고 있음을 보여준다. 지각적 성능 외에도, 우리의 방법은 얼굴 feature 삽입에서 가장 작은 정도로 나타나는 더 나은 identity를 유지한다. 주의: 1) FID 및 NIQE가 GT보다 낮다고 해서 성능이 GT보다 우수하다는 것은 아니다. 이러한 'perceptual' 메트릭은 대략적인 척도의 인간-오피니언 점수와 잘 상관되어 있지만, 항상 세밀한 척도로 잘 상관되어 있는 것은 아니기 때문이다. 2) 픽셀 단위의 메트릭 PSNR 및 SSIM은 상관 관계가 없다. 인간 관찰자에 대한 평가와 우리의 모델은 이 두 가지 지표에 능숙하지 않다.  
+
+![image](https://user-images.githubusercontent.com/40943064/161723812-16c00232-0252-41a5-a01b-0906d06863b9.png)  
+
+![image](https://user-images.githubusercontent.com/40943064/161723845-1e1bcbcb-794b-4e5e-bed6-bf108e773aa5.png)  
+
+
+정성적 결과는 그림3과 그림4에 제시되어 있다. 
+1) 강력한 generative facial prior 덕분에 눈(부골, 속눈썹), 치아 등의 충실한 디테일을 회복하고 
+2) 복원 시 얼굴 전체를 처리하여 사실적인 모발을 발생시킬 수 있는 방법이며, 이전 방법은 component dictionaries (DFDNet)에 의존했다. Parsing maps (PSFRGAN)은 충실한 모발 텍스처를 생성하지 못한다(2번째 줄, 그림3). 
+3) 충실도를 유지한다. PSFRGAN과 같이 강제로 치아를 추가하지 않고 자연스럽게 입을 닫게 된다(2번째 열, 그림3). 그림4에서는, GFP-GAN에 의해서, 합리적인 시선 방향이 복원된다. 
+
+![image](https://user-images.githubusercontent.com/40943064/161721420-e7271ba8-4cf5-4192-a058-008f538a7d07.png)  
+![image](https://user-images.githubusercontent.com/40943064/161721450-231d795e-1b22-480f-b28b-a5c1db61b4bd.png)  
+
+
 #### Real-World LFW, CelebChild and WedPhoto-Test.
+일반화 능력을 테스트하기 위해 세 가지 실제 데이터셋에서 모델을 평가한다. 정량적 결과는 표 3과 같다. GFP-GAN은 세 가지 실제 데이터셋 모두에서 뛰어난 성능을 달성하여 탁월한 일반화 능력을 보인다. PLUST는 높은 perceptual quality(낮은 FID 점수)를 얻을 수 있었지만 그림 5와 같이 얼굴 정체성을 유지할 수 없었다.  
+
+![image](https://user-images.githubusercontent.com/40943064/161723940-aa859fb2-69d2-451f-8466-c5d0dab58e80.png)  
+
+
+정성적 비교는 그림 5와 같다. GFPGAN은 기존의 강력한 generative prior와 함께 얼굴 복원 및 실제 사진 color enhancement를 공동으로 수행할 수 있었다. 복잡한 현실 세계 열화에서 그럴듯하고 현실적인 얼굴을 만들어 낼 수 있는 반면, 다른 방법은 충실한 얼굴 디테일을 회복하지 못하거나 artifact를 생성한다(특히 그림 5의 WebPhoto-Test에서). GFP-GAN은 눈과 치아와 같은 일반적인 얼굴 구성 요소 외에도, 분리된 부분보다는 얼굴 전체를 고려하기 때문에 머리카락과 귀에서 더 좋은 성능을 발휘한다. SC-SFT 레이어를 통해 당사의 모델은 높은 충실도를 달성할 수 있다. 그림 5의 마지막 줄에서 보듯이, 대부분의 이전 방법은 감은 눈을 복구하지 못했지만, 우리의 방법은 적은 아티팩트로 성공적으로 복원할 수 있었다.
+
+![image](https://user-images.githubusercontent.com/40943064/161721507-cef82e53-fd32-4112-9ebb-f3695941aa89.png)  
+
 
 ### 4.3. Ablation Studies
 #### CS-SFT layers.
-표 4(a)와 그림 6에서 볼 수 있듯이 공간 변조 계층을 제거하면(즉, 공간 정보 없이 latent code mapping만 유지) 복원된 얼굴은 identity 보존 loss를 획득하지 못한다. (높은 LIPS 및 큰 degree). 따라서 CS-SFT 레이어에 사용되는 다중 해상도 공간 feature는 fidelity를 유지하는 데 중요하다. C
+표 4(a)와 그림 6에서 볼 수 있듯이 공간 변조 계층을 제거하면(즉, 공간 정보 없이 latent code mapping만 유지) 복원된 얼굴은 identity 보존 loss를 획득하지 못한다. (높은 LIPS 및 큰 degree). 따라서 CS-SFT 레이어에 사용되는 다중 해상도 공간 feature는 fidelity를 유지하는 데 중요하다.  
+
+![image](https://user-images.githubusercontent.com/40943064/161721612-1c4b026e-f69c-462e-ab2f-300b343fca7f.png)
+
 
 CS-SFT 레이어를 간단한 SFT 레이어로 전환할 때 [표 4b], 1) 모든 메트릭에서 perceptual 품질이 저하되고 2) 입력 이미지 feature가 모든 메트릭에 영향을 미치기 때문에 더 강한 ID(더 작은 Deg.)를 유지한다는 것을 관찰했다. 변조된 feature와 출력은 저하된 입력으로 바이어스되어 perceptual 품질이 낮아진다. 대조적으로 CSSFT layer는 feature split 을 조정하여 realness와 fidelity의 좋은 균형을 제공한다.
 
 #### Pretrained GAN as GFP.
-사전 학습된 GAN은 복원을 위한 풍부하고 다양한 feature를 제공한다. Table 4(c)와 Fig. 6과 같이 generative face prior를 사용하지 않으면 성능 저하가 관찰된다.
+사전 학습된 GAN은 복원을 위한 풍부하고 다양한 feature를 제공한다. 표4(c)와 Fig. 6과 같이 generative face prior를 사용하지 않으면 성능 저하가 관찰된다.
 
 #### Pyramid Restoration Loss.
 열화 제거 모듈에 피라미드 복원 손실을 적용하여 실제 복잡한 열화에 대한 복원 능력을 강화한다. 이 중간 감독이 없으면 후속 변조를 위한 다중 해상도 공간 기능이 여전히 저하되어 표에 표시된 것처럼 성능이 저하될 수 있다. 표4(b) 및 그림 6.
 
 #### Facial Component Loss.
-1) 모든 facial compnent loss를 제거하고, 2) component discriminator만 유지하고, 3) 에서와 같이 추가 feature matching loss를 추가하고, 4) Gram 통계를 기반으로 추가 feature style loss를 채택한 결과를 비교한다. Feature style loss가 있는 구성 요소 discriminator가 눈 분포를 더 잘 포착하고 그럴듯한 세부 사항을 복원할 수 있음을 그림 7에서 볼 수 있다.
+1) 모든 facial compnent loss를 제거하고, 2) component discriminator만 유지하고, 3) 에서와 같이 추가 feature matching loss를 추가하고, 4) Gram 통계를 기반으로 추가 feature style loss를 채택한 결과를 비교한다. Feature style loss가 있는 구성 요소 discriminator가 눈 분포를 더 잘 포착하고 그럴듯한 세부 사항을 복원할 수 있음을 그림 7에서 볼 수 있다.  
 ![image](https://user-images.githubusercontent.com/40943064/161702092-2e6646d1-97b2-4ef9-b422-f9de1b69ab14.png)  
 
 ![image](https://user-images.githubusercontent.com/40943064/161702121-fe381b9d-8a98-4ed4-b427-cfd6e991f6fc.png)  
@@ -133,15 +187,12 @@ CS-SFT 레이어를 간단한 SFT 레이어로 전환할 때 [표 4b], 1) 모든
 ### 4.4. Discussion and Limitations
 
 #### Training bias. 
-변조를 위해 사전 학습된 GAN과 입력 이미지 feature을 모두 사용하기 때문에 대부분의 어두운 피부 얼굴과 다양한 인구 그룹에서 잘 수행된다(그림 8). 입력에 대한 fidelity를 유지하기 위해 출력을 제한하는 reconstruction loss 및 ID preserving loss를 사용한다. 그러나 입력 이미지가 회색조일 때 입력에 충분한 색상 정보가 포함되어 있지 않기 때문에 얼굴 색상에 바이어스가 있을 수 있다(그림 8의 마지막 예). 따라서 다양하고 균형 잡힌 데이터 세트가 필요하다.  
-![image](https://user-images.githubusercontent.com/40943064/161699699-67c6cf84-1298-4ba5-aa9d-8140e01356e5.png)
+변조를 위해 사전 학습된 GAN과 입력 이미지 feature을 모두 사용하기 때문에 대부분의 어두운 피부 얼굴과 다양한 인구 그룹에서 잘 수행된다(그림 8). 입력에 대한 fidelity를 유지하기 위해 출력을 제한하는 reconstruction loss 및 ID preserving loss를 사용한다. 그러나 입력 이미지가 회색조일 때 입력에 충분한 색상 정보가 포함되어 있지 않기 때문에 얼굴 색상에 바이어스가 있을 수 있다(그림8의 마지막 예). 따라서 다양하고 균형 잡힌 데이터 세트가 필요하다.  
+![image](https://user-images.githubusercontent.com/40943064/161699699-67c6cf84-1298-4ba5-aa9d-8140e01356e5.png)  
 
 #### Limitations.
-Fig. 9와 같이 실제 이미지 열화가 심할 경우 GFPGAN에 의해 복원된 얼굴 디테일이 아티팩트로 뒤틀린다. 또한 매우 큰 포즈에 대해 부자연스러운 결과를 생성한다. 합성 열화 및 학습 데이터 분포가 실제와 다르기 때문이다. 한 가지 방법은 미래 작업으로 남겨진 합성 데이터를 사용하는 대신 실제 데이터에서 이러한 분포를 배우는 것이다.  
-![image](https://user-images.githubusercontent.com/40943064/161699664-8ec90e02-6fd6-4585-89ca-459c75527e7c.png)
-
-
-
+그림9와 같이 실제 이미지 열화가 심할 경우 GFPGAN에 의해 복원된 얼굴 디테일이 아티팩트로 뒤틀린다. 또한 매우 큰 포즈에 대해 부자연스러운 결과를 생성한다. 합성 열화 및 학습 데이터 분포가 실제와 다르기 때문이다. 한 가지 방법은 미래 작업으로 남겨진 합성 데이터를 사용하는 대신 실제 데이터에서 이러한 분포를 배우는 것이다.  
+![image](https://user-images.githubusercontent.com/40943064/161699664-8ec90e02-6fd6-4585-89ca-459c75527e7c.png)  
 
 ## 5. Conclusion
-어려운 blind face restoration 작업에 대해 풍부하고 다양한 generative facial prior를 이용하는 GFP-GAN 프레임워크를 제안했다. 이 prior는 channel-split 공간 feature transform 레이어를 사용하여 복원 프로세스에 통합되어 realness와 fidelity의 좋은 균형을 얻을 수 있다.
+어려운 blind face restoration 작업에 대해 풍부하고 다양한 generative facial prior를 이용하는 GFP-GAN 프레임워크를 제안했다. 이 prior는 channel-split 공간 feature transform 레이어를 사용하여 복원 프로세스에 통합되어 realness와 fidelity의 좋은 균형을 얻을 수 있다.  
