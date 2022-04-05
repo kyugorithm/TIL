@@ -86,15 +86,17 @@ Phi : pretrained VGG-19 & use (conv1 ~ conv5) feature map before activation
 얼굴 구성요소 손실은 다음과 같이 정의된다. 첫 번째 항은 discriminative loss, 두 번째 항은 feature style loss이다.  
 
 ![image](https://user-images.githubusercontent.com/40943064/161697319-bb656370-d1fa-43a3-8338-8da063028b48.png)  
-ROI : region of interest for {left-eye, right_eye, mouth} / D_ROIs는 
+(ROI : region of interest for {left-eye, right_eye, mouth} / D_ROIs : 각 영역에 대한 local discriminator)  
+
 #### 4) Identity preserving loss
+[31]에서 영감을 얻고 ID preserving loss를 적용한다. Perceptual loss와 유사하게, 입력 얼굴의 feature embedding을 기반으로 loss를 정의한다. 특히, ID 식별을 위해 가장 두드러진 feature를 포착하는 사전 학습된 얼굴 인식 ArcFace 모델을 채택한다. Loss를 보존하는 ID는 복원된 결과를 compact deep feature 공간에서 GT와 작은 거리를 갖도록 강제한다.  
 
+![image](https://user-images.githubusercontent.com/40943064/161698274-b8a42cab-b447-47d8-804f-519152a05a79.png)  
+(n : feature extract;ArcFace)
+전체 모델의 목적함수는 아래와 같다.  
+![image](https://user-images.githubusercontent.com/40943064/161698496-91f40801-1ae7-47a0-b902-498879d4402b.png)   
+![image](https://user-images.githubusercontent.com/40943064/161698524-a55fa922-5335-4041-8a5f-d33617c5b9f0.png)  
 
-
-#### Reconstruction Loss.
-#### Adversarial Loss.
-#### Facial Component Loss.
-#### Identity Preserving Loss.
 
 ## 4 Experiments
 ### 4.1. Datasets and Implementation
@@ -107,4 +109,39 @@ ROI : region of interest for {left-eye, right_eye, mouth} / D_ROIs는
 #### Real-World LFW, CelebChild and WedPhoto-Test.
 
 ### 4.3. Ablation Studies
+#### CS-SFT layers.
+표 4(a)와 그림 6에서 볼 수 있듯이 공간 변조 계층을 제거하면(즉, 공간 정보 없이 latent code mapping만 유지) 복원된 얼굴은 identity 보존 loss를 획득하지 못한다. (높은 LIPS 및 큰 degree). 따라서 CS-SFT 레이어에 사용되는 다중 해상도 공간 feature는 fidelity를 유지하는 데 중요하다. C
+
+CS-SFT 레이어를 간단한 SFT 레이어로 전환할 때 [표 4b], 1) 모든 메트릭에서 perceptual 품질이 저하되고 2) 입력 이미지 feature가 모든 메트릭에 영향을 미치기 때문에 더 강한 ID(더 작은 Deg.)를 유지한다는 것을 관찰했다. 변조된 feature와 출력은 저하된 입력으로 바이어스되어 perceptual 품질이 낮아진다. 대조적으로 CSSFT layer는 feature split 을 조정하여 realness와 fidelity의 좋은 균형을 제공한다.
+
+#### Pretrained GAN as GFP.
+사전 학습된 GAN은 복원을 위한 풍부하고 다양한 feature를 제공한다. Table 4(c)와 Fig. 6과 같이 generative face prior를 사용하지 않으면 성능 저하가 관찰된다.
+
+#### Pyramid Restoration Loss.
+열화 제거 모듈에 피라미드 복원 손실을 적용하여 실제 복잡한 열화에 대한 복원 능력을 강화한다. 이 중간 감독이 없으면 후속 변조를 위한 다중 해상도 공간 기능이 여전히 저하되어 표에 표시된 것처럼 성능이 저하될 수 있다. 표4(b) 및 그림 6.
+
+#### Facial Component Loss.
+1) 모든 facial compnent loss를 제거하고, 2) component discriminator만 유지하고, 3) 에서와 같이 추가 feature matching loss를 추가하고, 4) Gram 통계를 기반으로 추가 feature style loss를 채택한 결과를 비교한다. Feature style loss가 있는 구성 요소 discriminator가 눈 분포를 더 잘 포착하고 그럴듯한 세부 사항을 복원할 수 있음을 그림 7에서 볼 수 있다.
+![image](https://user-images.githubusercontent.com/40943064/161702092-2e6646d1-97b2-4ef9-b422-f9de1b69ab14.png)  
+
+![image](https://user-images.githubusercontent.com/40943064/161702121-fe381b9d-8a98-4ed4-b427-cfd6e991f6fc.png)  
+
+![image](https://user-images.githubusercontent.com/40943064/161702174-5943495b-d1aa-45dc-8f15-a947492d8c24.png)  
+
+
+
 ### 4.4. Discussion and Limitations
+
+#### Training bias. 
+변조를 위해 사전 학습된 GAN과 입력 이미지 feature을 모두 사용하기 때문에 대부분의 어두운 피부 얼굴과 다양한 인구 그룹에서 잘 수행된다(그림 8). 입력에 대한 fidelity를 유지하기 위해 출력을 제한하는 reconstruction loss 및 ID preserving loss를 사용한다. 그러나 입력 이미지가 회색조일 때 입력에 충분한 색상 정보가 포함되어 있지 않기 때문에 얼굴 색상에 바이어스가 있을 수 있다(그림 8의 마지막 예). 따라서 다양하고 균형 잡힌 데이터 세트가 필요하다.  
+![image](https://user-images.githubusercontent.com/40943064/161699699-67c6cf84-1298-4ba5-aa9d-8140e01356e5.png)
+
+#### Limitations.
+Fig. 9와 같이 실제 이미지 열화가 심할 경우 GFPGAN에 의해 복원된 얼굴 디테일이 아티팩트로 뒤틀린다. 또한 매우 큰 포즈에 대해 부자연스러운 결과를 생성한다. 합성 열화 및 학습 데이터 분포가 실제와 다르기 때문이다. 한 가지 방법은 미래 작업으로 남겨진 합성 데이터를 사용하는 대신 실제 데이터에서 이러한 분포를 배우는 것이다.  
+![image](https://user-images.githubusercontent.com/40943064/161699664-8ec90e02-6fd6-4585-89ca-459c75527e7c.png)
+
+
+
+
+## 5. Conclusion
+어려운 blind face restoration 작업에 대해 풍부하고 다양한 generative facial prior를 이용하는 GFP-GAN 프레임워크를 제안했다. 이 prior는 channel-split 공간 feature transform 레이어를 사용하여 복원 프로세스에 통합되어 realness와 fidelity의 좋은 균형을 얻을 수 있다.
