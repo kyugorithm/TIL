@@ -37,11 +37,60 @@ Reference prior는 일반적으로 동일한 ID의 reference image에 의존한�
 
 ## 3. Methodology
 ### 3.1. Overview of GFP-GAN
+이 섹션에서는 GFP-GAN 프레임워크에 대해 설명한다. 불명확한 열화에 시달리는 입력 얼굴 화상 x에 대해 blind face restoration의 목적은 realness나 fidelity 면에서 GT image y와 가능한 한 유사한 고품질 이미지 y^를 추정하는 것이다.  
+
+GFP-GAN의 전체적인 프레임워크는 그림 2와 같다. GFP-GAN은 이전과 같이 열화 제거 모듈(U-Net)과 사전 훈련된 face GAN으로 구성되어 있다. 이들 레이어는 latent code mapping과 여러 Channel-Split Spatial Feature Transform(CS-SFT; 채널 분할 공간 기능 변환) layer에 의해 브리징된다. 특히 열화 제거 모듈은 복잡한 열화를 제거하고 두 가지 종류의 feature를 추출하도록 설계되어 있다. 1) latent feature **F_spatial**는 입력 이미지를 Style의 가장 가까운 StyleGAN2에서의 latent code에 mapping한다. 그리고 2) StyleGAN2 feature를 변조하기 위한 다중 해상도 공간 feature **F_spatial** 
+
+그 후 **F_latent**는 몇 개의 선형 레이어에 의해 중간 latent code W에 매핑된다. 입력 이미지에 근접한 latent code를 지정하면 StyleGAN2는 FGAN으로 나타나는 중간 conv. feature를 생성할 수 있다. 이러한 feature는 사전 학습된 GAN의 weight로 캡처된 풍부한 얼굴 디테일을 제공한다. F_spacial은 face GAN feature FGAN을 제안된 CS-SFT 레이어와 함께 공간적으로 조정하여 높은 fidelity를 유지하면서 현실적인 결과를 달성한다.  
+
+학습 중에, 전체적인 discriminative loss를 제외하고, 눈 및 입과 같이 지각적으로 중요한 얼굴 구성 요소를 강화하기 위해 discriminator를 사용하여 facial component loss를 도입한다. ID 재교육을 위해 ID 보존 가이던스도 채용한다.  
+
 ### 3.2. Degradation Removal Module
+실제 blind face restoration은 복잡하고 심각한 열화(low-resolutionm blur, noise, JPEG artiface)에 직면한다.  
+열화 제거 모듈은 위의 열화를 명시적으로 제거하고 Flatent 및 Fspatial의 '깨끗한' 기능을 추출하여 후속 모듈의 부담을 완화하도록 설계되었다. 우리는 U-Net 구조를 열화 제거 모듈로 채택했는데, 1) 큰 흐림을 제거하기 위해 receptive field를 증가시키고 2) 다중 해상도 feature를 생성할 수 있기 때문이다. 공식은 다음과 같다.  
+![image](https://user-images.githubusercontent.com/40943064/161691819-a4c2a58c-7da2-4e84-96aa-e3ab2cb4c643.png)
+
+Latent feature Flatent는 입력 이미지를 StyleGAN2(Sec. 3.3)에서 가장 가까운 latent code에 매핑하는 데 사용된다. 다중 해상도 공간 feature Fspatial은 StyleGAN2 feature를 변조하는 데 사용된다(3.4절).
+
+열화 제거에 대한 중간 supervision을 수행하기 위해 교육 초기 단계에서 각 해상도 스케일에서 L1 restoration loss를 사용한다. 특히 우리는 또한 UNet 디코더의 각 해상도 스케일에 대한 이미지를 출력한 다음 이러한 출력을 GT 이미지 피라미드에 가깝게 제한한다.
+
 ### 3.3. Generative Facial Prior and Latent Code Mapping
+사전 학습된 face GAN은 conv. 가중치, 즉 generative prior에서 얼굴에 대한 분포를 캡처한다. 우리는 사전 학습된 얼굴 GAN을 활용하여 작업에 다양하고 풍부한 얼굴 세부 정보를 제공한다. Generative prior를 배포하는 일반적인 방법은 입력 이미지를 가장 가까운 latent code Z에 매핑한 다음 사전 학습된 GAN에 의해 해당 출력을 생성하는 것이다. 그러나 이러한 방법은 일반적으로 fidelity를 유지하기 위해 시간이 많이 소요되는 반복 최적화가 필요하다. 최종 이미지를 직접 생성하는 대신 더 많은 세부 사항을 포함하고 더 나은 fidelity를 위해 입력 feature에 의해 추가로 변조될 수 있기 때문에 가장 가까운 얼굴의 중간 conv. feature FGAN을 생성한다(3.4절 참조).
+
+특히, 입력 이미지의 인코딩된 벡터 F_latent(U-Net, Eq. 1에 의해 생성됨)가 주어지면 semantic property, 즉 Z에서 여러 MLP로 변환된 중간 공간을 더 잘 보존하기 위해 먼저 중간 latent code W에 매핑한다. Latent code W는 사전 학습된 GAN의 각 conv. 레이어를 통과하고 각 해상도 스케일에 대한 GAN feature를 생성한다.  
+![image](https://user-images.githubusercontent.com/40943064/161693415-6b7990c6-09cf-4229-9d75-e7334e76809c.png)
 #### Discussion: Joint Restoration and Color Enhancement.
+생성 모델은 사실적인 디테일과 생생한 질감을 넘어 다양하고 풍부한 사전을 포착한다. 예를 들어, 그들은 또한 joint 얼굴 복원 및 색상 향상을 위한 작업에 사용할 수 있는 색상 prior를 캡슐화한다. 실제 얼굴 이미지(예: 오래된 사진)는 일반적으로 흑백, 빈티지 노란색 또는 흐릿한 색상이다. Generative facial prior에서 생생한 컬러 prior를 통해 채색을 포함한 색상 향상을 수행할 수 있다. 우리는 generative face prior가 복원 및 조작을 위해 기존의 geometric prior, 3D prior 등을 통합한다고 믿는다.
+
 ### 3.4. Channel-Split Spatial Feature Transform
+Fidelity를 더 잘 보존하기 위해 입력 공간 feature Fspatial(U-Net에서 생성, Eq. 1)을 추가로 사용하여 Eq.2의 GAN feature FGAN을 변조한다. 입력에서 공간 정보를 보존하는 것은 얼굴 복원에 매우 중요하다. 일반적으로 fidelity 보존을 위한 local characteristics와 얼굴의 다른 공간 위치에서의 적응 복원이 필요하기 때문이다. 따라서 우리는 공간적 feature 변조를 위한 affine transformation 매개변수를 생성하는 공간 특징 변환(SFT)을 사용하고 이미지 복원 및 이미지 생성에 다른 조건을 통합하는 데 그 효과를 보여주었다. 특히, 각 해상도 스케일에서 여러 conv. 레이어에 의해 입력 feature Fspatial에서 한 쌍의 affine transformation 매개변수(a, b)를 생성한다. 그 후, 변조는 다음과 같이 공식화된 GAN feature FGAN을 스케일링 및 이동하여 수행된다.  
+![image](https://user-images.githubusercontent.com/40943064/161694858-95514f01-0db6-484d-ae04-ff7f94e1ffdd.png)  
+(Fsplit0_GAN/Fsplit1_GAN:채널 방향에서의 F_GAN으로부터의 split feature)  
+결과적으로 CS-SFT는 prior 정보를 직접 통합하고 입력 이미지를 효과적으로 변조하여 질감의 faithfullness와 fidelity 사이의 균형을 잘 이루는 이점을 누립니다. 게다가 CS-SFT는 GhostNet[23]과 유사하게 변조를 위해 더 적은 수의 채널을 필요로 하기 때문에 복잡성을 줄일 수도 있다. 각 해상도 스케일에서 채널 분할 SFT 레이어를 수행하고 최종적으로 복원된 얼굴 ^y를 생성한다.
+
 ### 3.5. Model Objectives
+GFP-GAN 학습의 목적함수:  
+#### 1) Reconstruction loss : 출력 ^y를 실제 y에 가깝게 제한
+널리 사용되는 L1 loss와 perceptual loss를 다음과 같이 정의된 reconstruction loss **Lrec**로 채택한다.  
+![image](https://user-images.githubusercontent.com/40943064/161695806-1c9404eb-8ca8-4194-9c8b-ec265b51f9ef.png)  
+Phi : pretrained VGG-19 & use (conv1 ~ conv5) feature map before activation
+
+#### 2) Adversarial loss : 사실적 texture restoration
+적대적 손실 Ladv를 사용하여 GFP-GAN이 자연 이미지 manifold의 솔루션을 선호하고 사실적인 질감을 생성하도록 권장한다. StyleGAN2와 유사하게 logistic loss를 사용한다.  
+![image](https://user-images.githubusercontent.com/40943064/161696403-5ee69783-8408-4ac5-84c0-aa161086aa99.png)  
+
+#### 3) facial compenet loss : 얼굴 세부 사항을 더욱 향상
+지각적으로 중요한 얼굴 구성 요소를 더욱 향상시키기 위해 왼쪽 눈, 오른쪽 눈 및 입에 대한 local discriminator를 사용하여 얼굴 구성 요소 손실을 도입한다. 그림 2와 같이 먼저 관심 영역을 ROI 정렬로 자른다. 각 영역에 대해 우리는 복원 패치가 실제인지 여부를 구별하기 위해 별도의 작은 local discriminatator를 학습하여 패치를 자연스러운 얼굴 구성 요소 분포에 가깝게 밀어 넣는다.  
+
+[62]에서 영감을 받아 학습된 discriminator를 기반으로 feature style loss를 추가로 통합한다. 공간제약이 있는 이전 feature matching loss 손실과 달리 우리의 feature sytle loss는 실제 패치와 복원된 패치의 Gram 행렬 통계를 일치시키려고 시도한다. Gram 행렬은 feature 상관 관계를 계산하고 일반적으로 텍스처 정보를 효과적으로 캡처한다. 학습된 local discriminator의 여러 레이어에서 feature를 추출하고 실제 패치와 복원된 패치에서 중간 표현의 이러한 Gram 통계를 일치시키는 방법을 배운다. 경험적으로, feature style loss가 사실적인 얼굴 세부 사항을 생성하고 불쾌한 인공물을 줄이는 측면에서 이전 feature matching loss보다 더 나은 성능을 보인다는 것을. 발견했다.  
+얼굴 구성요소 손실은 다음과 같이 정의된다. 첫 번째 항은 discriminative loss, 두 번째 항은 feature style loss이다.  
+
+![image](https://user-images.githubusercontent.com/40943064/161697319-bb656370-d1fa-43a3-8338-8da063028b48.png)  
+ROI : region of interest for {left-eye, right_eye, mouth} / D_ROIs는 
+#### 4) Identity preserving loss
+
+
+
 #### Reconstruction Loss.
 #### Adversarial Loss.
 #### Facial Component Loss.
