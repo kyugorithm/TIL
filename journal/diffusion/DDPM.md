@@ -86,8 +86,20 @@ Figure. col1(생성샘플)
 
 Energy based와 score matching(annealed importance sampling 사용)보다 lossless codelength가 낫지만 다른종류보다는 낮다.
 그럼에도 불구하고 FID, IS와 같은 수치는 높은것으로 보아 inductive bias를 가지는것으로 결론 내릴 수 있다.  
+  
+<img width="1264" alt="image" src="https://user-images.githubusercontent.com/40943064/167238582-367be0af-dc98-4914-8965-86002b558b15.png">  
+**이해 안되는 부분**
+0.5 이상의 lossless codelength가 감지할 수 없는 수준이다.  
+  
+#### Progressive lossy compression
+
+<img width="1355" alt="image" src="https://user-images.githubusercontent.com/40943064/167238690-0a93bed2-33f9-4dda-91dd-3ba20babd93f.png">
+<img width="1275" alt="image" src="https://user-images.githubusercontent.com/40943064/167238753-f80af552-b2c6-41d1-807a-90ebd8ea59cc.png">
 
 
+#### Progressive generation
+random으로부터 
 
-
-
+CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  점
+CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  ㅉ
+CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  
