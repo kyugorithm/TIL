@@ -112,10 +112,9 @@ Figure : Unconditional CIFAR10 progressive sampling quality over time.
 <img width="900" alt="image" src="https://user-images.githubusercontent.com/40943064/167239587-ad689f6f-a195-4f23-94ff-6769afc6696b.png">  
 
 #### Connection to autoregressive decoding
-특정 형태의 diffusion model을 autoregressive model의 형태로 변형 할 수 있음.  
-<img width="857" alt="image" src="https://user-images.githubusercontent.com/40943064/167240057-3b780e40-9651-4c8b-8714-d72ee6f9b4bf.png">
+<img width="550" alt="image" src="https://user-images.githubusercontent.com/40943064/167240057-3b780e40-9651-4c8b-8714-d72ee6f9b4bf.png">
 
-<img width="562" alt="image" src="https://user-images.githubusercontent.com/40943064/167239998-dd27bbf6-5c88-4c7d-9c3b-aa351fcb01c7.png">
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/40943064/167239998-dd27bbf6-5c88-4c7d-9c3b-aa351fcb01c7.png">
 
 #### 4.4 Interpolation
 Image interpolation은 잘 되지 않기 때문에 diffusion process로 corrupt시킨 latent에 interpolation을 하고 다시 decoding을 하여 semantic한 interpolation 구현  
