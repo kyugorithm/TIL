@@ -98,8 +98,17 @@ Energy based와 score matching(annealed importance sampling 사용)보다 lossle
 
 
 #### Progressive generation
-random으로부터 
+random bit로부터 점진적 복원을 통해 생성과정을 수행한다. 
 
-CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  점
-CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  ㅉ
-CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  
+그림을 보면 초기 단계는 large scale 후기 단계는 detail 이미지 생성 작업이 수행된다.  
+(직관적으로는 구조에 관계없이 생성될것으로 생각 되었으나 일반적인 CNN 생성 방식대로 구조가 연결됨)  
+Figure : Unconditional CIFAR10 progressive generation  
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/40943064/167239462-53edad34-f789-4e99-9081-16db5622d29f.png">  
+Figure : Unconditional CIFAR10 progressive sampling quality over time. 
+<img width="500" alt="image" src="https://user-images.githubusercontent.com/40943064/167239516-51216457-aba6-44af-a692-9c92dccfb129.png">  
+
+동일한 t로부터 얻어진 서로다른 이미지에 대해 비교를 해보면 high-level feature는 보존됨을 알 수 있다. 즉, t=1000로 갈 수록 높은 수준의 feature가 공유된다.  
+(Conceptual comppresion에 대한 hint)
+<img width="1502" alt="image" src="https://user-images.githubusercontent.com/40943064/167239587-ad689f6f-a195-4f23-94ff-6769afc6696b.png">  
+
+#### Connection to autoregressive decoding
