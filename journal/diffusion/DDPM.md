@@ -109,6 +109,22 @@ Figure : Unconditional CIFAR10 progressive sampling quality over time.
 
 동일한 t로부터 얻어진 서로다른 이미지에 대해 비교를 해보면 high-level feature는 보존됨을 알 수 있다. 즉, t=1000로 갈 수록 높은 수준의 feature가 공유된다.  
 (Conceptual comppresion에 대한 hint)
-<img width="1502" alt="image" src="https://user-images.githubusercontent.com/40943064/167239587-ad689f6f-a195-4f23-94ff-6769afc6696b.png">  
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/40943064/167239587-ad689f6f-a195-4f23-94ff-6769afc6696b.png">  
 
 #### Connection to autoregressive decoding
+특정 형태의 diffusion model을 autoregressive model의 형태로 변형 할 수 있음.  
+<img width="857" alt="image" src="https://user-images.githubusercontent.com/40943064/167240057-3b780e40-9651-4c8b-8714-d72ee6f9b4bf.png">
+
+<img width="562" alt="image" src="https://user-images.githubusercontent.com/40943064/167239998-dd27bbf6-5c88-4c7d-9c3b-aa351fcb01c7.png">
+
+#### 4.4 Interpolation
+Image interpolation은 잘 되지 않기 때문에 diffusion process로 corrupt시킨 latent에 interpolation을 하고 다시 decoding을 하여 semantic한 interpolation 구현  
+(단, r을 적용할때 random noise는 동일하게 고정하여 사용)  
+* 재밌는 아이디어 인데 일부분만 interpolation 하면 어떻게 되는지 궁금  
+* t=1000 까지 corrupt-decoding 한 이미지의 semantic한 차이가 어떤 의미인지 궁금  
+* (recon도 되지 않으므로 의미가 있는지 모르겠음..)  
+Figure. Interpolations and reconstructions of original CelebA-HQ 256x256 images (t = 500)  
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/40943064/167240572-7d97c4de-6a54-4421-bcb2-cc50f758c609.png">  
+Figure. Coarse-to-fine interpolations that vary the number of diffusion steps prior to latent mixing.
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/40943064/167240734-2c04a1db-4521-406f-b33f-5f19dce8c905.png">  
+
