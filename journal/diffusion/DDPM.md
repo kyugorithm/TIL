@@ -20,8 +20,11 @@ Reverse process를 구현하기 위해 아래 논문의 U-net backbone과 유사
   
 t(Transfomer의 sinusoidal position embedding에 적용)에 따른 parameter는 공유  
 16x16 featuremap level에서는 self-attention 구조를 사용함  
+<img width="834" alt="image" src="https://user-images.githubusercontent.com/40943064/167242029-b987d5c8-c870-4a8b-821e-ad57201c7742.png">
 
-### Appendix B.
+### Appendix B.  
+<img width="834" alt="image" src="https://user-images.githubusercontent.com/40943064/167242030-24db6af4-c271-4a1d-bb96-bec6544124b7.png">
+
 
 #### Parameter number
 CIFAR10 : 35.7M
@@ -88,8 +91,6 @@ Energy based와 score matching(annealed importance sampling 사용)보다 lossle
 그럼에도 불구하고 FID, IS와 같은 수치는 높은것으로 보아 inductive bias를 가지는것으로 결론 내릴 수 있다.  
   
 <img width="1264" alt="image" src="https://user-images.githubusercontent.com/40943064/167238582-367be0af-dc98-4914-8965-86002b558b15.png">  
-**이해 안되는 부분**
-0.5 이상의 lossless codelength가 감지할 수 없는 수준이다.  
   
 #### Progressive lossy compression
 
@@ -104,7 +105,7 @@ random bit로부터 점진적 복원을 통해 생성과정을 수행한다.
 (직관적으로는 구조에 관계없이 생성될것으로 생각 되었으나 일반적인 CNN 생성 방식대로 구조가 연결됨)  
 Figure : Unconditional CIFAR10 progressive generation  
 <img width="700" alt="image" src="https://user-images.githubusercontent.com/40943064/167239462-53edad34-f789-4e99-9081-16db5622d29f.png">  
-Figure : 추가 이미지
+Figure : 추가 이미지  
 <img width="700" alt="image" src="https://user-images.githubusercontent.com/40943064/167241994-8aeae793-4597-414c-907f-12eda01332d1.png">
 
 Figure : Unconditional CIFAR10 progressive sampling quality over time. 
