@@ -104,6 +104,9 @@ random bit로부터 점진적 복원을 통해 생성과정을 수행한다.
 (직관적으로는 구조에 관계없이 생성될것으로 생각 되었으나 일반적인 CNN 생성 방식대로 구조가 연결됨)  
 Figure : Unconditional CIFAR10 progressive generation  
 <img width="700" alt="image" src="https://user-images.githubusercontent.com/40943064/167239462-53edad34-f789-4e99-9081-16db5622d29f.png">  
+Figure : 추가 이미지
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/40943064/167241994-8aeae793-4597-414c-907f-12eda01332d1.png">
+
 Figure : Unconditional CIFAR10 progressive sampling quality over time. 
 <img width="500" alt="image" src="https://user-images.githubusercontent.com/40943064/167239516-51216457-aba6-44af-a692-9c92dccfb129.png">  
 
