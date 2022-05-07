@@ -1,39 +1,93 @@
 
+## 4 Experiments
+T = 1000 (이전 논문들과의 동등한 비교를 위해)  
+beta(forward process variances)는 constant로 세팅 : np.linspace(0.0001, 0.02, 1000) - (linear, quadratic 중 최적 선정)
+
+아래 두가지를 위해 데이터 스케일 [-1, 1]에 비해 beta값을 작게 설정
+1) Forward/backward process를 근사적으로 같은 functional form이 되도록 함
+2) xT에서의 snr을 최대한 낮춤
+
+
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/40943064/167233335-8aa18016-01dd-476c-9f89-06db11932386.png">  
+(KLD scale이 매우작음 ~ 10^-5)  
+  
+  
+Reverse process를 구현하기 위해 아래 논문의 U-net backbone과 유사한 구조를 사용하며 전체적으로 group-norm 사용  
+(PixelCNN++: Improving the PixelCNN with discretized logistic mixture likelihood and other modifications)
+
+<img width="561" alt="image" src="https://user-images.githubusercontent.com/40943064/167233517-c44d1942-6ded-49a5-9a3a-c76e3eb6935a.png">
+<img width="561" alt="image" src="https://user-images.githubusercontent.com/40943064/167233591-be007a5c-a751-4836-ae43-1ca9e59eb1e1.png">  
+  
+t(Transfomer의 sinusoidal position embedding에 적용)에 따른 parameter는 공유  
+16x16 featuremap level에서는 self-attention 구조를 사용함  
+
+### Appendix B.
+
+#### Parameter number
+CIFAR10 : 35.7M
+LSUN and CelebA-HQ : 114M (256M for larger variant of the LSUN Bedroom by increasing filters)
+
+#### 학습량
+TPU v3-8 GPU를 이용하여 10시간(CIFAR-10) ~ 2주(256)가량 소요
+
+#### Hyperparameter
+<img width="919" alt="image" src="https://user-images.githubusercontent.com/40943064/167234542-197a4621-0742-46bf-a41a-5756dbcd423d.png">  
+<img width="918" alt="image" src="https://user-images.githubusercontent.com/40943064/167234548-781f6c20-8641-4c57-bd2a-473d28c407b0.png">  
+
+#### Additional detail
+Sample quality를 판단하기 위해 최종 실험은 1회 수행하며 학습동안 지속적으로 샘플 품질 평가를 수행  
+품질 수치는 학습동안 최소 FID 값을 가지는 iteration 기준으로 추출  
+(CIFAR10)OpenAI/TTUR의 original code를 이용해 50k 샘플에 대해 FID와 IS를 계산  
+(LSUN) StyleGAN2 repo 이용하여 계산  
+CIFAR10 & CelebA-HQ은 Tensforflow 로드 방식 사용하였으며 LSUN은 StyleGAN 코드를 사용  
+train/test split은 일반적인 생성모델에서 사용하는 방식을 사용
+
 ## 4.1 Sample quality
 
-**표 1 : IS, FID, negative log liklihood for CIFAR10**   
-<img width="450" alt="image" src="https://user-images.githubusercontent.com/40943064/167179030-1542096d-5037-41ee-b5e8-e2cce43fdece.png">  
-
-
-**FID :** 
-Conditional 모델을 포함한 대부분의 모델보다 더 나은 품질을 달성  
-학습 데이터(3.17), 테스트 데이터(5.24)  
-(표준 테스트는 학습 데이터에 대하여 수치를 계산함)  
-
-<img width="1292" alt="image" src="https://user-images.githubusercontent.com/40943064/167175144-3d366411-9638-46fb-bf5b-f35ab0234e95.png">  
-Fig. 1: CelebA-HQ 256(left) / unconditional CIFAR10 (right)  
-
-<img width="1492" alt="image" src="https://user-images.githubusercontent.com/40943064/167180022-23931877-33f0-47c8-bc5d-321ef880c501.png">
+Conditional 모델을 포함한 대부분의 모델보다 더 나은 FID 달성  
+학습 데이터(3.17), 테스트 데이터(5.24) : 표준 테스트는 학습 데이터에 대하여 수치를 계산  
 
 **Object function 비교**  
 1) True variational bound : NLL 
 2) Simplified traning object : Qualitative quality
 
-Fig. 1 (CIFAR10, CelebA-HQ 256)
-Fig. 3/4 (LSUN 256)
-Appendix D for more.
+#### Table : IS, FID, NLL for CIFAR10**   
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/40943064/167179030-1542096d-5037-41ee-b5e8-e2cce43fdece.png">  
+
+#### Figure : CelebA-HQ 256(left) / unconditional CIFAR10 (right)
+<img width="1292" alt="image" src="https://user-images.githubusercontent.com/40943064/167175144-3d366411-9638-46fb-bf5b-f35ab0234e95.png">  
+  
+#### Figure : SNGAN(Spectral normalization GAN)  
+<img width="1231" alt="image" src="https://user-images.githubusercontent.com/40943064/167235512-ec58cc3f-29ed-4c71-9e2a-49378bec56d0.png">
+
+#### Figure : LSUN
+<img width="1492" alt="image" src="https://user-images.githubusercontent.com/40943064/167180022-23931877-33f0-47c8-bc5d-321ef880c501.png">
 
 ## 4.2 Reverse process parameterization and training objective ablation
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/40943064/167181166-dd6ea436-e509-4a23-ae06-2045bd8e8c1e.png">
 
 Table 2: Unconditional CIFAR10 reverse process parameterization and training objective ablation.  
-(빈 부분은 성능이 낮았던 경우임)  
+(빈 부분은 불안정하고 품질이 매우 낮은 경우)  
 
-reverse process parameterizations과 학습 목적함수(3.2)의 샘플품질에 대한 영향을 본다.
+Parameterizations 방법과 objective 차이에 따른 영향을 본다.
+**1) baseline**  
+baseline parameterization : true variational bound >> (불안정)unweighted MSE(simplified와 유사한 방식)  
 
-We find that the baseline option of predicting ~  works well only when trained on the true variational bound instead of unweighted mean squared error, a simplified objective
-akin to Eq. (14). We also see that learning reverse process variances (by incorporating a parameterized
-diagonal   (xt) into the variational bound) leads to unstable training and poorer sample quality
-compared to fixed variances. Predicting  , as we proposed, performs approximately as well as
-predicting ~  when trained on the variational bound with fixed variances, but much better when trained
-with our simplified objective.
+**2) propose**  
+Variational bound + parameterized diagonal Σθ(xt) : 불안정 << Variational bound + fixed variance Σ
+
+fixed variance를 이용하는경우 ε는 μ~에 근사하지만 simplified objective를 사용하는 경우 월등한 성능을 보인다.
+
+### 4.3 Progressive coding
+CIFAR 10에 대한 결과에서 보면 codelengths의 train-test 차이가 0.03으로 매우 작으며 타 방법론에 절대 떨어지지 않는다.  
+Overfitting이 일어나지 않음을 의미하기도 한다. 
+Figure. col1(생성샘플)  
+<img width="1266" alt="image" src="https://user-images.githubusercontent.com/40943064/167238277-ef483abb-a9dc-4d73-a4de-0fa357959228.png">
+
+Energy based와 score matching(annealed importance sampling 사용)보다 lossless codelength가 낫지만 다른종류보다는 낮다.
+그럼에도 불구하고 FID, IS와 같은 수치는 높은것으로 보아 inductive bias를 가지는것으로 결론 내릴 수 있다.  
+
+
+
+
+
