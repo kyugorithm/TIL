@@ -11,7 +11,7 @@ Gradient가 ill-defined 일 수 있고 데이터가 저차원의 manifold에 존
 ## 4. Noise Conditional Score Networks: learning and inference
 Random Gaussian noise로 데이터를 perturb 시킴으로써 데이터 분포가 score-based 생성모델링에 더 적합함을 관찰한다.  
 1) Gaussian noise 분포의 support는 전체 공간이기 때문에 perturbed 데이터는 저차원 매니폴드에 국한되지 않고, 매니폴드 가설의 어려움을 없애고 score estimation을 잘 정의한다.  
-2) 큰 Gaussian noise는 원본 데이터 분포에서의 낮은 densityt 영역을 채우는 효과가 있다. 즉 score matching은 score estimation을 개선하기 위해 더 많은 학습 신호를 얻을 수 있다.  
+2) 큰 Gaussian noise는 원본 데이터 분포에서의 낮은 density 영역을 채우는 효과가 있다. 즉 score matching은 score estimation을 개선하기 위해 더 많은 학습 신호를 얻을 수 있다.  
 
 여러가지 noise level을 사용하여 실제 데이터 분포로 수렴하는 일련의 noise perturbed distribution을 얻을 수 있다.  
 Simulated annealing] 및 annealed importance sampling의 정신으로 이러한 중간 분포를 활용하여 multimodal distribution에서 Langevin 역학의 mixing rate를 개선할 수 있다.  
