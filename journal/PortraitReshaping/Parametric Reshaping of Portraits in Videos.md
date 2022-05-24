@@ -41,6 +41,29 @@ Dense mapping : temporal consistency를 달성하기 위해 얼굴의 3D 구조�
 
 ### 2.1 Video based face reconstruction
 #### Morphable Model
+단안 이미지 기반 3D 얼굴 재건은 얼굴의 id와 표정에 대한 prior를 요구하는 ill-posed 최적화 문제이다. 
+1) 3DMM(Blanz) : Face reconstruction을 위한 ID prior로 사용 될 수 있는 3D 스캔에 대한 PCA를 사용하는 3DMM을 제안  
+2) Blend-shapes Model : 동일한 topology의 다른 표정을 가진 얼굴 이미지들을 이용해 표정 Prior를 제공  
+
+지난 몇년간 수많은 작업들은 선형 모델과 그 확장 모델을 face reconstruction을 위해 사용해왔다.  
+
+Surrey Face Model(Huber) : Multi-resolution 3DMM 모델로 다양한 해상도의 mesh를 포함한다.  
+Booth : 최적화에서 조명 파라미터를 줄이기 위해 얼굴모양에 대한 통계모델과 in the wild 텍스처 모델을 결합함으로써 3DMM을 확장  
+
+제약조건이 없는 상황 하에서도 reconstruction 속도, 정확성, 편리성을 향상하기 위해 급격한 진보가 이루어져왔지만 학습 데이터의 타입과 양이 선형 3DMM의 성능을 제한했다.  
+
+Tran1 : 광범위한 DB를 생성하기 위해 3D face scan 보다 얼굴 이미지로부터 비선형 3DMM을 학습하는것을 제안  
+Tran2 : 더 나아가 loss와 network structure 관점에서 고품질의 reconstruction 결과를 획득하기 위해 비선형 3DMM을 향상  
+Li : 4,000장의 high-resolution face scan set 기반으로 deep-learning morphable face model을 제안  
+
 #### Video based reconstruction
+초상화 비디오는 프레임이 풍부하지만 얼굴 자세, 표정, ID등에 대한 joint 최적화는 여전히 어렵다.  
+단순히 제약조건을 최적화에 추가하는것 만으로는 만족스러운 결과를 얻기 힘들다.  
+
+Thies : model-based non-rigid bundle adjustment를 서로다른 머리의 자세들에 대한 keyframe에 걸쳐 사용  
+
+Cao : 사실적인 데이터셋으로부터 학습한 dynamic rigidity prior를 사용하여 face tracking을 위한 on-the-fly 방법 제안  
+랜드마크가 안정적이고 대부분 보여지는 경우에는 그럴듯한 결과를 획득할 수 있었지만 현재시간의 프레임에 대한 reconstruction은 과거 frame의 결과에 의존한다.  
+만약 frame 사에에서 landmark가 정확하지 않고 매우 다르다면 정확하고 연속적인 결과를 얻는것은 여전히 어려운 문제이다.  
 
 ## 2.2 Portrait video deformation
