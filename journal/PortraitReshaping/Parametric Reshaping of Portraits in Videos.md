@@ -66,4 +66,55 @@ Cao : 사실적인 데이터셋으로부터 학습한 dynamic rigidity prior를 
 랜드마크가 안정적이고 대부분 보여지는 경우에는 그럴듯한 결과를 획득할 수 있었지만 현재시간의 프레임에 대한 reconstruction은 과거 frame의 결과에 의존한다.  
 만약 frame 사에에서 landmark가 정확하지 않고 매우 다르다면 정확하고 연속적인 결과를 얻는것은 여전히 어려운 문제이다.  
 
-## 2.2 Portrait video deformation
+### 2.2 Portrait video deformation
+얼굴 편집 후 이미지 왜곡을 줄이기 위해 content-aware 이미지 warping은 광범위한 편집 응용 프로그램에서 강력한 도구가 된다.  
+그러나, 연속 프레임의 소스에서 대상으로의 매핑이 일반적으로 일관되지 않기 때문에 모든 비디오 프레임에서 연속적이고 안정적인 변형을 생성하는 것은 어렵다. 
+Chen은 consistent blending boundary의 중요성을 인식하고 source 비디오와 target 비디오의 gradient를 병합하는 비디오 혼합 접근 방식을 제시했다. 
+다른 매개 변수를 변경하지 않고 source로부터 target까지 표정 parameter를 mapping하여 표정을 전송하여 대상 id, rigid head motion 및 scene lighting이 보존될 수 있도록 했다. 
+또한 자세, 표정, 장면 조명과 같은 초상화 비디오 속성은 GAN 기반 방법으로 조작할 수 있다.  
+
+## 3. Overview
+초상 비디오를 parametric 하게
+재구성하여 결과적인 초상화 sequence를 현실적이고 안정적으로 만드는 새로운 방법을 제안한다. 
+이를 위해 비디오로부터 초상화의 강력한 추출과 초상화의 모양을 바꾸기 위한 비디오 프레임의 일관된 변형이 필요한데, 이 모든 것이 우리의 방법에 의해 해결된다. 
+그림 2는 우리 방법의 파이프라인을 보여준다. 
+<img width="840" alt="image" src="https://user-images.githubusercontent.com/40943064/169984432-f4eb2f4a-de2e-42e1-bedb-e471ec353fec.png">  
+
+초상 이미지 시퀀스가 주어지면 우리의 방법은 두 가지 주요 단계로 구성된다. 
+
+1. (S4) Video based face reconstruction을 활용하여 안정적인 포즈/표정으로 고품질 얼굴 ID를 충실하게 재구성  
+- 자세 : 각 프레임에서 헤드 포즈를 추정하는데, 이는 프레임 전체에 걸쳐 일관된 ID를 추정하는 데 중요하다.  
+- 정체성 : 얼굴 정체성을 가장 잘 나타내는 k 프레임을 찾고 일관된 얼굴 ID를 함께 최적화한다.  
+- 표정 : 전체 3D face sequence를 달성하기 위해 각 프레임의 얼굴 표정을 추정한다.  
+
+2. (S5)재구성 결과를 기반으로 3D로 재구성된 얼굴을 생성한 다음 3D로 변형된 얼굴을 활용하여 2D로 재구성된 초상화 비디오 생성을 안내한다.  
+- 재구성된 3D 중립 얼굴 모델을 재구성하고 각 비디오 프레임에 대한 얼굴 표정 및 포즈와 결합한다.  
+- SDF 기반 방법을 사용하여 reconstruction 전후에 face contour의 2D dense mapping을 구성한다.  
+- Contents-aware warping 최적화는 3D의 재구성된 면에 따라 초상화 프레임을 변형하여 최종 재구성된 초상화 비디오를 만드는 데 사용된다.  
+
+## 4 Video based face reconstruction
+Parametric face model과 최적화의 기본이 되는 목적함수를 설명한다.  
+그리고 강인성과 효율성을 고려하며 pose, id, expression을 최적화하는 방법을 단계적으로 기술한다.  
+### 4.1 Parametric Face Model and Objectives
+Parametric face model은 id basis vector와 expression basis vector의 선형 결합을 통해 표현될 수 있다.  
+<img width="185" alt="image" src="https://user-images.githubusercontent.com/40943064/169990592-7021e67e-f891-4027-9446-b64d9e51b3fa.png">  
+
+### 4.2 Stabilized Face Tracking
+#### 4.2.1 Rigid Pose Estimation
+#### 4.2.2 Identity Estimation
+#### 4.2.3 Expression Estimation
+
+## 5 Reshaping
+### 5.1 3D Face Reshaping
+### 5.2 Consistent Video Deformation
+#### control points selection
+#### SDF based selection
+#### Warping 
+
+## 6. Evaluation
+### 6.1 Results
+### 6.2 Comparison
+### 6.3 Ablation studies
+### 6.4 Implementation Details
+## 7. Discussion
+## 8. Conclusion
