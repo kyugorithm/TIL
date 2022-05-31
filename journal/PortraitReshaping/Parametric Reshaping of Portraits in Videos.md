@@ -114,8 +114,14 @@ Xiao(Deep Shapely Portraits) : 추정된 조정파라미터 기반의 reshaped p
 본 연구는 단일 이미지 reshaping을 전체 이미지 sequence로 확장한다. Reshaping model은 전체 얼굴을 scalar parameter δ 를 이용하여 deform한다.  
 Reshape operator를 f(X;δ)로 표현한다.  
 Reconstructed 3D faces Xi(⍺, β(i))(β(i):expression coeff. of i-th frame)에 대해   
-Reshaped 3D face model Xi\*는 neutral reshaped face model의 선형결합으로 정의 된다.
+Reshaped 3D face model Xi\*는 neutral reshaped face model의 선형결합으로 정의 된다.  
+![image](https://user-images.githubusercontent.com/40943064/171128285-174a9984-c83e-4ed1-b1b7-80b44b49c7d6.png)  
+
 ### 5.2 Consistent Video Deformation
+Reshaped 3D face를 guide로 사용하여, artifact 없이 2D에서의 target shape를 가지는 얼굴을 생성하기 위해 이미지를 warp한다.  
+먼저 warping proxy로써 uniform grid Mu = {ui}를 위치시킨다.  (ui:이미지상의 grid point 2D 좌표)
+![image](https://user-images.githubusercontent.com/40943064/171131883-0890ee38-3d1b-461f-9118-bd73a3dd8d11.png)  
+
 #### control points selection
 #### SDF based selection
 #### Warping 
