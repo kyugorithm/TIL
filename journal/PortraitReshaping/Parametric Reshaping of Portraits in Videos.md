@@ -105,7 +105,16 @@ Parametric face model은 id basis vector와 expression basis vector의 선형 �
 #### 4.2.3 Expression Estimation
 
 ## 5 Reshaping
+Reconstructed 3D face를 reshape 하여 reshaped portrait video를 생성하기 위해 가이드로 사용한다.  
+Reshaping parameter가 주어지면 linear regression model을 이용하여 각 frame에 대해 reshaped face를 생성한다.(5.1)  
+그리고 reshaped face에 대응하는 개별 프레임을 deform하기 위해 image warping을 적용한다.  
+
 ### 5.1 3D Face Reshaping
+Xiao(Deep Shapely Portraits) : 추정된 조정파라미터 기반의 reshaped portrait image를 생성하기 위한 **reshaping model**을 제안했다.  
+본 연구는 단일 이미지 reshaping을 전체 이미지 sequence로 확장한다. Reshaping model은 전체 얼굴을 scalar parameter δ 를 이용하여 deform한다.  
+Reshape operator를 f(X;δ)로 표현한다.  
+Reconstructed 3D faces Xi(⍺, β(i))(β(i):expression coeff. of i-th frame)에 대해   
+Reshaped 3D face model Xi\*는 neutral reshaped face model의 선형결합으로 정의 된다.
 ### 5.2 Consistent Video Deformation
 #### control points selection
 #### SDF based selection
