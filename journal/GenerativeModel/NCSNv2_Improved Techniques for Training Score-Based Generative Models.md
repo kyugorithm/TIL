@@ -16,7 +16,7 @@ Score-based 생성 모델은 score를 통한 확률 분포를 나타낸다. 놀�
 ## 2. Background
 ### 2.1 Langevin dynamics
 연속적으로 미분 가능한 확률 밀도 p(x)에 대해, 우리는 del ▽log p(x)를 score function이라 부른다. 많은 상황에서 score function은 원래 확률 밀도 함수보다 모델링하고 추정하기가 더 쉽다. 예를 들어, 정규화되지 않은 density의 경우 partition 함수에 의존하지 않을 수 있다. Score function이 알려지면 Langevin dynamics를 사용하여 해당 분포에서 표본을 sampling 할 수 있다. Step size ⍺ > 0, 총 반복 횟수 T 및 prior pi(x)의 초기 샘플 x0이 주어졌을 때, Langevin dynamics는 다음을 반복적으로 평가한다.  
-![image](https://user-images.githubusercontent.com/40943064/174436618-6d63cd12-e30f-432a-a027-2bacdb936045.png)  
+<img src ='https://user-images.githubusercontent.com/40943064/174436618-6d63cd12-e30f-432a-a027-2bacdb936045.png' width = 400>  
 z(t) ~ N(0, I).  
 ⍺가 충분히 작고 T가 충분히 크면 XT는 몇가지 regularity condition 하에 p(x)에 근접할 것이다.  
 θ에 의해 파라미터화된 네트워크 sθ(x)가 있을때, sθ(x) ~ ▽log p(x)되도록 학습되어진다고 가정한다.  
@@ -74,7 +74,7 @@ N이 충분히 크다고 가정하면 <img src ='https://user-images.githubuserc
 초기화와 관계없이 다양한 샘플을 생성하기 위해, 우리는 자연스럽게 Langevin 역학이 다른 구성 요소 p(j)(x)에서 초기화될 때 모든 구성 요소 p(i)(x)를 탐색할 수 있다고 예상한다. 여기서 i!= j.
 Langevin dynamics의 성능은 <img src = 'https://user-images.githubusercontent.com/40943064/174443085-6f63e236-a1c9-4e16-b201-cedfd5b5a208.png' width = 200> score function에 의해 제어된다.
 
-![image](https://user-images.githubusercontent.com/40943064/174443125-4eb288ba-7e62-47ce-a7b5-d7ea2e14dc45.png)  
+<img src = 'https://user-images.githubusercontent.com/40943064/174443125-4eb288ba-7e62-47ce-a7b5-d7ea2e14dc45.png' width = 800>  
 Langevin dynamics가 i!=j 조건에서 p(i)(x)로부터 p(j)(x)로 변이하기 위해, <img src ='https://user-images.githubusercontent.com/40943064/174443592-9f7725a0-8644-4df1-9b46-7d71e67e4b61.png' width=200>가 상대적으로 커야한다.  
 (그렇지 않으면 <img src = 'https://user-images.githubusercontent.com/40943064/174443516-30c7538e-0c33-403f-9ad4-70f9deee3106.png' width = 300> p(j)(x)를 무시할 것이다. : p(i)(x)로 초기화 되면 p(j)(x)는 존재하지 않는것 처럼 행동)  
 Eq(3)의 bound는 다음을 명시한다. :  만약 σ1가 <img src = 'https://user-images.githubusercontent.com/40943064/174443701-a08b2ef6-634d-4862-8135-84963f052efe.png' width = 150> 에 상대적으로 작다면 <img src ='https://user-images.githubusercontent.com/40943064/174443592-9f7725a0-8644-4df1-9b46-7d71e67e4b61.png' width=200> 는 지수적으로 감쇠할 수 있다.  
@@ -84,7 +84,7 @@ Eq(3)의 bound는 다음을 명시한다. :  만약 σ1가 <img src = 'https://u
 **Technique1** (Initial noise sclle).  
 모든 학습 data point pair 사이의 최대 유클리드 거리만큼 큰 σ1를 선택한다.  
 CIFAR-10에 대하여 적절하게 선택하는경우 아래와 같은 결과를 얻을 수 있다.(GT(a)와 Propose(c)의 샘플 다양성이 유사함)  
-<img src = 'https://user-images.githubusercontent.com/40943064/174444125-d24ea5a8-5d5e-46c1-910f-fc8cefdc6c6d.png' width=600>
+<img src = 'https://user-images.githubusercontent.com/40943064/174444181-3c1aa797-ea1a-409b-acf4-f582db48ced2.png' width=600>
 
 
 ### 3.1 Initial noise scale
