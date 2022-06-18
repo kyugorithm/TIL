@@ -66,4 +66,25 @@ NCSN에서 pixel값의 범위가 0~1이면 L=10, σ1=1, σL=0.01로 선택하는
 아래에서는 간단한 수학 모델에 대한 이론적 분석에 의해 위의 질문에 대한 답변을 제공한다. 우리의 통찰력은 섹션 6의 실험 결과에 의해 입증되었듯이 실제로 score-based 생성 모델링을 구성하는 데 효과적이다.
 
 ### 3.1 Initial noise scale
+Annealed Langevin dynamics(Algorithm 1) 알고리즘은 작은 노이즈에서 변동이 적은 미세한 샘플로 수렴하기 전에 큰 노이즈에서 변화가 많은 coarse 샘플을 생성하는 반복적인 refining 절차이다. 초기 noise scale δ1은 최종 표본의 **diversity**를 크게 제어한다. 샘플 다양성을 증진시키기 위해, 우리는 가능한 한 크게 σ1을 선택할 수 있다. 그러나 σ1이 지나치게 크면 더 많은 noise scales가 필요하며(섹션 3.2에서 다룸) annealed Langevin dynamics는 더 계산량이 많아진다. 아래에서는 σ1의 선택을 안내하고 올바른 균형을 맞추기 위한 기술을 제공하기 위한 분석을 제시한다.
 
+실제 데이터 분포는 복잡하고 분석하기 어려우므로 경험적 분포로 근사치를 구한다. pdata(x)에서 샘플링된 i.i.d. 데이터 세트 {x(1)}, ...x(N)}가 있다고 가정해보자.  
+
+N이 충분히 크다고 가정하면 <img src ='https://user-images.githubusercontent.com/40943064/174442981-2d2f7817-8239-4f39-8167-4336314e509d.png' width = 300>는 점 질량 분포를 나타낸다.(경험적 분포근사로 샘플이 충분히 많을때 점질량 분포를 근사할 수 있는 사실에 대해 검색)  
+초기화와 관계없이 다양한 샘플을 생성하기 위해, 우리는 자연스럽게 Langevin 역학이 다른 구성 요소 p(j)(x)에서 초기화될 때 모든 구성 요소 p(i)(x)를 탐색할 수 있다고 예상한다. 여기서 i!= j.
+Langevin dynamics의 성능은 <img src = 'https://user-images.githubusercontent.com/40943064/174443085-6f63e236-a1c9-4e16-b201-cedfd5b5a208.png' width = 200> score function에 의해 제어된다.
+
+![image](https://user-images.githubusercontent.com/40943064/174443125-4eb288ba-7e62-47ce-a7b5-d7ea2e14dc45.png)  
+Langevin dynamics가 i!=j 조건에서 p(i)(x)로부터 p(j)(x)로 변이하기 위해, <img src ='https://user-images.githubusercontent.com/40943064/174443592-9f7725a0-8644-4df1-9b46-7d71e67e4b61.png' width=200>가 상대적으로 커야한다.  
+(그렇지 않으면 <img src = 'https://user-images.githubusercontent.com/40943064/174443516-30c7538e-0c33-403f-9ad4-70f9deee3106.png' width = 300> p(j)(x)를 무시할 것이다. : p(i)(x)로 초기화 되면 p(j)(x)는 존재하지 않는것 처럼 행동)  
+Eq(3)의 bound는 다음을 명시한다. :  만약 σ1가 <img src = 'https://user-images.githubusercontent.com/40943064/174443701-a08b2ef6-634d-4862-8135-84963f052efe.png' width = 150> 에 상대적으로 작다면 <img src ='https://user-images.githubusercontent.com/40943064/174443592-9f7725a0-8644-4df1-9b46-7d71e67e4b61.png' width=200> 는 지수적으로 감쇠할 수 있다.  
+
+결과적으로, σ1은 Langjuvin dynamics의 transition을 용이하게 하고 따라서 샘플 다양성을 향상시키기 위해 데이터의 최대 pairwise distance와 수치적으로 비교될 수 있어야 한다. 특히 다음과 같이 제안한다.
+
+**Technique1** (Initial noise sclle).  
+모든 학습 data point pair 사이의 최대 유클리드 거리만큼 큰 σ1를 선택한다.  
+CIFAR-10에 대하여 적절하게 선택하는경우 아래와 같은 결과를 얻을 수 있다.(GT(a)와 Propose(c)의 샘플 다양성이 유사함)  
+<img src = 'https://user-images.githubusercontent.com/40943064/174444125-d24ea5a8-5d5e-46c1-910f-fc8cefdc6c6d.png' width=600>
+
+
+### 3.1 Initial noise scale
