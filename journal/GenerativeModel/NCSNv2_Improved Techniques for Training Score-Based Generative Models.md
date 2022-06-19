@@ -87,4 +87,7 @@ CIFAR-10에 대하여 적절하게 선택하는경우 아래와 같은 결과를
 <img src = 'https://user-images.githubusercontent.com/40943064/174444181-3c1aa797-ea1a-409b-acf4-f582db48ced2.png' width=600>
 
 
-### 3.1 Initial noise scale
+### 3.2 Other noise scales
+σ1과 σL을 설정한 후에, 우리는 noise scale의 수 L을 선택하고 각 σ값을 결정해야 한다. NCSN에 분석되어있는것과 같이 (모든 i(1 ~ L)에 대하여 pσ(i-1)(x)의 고밀도 영역에서의 충분한 학습 데이터수를 생성하는것을 보장하기 위해 score-based 생성 모델의 성능에 매우 중요하다. 직관은 pσ(i-1)(x)의 샘플로 Langevin dynamics를 초기화할 때 pσ(i-1)(x)에 대한 신뢰할 수 있는 gradient signal이 필요하다는 것이다.  
+
+그러나, {σi}i=(1~L)에 대한 광범위한 grid search는 매우 계산량이 많이 필요할 수 있다. 좋은 noise scale들을 찾는것에 대한 이론적 guidance를 제공하기 위해, 우리는 데이터셋이 단일 데이터 포인트를 포함하는 간단한 케이스를 고려한다. 다시 말해 모든 1<=i<=L에 대해 pi(x)=N(x|0, σi ** 2 I)이다. 
