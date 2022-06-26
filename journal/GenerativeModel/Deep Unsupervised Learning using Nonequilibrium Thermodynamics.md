@@ -25,4 +25,34 @@ Flexibility와 tractability를 동시에 달성하는 접근법을 개발한다.
 10) Non-parametric method
 
 ### 1.1. Diffusion probabilistic models
+우리는 아래를 허용하는 확률모델을 정의하기 위한 새로운 방법을 제시한다.  
+1) 모델 구조상 극단적인 유연성
+2) 정확한 샘플링
+3) 다른 분포와의 쉬운 곱(posterior를 계산하기 위해 필요)
+4) 모델 log liklihood 그리고 개별상태의 확률이 쉽게 계산되어짐
+
+우리의 방법은 Markov chain을 사용하여 점진적으로 특정 분포에서 다른 분포로 변해가도록 하며 이 아이디어는 Jarzynski의 non-equlibrium physics와 Neal의 sequential Monte Carlo에서 사용되었다.  우리는 diffusion process를 사용하여 단순한 알려진 분포(Gaussian)을 target(data) distribution으로 분포를 옮겨가도록 하는 생성적 Markov chain을 만든다. 
+(Markov chain은 한 분포를 점진적으로 다른 분포로 옮겨지도록 하는 방법론으로 활용하며 단순한 Gaussian 분포를 원하는 목표의 데이터 분포로 옮겨가도록 하는데 사용한다는 것)  
+  
+이 Markov chain을 사용하여 달리 정의된 모델을 대략적으로 평가하기보다는 확률론적 모델을 Markov chain의 끝점으로 명시적으로 정의한다. Diffusion chain의 각 단계는 분석적으로 평가할 수 있는 확률을 가지므로 전체 체인도 분석적으로 평가할 수 있다.  
+
+이 프레임워크에서의 NN모델이 학습하는것은 diffusion 과정에 대한 작은 perturbation 추정하는 것이다. 작은 perturbation을 추정하는 것은 non-analytically-normalizable, potential function
+으로 전체 분포를 명시적으로 설명하는 것보다 다루기 쉽다. 또한, 매끄러운 target 분포에 대한 확산 과정이 존재하기 때문에 이 방법은 임의의 형태의 데이터 분포를 포착할 수 있다.  
+  
+### 1.2. Relationship to other work
+
+Wake-sleep algorithm(Hinton, 1995; Dayan et al., 1995)은 서로에 대한 훈련 추론과 생성 확률 모델의 아이디어를 도입했다. 이 접근법은 일부 예외를 제외하고는 거의 20년 동안 거의 연구되지 않았다. 최근 이 아이디어를 개발하는 작업이 폭발적으로 증가하고 있다. 어떤 연구에서는 잠재 변수에 대한 유연한 생성 모델과 사후 분포를 서로에 대해 직접 훈련할 수 있는 변형 학습 및 추론 알고리듬이 개발되었다.
+
+위 방법들의 variational bound는 우리의 훈련 목표와 (Sminchissu et al., 2006)의 초기 작업에 사용된 것과 유사하다. 그러나 우리의 동기 부여와 모델 형태는 모두 매우 다르며, 현재 연구는 이러한 기술과 관련하여 다음과 같은 차이점과 이점을 유지한다.
+
+1. 우리는 variational Bayesian 방법보다 physics, quasi-static processes, and annealed importance sampling의 아이디어를 사용하여 프레임워크를 개발한다.
+
+2. 학습된 분포와 다른 확률 분포(예: 사후를 계산하기 위한 조건부 분포)를 쉽게 곱하는 방법을 보여준다.
+
+3. 추론 모델과 생성 모델 사이의 목표의 비대칭으로 인해 추론 모델을 훈련하는 것이 variational
+inference 방법에서 특히 어려울 수 있다는 어려움을 해결한다. 우리는 inverse(generative) 프로세스가 동일한 functional form을 갖도록 forward(inference) 프로세스를 단순한 functional form으로 제한한다.
+
+4. 우리는 소수의 레이어가 아닌 수천 개의 레이어(또는 시간 단계)로 모델을 교육한다.
+
+5. 각 layer(또는 시간 단계)에서 entropy production에 대한 상한과 하한을 제공한다.
 
