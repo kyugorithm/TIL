@@ -39,9 +39,15 @@ Projection center는 왜곡이 없기 때문에 새로운 가상 카메라 뷰�
 우리의 방법은 다양한 image manipulation, 즉 panorama stiching 및 reshaping, 광각 이미지 및 비디오 수정, 이미지 및 비디오 대상 변경, texture deformation, stereoscopic 편집 및 비디오 stabilization에 적용되어 온 content-aware warping에 속한다. 일반 객체의 기하학적 구조를 복원하는 기존 방법과 달리, 우리의 작업은 특히 인물사진을 다룬다. 인간의 눈은 얼굴의 artifact에 매우 민감하기 때문에, face-specific 문제는 여러 얼굴이 함께 있을 때 특히 어렵다.  
 
 ### Face Undistortion
-*** Fried는(Perspective-aware Manipulation of Portrait Photos) 3D 얼굴 모델을 사용하여 카메라 초점 거리를 조정하여 초상화의 왜곡을 줄인다. 우리 작업은 피사체 수가 임의인 단체 사진, 얼굴 포즈, occlusion 등 야생에서 촬영된 초상화를 강화한다. 이러한 경우 정확하고 강력한 얼굴 모델을 얻는 것은 어렵다. Foreshortening은 얼굴이 카메라에 매우 가까이 있을 때 발생하며, 우리의 작업과는 다른 얼굴 왜곡 문제이다.  
+Fried는(Perspective-aware Manipulation of Portrait Photos) 3D 얼굴 모델을 사용하여 카메라 초점 거리를 조정하여 초상화의 왜곡을 줄인다. 우리 작업은 피사체 수가 임의인 단체 사진, 얼굴 포즈, occlusion 등 야생에서 촬영된 초상화를 강화한다. 이러한 경우 정확하고 강력한 얼굴 모델을 얻는 것은 어렵다. Foreshortening은 얼굴이 카메라에 매우 가까이 있을 때 발생하며, 우리의 작업과는 다른 얼굴 왜곡 문제이다.  
 
 아름다움에 대한 통계적 합의에 의존하는 얼굴 미화와는 달리, 우리의 목표는 사진 옆면의 얼굴을 최소한의 왜곡으로 카메라 중심에서 찍은 것처럼 보이게 하는 것이다. 이를 달성하기 위해, 우리는 미적 선호도에 의존하지 않고 단일 이미지에서 두 가지 다른 projection geometry의 조합 사용한다.  
 
 ## 3 PRELIMINARIES AND OVERVIEW
+이미지 입력은 perspective projection된 것으로 가정한다.  
+1) 인물 segmentation mask를 계산함으로써 먼저 얼굴 영역을 확인  
+2) Camera focal length를 이용해 stereographic projection 추정
+3) Energy minimization을 이용해 얼굴 영역에 대한 국소 stereographic warp를 수행하는 target mesh를 계산
+(이 단계는 배경의 전체적인 모습을 바꾸지 않고 얼굴을 교정하는 최적화된 메시를 출력)
+4) 얼굴의 왜곡을 되돌리기 위해 최적화된 매시를 이용해 입력을 warp
 
