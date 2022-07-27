@@ -120,7 +120,4 @@ PTI의 목적함수 :
 
 ### 3.3. Editing
 시간적으로 일관된 inversion 세트를 얻었으므로 이제 편집을 시작한다. 우리는 우리의 방법이 기성 선형 편집 기술과 잘 작동함을 보인다. StyleGAN 자체가 low-frequency 표현에 취약하기 때문에(path-length regularization에 의해 더욱 동기가 부여됨) 근처의 latent code에 대해 충분히 일관된 편집을 적용할 것으로 예상한다. 즉, StyleGAN을 사용하여 일시적으로 부드러운 pivot 편집하면 일시적으로 부드러운 시퀀스가 생성될 것으로 기대한다. 나중에 설명하겠지만 이 기대치는 우리의 실험 결과와 일치한다.  
-ㅇ
-Formally, given a semantic latent editing direction
-aligned face를 editing하려면 GAN의 latent space로 반전해야 합니다. PTI를 사용하여 이를 수행한다. GAN의 편집 가능한 영역에서 입력 이미지를 대략적으로 재구성하는 'pivot' latent code를 먼저 발견하는 방법이다. 그런 다음 동일한 pivot code가 대상 이미지의 보다 정확한 버전을 생성하도록 G를 미세 조정한다. PTI의 목표는 inversion 모델의 distortion-editability trade-off를 극복하여 보다 정확하면서도 편집 가능한 재구성을 가능하게 하는 것이었다. 우리는 PTI가 원래의 용도를 넘어 시간적 일관성을 유지하는 데에도 도움이 될 수 있다고 주장한다. 여기서 insight는 우리가 inversion 시키려는 원본 비디오 자체가 시간적으로 일관성이 있다는 것입니다. 따라서 각 프레임을 정확하게 재현할 수 있다면 일관된 반전이 보장된다. 
-정식적으로, semantic latent editing 방향 δw가 
+정식적으로, semantic latent editing 방향 δw가 주어지면, 수정된 프레임(e=G(w+δw;θp)을 얻기위해 PTI weight θp를 사용한다.
