@@ -113,4 +113,14 @@ aligned face를 editing하려면 GAN의 latent space로 반전해야 합니다. 
 우리는 PTI의 optimizer based initial inversion(즉, pivot 찾기)을 encoder 기반 버전, 특히 e4e로 간단히 대체하여 두 결함을 모두 수정할 수 있다고 제안한다. e4e는 수백만 개의 매개변수가 있는 deep neural network이므로 본질적으로 low frequency 표현을 학습하는 방향으로 bias되어 있다. 우리는 이 속성이 강력한 smoothness bias를을 제공하여 연속 프레임의 이미지 간의 일관된 변경이 일관되게 변화하는 잠재 코드에 매핑되도록 할 것으로 기대합니다. 초에서 4.2에서 우리는 이 속성을 분석하고 인코더 사용이 실제로 최적화 기반 반전보다 성능이 우수함을 보여줍니다. 이 속성은 입력 프레임 간 전환의 부드러움에 의존하므로 일관되지 않은 정렬로 인해 깨질 수 있으므로 Sec의 변경을 더욱 자극합니다. 3.1. 메모리 및 시간 요구 사항을 줄이기 위해 모든 피벗 잠재 코드 주위에 PTI를 동시에 사용합니다(각 프레임에 대한 모델과 반대).
 우리는 PTI의 optimizer based initial inversion(즉, pivot 찾기)을 encoder 기반 버전, 특히 e4e로 간단히 대체하여 두 결함을 모두 수정할 수 있다고 제안한다. e4e는 수백만 개의 매개변수가 있는 심층 신경망이므로 본질적으로 더 낮은 주파수 표현을 학습하는 방향으로 편향되어 있습니다[31]. 우리는 이 속성이 강력한 평활도 편향 제공하여 연속 프레임의 이미지 간의 일관된 변경이 일관되게 변화하는 latent code에 매핑되도록 할 것으로 기대한다. 섹션 4.2에서 이 속성을 분석하고 encoder 사용이 optimization-based보다 실제로 더 나음을 보인다. 이 속성은 입력 프레임 간 전환의 부드러움에 의존하므로 일치하지 않는 정렬로 인해 깨질 수 있으므로 3.1절의 변경 사항을 더욱 자극한다. 메모리 및 시간 요구 사항을 줄이기 위해 모든 pivot latent code 주위에 PTI를 동시에 사용합니다(각 프레임에 대한 모델과 반대).
 
-x : 이미지  > c : cropped iamge > w=E(c) : e4e의 inversion > r = G(w;theta) : 
+x : 이미지  > c : cropped iamge > w=E(c) : e4e의 inversion > r = G(w;theta) : pivot으로부터 생성한 이미지  
+
+PTI의 목적함수 :  
+![image](https://user-images.githubusercontent.com/40943064/181291672-8f1660b7-f906-4f3a-82d2-4c989cf95a6c.png)  
+
+### 3.3. Editing
+시간적으로 일관된 inversion 세트를 얻었으므로 이제 편집을 시작한다. 우리는 우리의 방법이 기성 선형 편집 기술과 잘 작동함을 보인다. StyleGAN 자체가 low-frequency 표현에 취약하기 때문에(path-length regularization에 의해 더욱 동기가 부여됨) 근처의 latent code에 대해 충분히 일관된 편집을 적용할 것으로 예상한다. 즉, StyleGAN을 사용하여 일시적으로 부드러운 pivot 편집하면 일시적으로 부드러운 시퀀스가 생성될 것으로 기대한다. 나중에 설명하겠지만 이 기대치는 우리의 실험 결과와 일치한다.  
+ㅇ
+Formally, given a semantic latent editing direction
+aligned face를 editing하려면 GAN의 latent space로 반전해야 합니다. PTI를 사용하여 이를 수행한다. GAN의 편집 가능한 영역에서 입력 이미지를 대략적으로 재구성하는 'pivot' latent code를 먼저 발견하는 방법이다. 그런 다음 동일한 pivot code가 대상 이미지의 보다 정확한 버전을 생성하도록 G를 미세 조정한다. PTI의 목표는 inversion 모델의 distortion-editability trade-off를 극복하여 보다 정확하면서도 편집 가능한 재구성을 가능하게 하는 것이었다. 우리는 PTI가 원래의 용도를 넘어 시간적 일관성을 유지하는 데에도 도움이 될 수 있다고 주장한다. 여기서 insight는 우리가 inversion 시키려는 원본 비디오 자체가 시간적으로 일관성이 있다는 것입니다. 따라서 각 프레임을 정확하게 재현할 수 있다면 일관된 반전이 보장된다. 
+정식적으로, semantic latent editing 방향 δw가 
