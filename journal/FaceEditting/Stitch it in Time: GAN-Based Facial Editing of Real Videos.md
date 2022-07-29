@@ -12,12 +12,11 @@ GAN과 신경망의  low frequency functions 학습 경향은 그것들이 강�
 GAN을 이용해 사용자는 직관적인 방식으로 사진을 수정할 수 있다. 특히 StyleGAN의 고도로 얽혀있는 latent space는 얼굴 이미지의 사실적인 편집에 널리 적용되었다.  
 그러나 이러한 의미론적 편집 도구는 비디오 편집이 시간적 일관성을 유지하는 추가적인 과제를 부과하기 때문에 대부분 이미지로 제한되었다.  
 비디오의 모든 조작은 모든 비디오 프레임에 일관되게 전파되어야 한다. 이전 연구는 비디오 합성을 위해 GAN을 훈련시킴으로써 이 과제를 해결할 것을 제안한다[36, 47, 51].  
-36 :  Stylegan-v: A continuous video generator with the price, image quality and perks of stylegan2
-47 : Video generation using vqvae and transformers
+36 :  Stylegan-v: A continuous video generator with the price, image quality and perks of stylegan2  
+47 : Video generation using vqvae and transformers  
 51 : Generating Videos with Dynamics-aware Implicit Generative Adversarial Networks  
 그러나 고품질 비디오 데이터 세트가 부족하고 추가 데이터 차원으로 인해 발생하는 복잡성으로 인해 video-GAN은 지금까지 단일 이미지의 품질과 비교할 수 없었다.  
 
-Instead, we propose to meet this challenge by using the latent-editing techniques commonly employed with an off the shelf, non-temporal StyleGAN model. We highlight a fundamental assumption about the video editing process: the initial video is already consistent. In contrast to synthesis works, we do not need to create temporal consistency, but only maintain it. Building on this intuition, we revisit the building blocks of recent StyleGAN-based editing  pipelines, identify the points where temporal inconsistencies may arise, and propose that in many cases these inconsistencies can be mitigated simply through a careful choice of tools.
 대신, 우리는 기존의 non-temporal StyleGAN에 일반적으로 사용되는 latent-editing techniques 기술을 사용하여 이 과제를 해결할 것을 제안한다.  
 우리는 비디오 편집 프로세스에 대한 근본적인 가정을 강조한다.  
 초기 비디오는 이미 일관적이다. 합성 작업과 대조적으로, 우리는 시간적 일관성을 만들 필요가 없고 단지 그것을 유지할 필요가 있다.  
