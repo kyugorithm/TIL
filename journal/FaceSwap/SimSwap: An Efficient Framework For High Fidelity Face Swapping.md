@@ -3,18 +3,18 @@
 ## Abstract
 **일반화**된 **high fidelity** face swapping을 목적으로 하는 효율적 framework 제안  
 임의 ID 일반화가 안되거나 표정/시선등의 attribute를 보존하지 못하는 연구와 달리 임의의 source의 **ID**를 전달하면서 target의 attribute를 보존할 수 있다.  
-다음의 두가지 방법으로 문제를 해결한다.  
+다음의 두가지로 문제를 해결한다.  
   
-#### ID Injection Module (IIM) : feature level의 source ID 정보를 target으로 전송  
+#### 1. ID Injection Module (IIM) : feature level의 source ID 정보를 target으로 전송  
 - 특정 ID → 임의 ID 확장  
 
-#### Weak Feature Matching Loss : Implicit target attribute conservation  
+#### 2. Weak Feature Matching Loss : Implicit target attribute conservation  
   
 여러 wild face set에 대한 실험은 SOTA 대비 attribute 보존 및 ID 적용 성능의 경쟁력을 보여준다.  
 ![image](https://user-images.githubusercontent.com/40943064/143544606-8516eb6f-982c-402c-9f6e-f631a53ea930.png)  
   
 ## Introduction
-Face swapping은 target attribute(표정, 자세, 조명)는 보존하면서 source ID를 전달하는 유망한 기술이다. 이 기술은 존재하지 않는 twin을 생성하는 영화산업에서 광범위하게 사용된다. 산업에서의 face swapping 방식은 배우의 얼굴모델을 재현하기 위한 최신 장비를 이용하고 일반적으로 사람이 접근할 수 없는 scence의 **lighting condition**을 재구성한다. 최근, 최신 장비 없이 face swapping을 수행하는 방식은 연구자들의 관심을 끌어왔다.  
+Face swapping은 target attribute(표정, 자세, 조명)는 보존하면서 source ID를 전달하는 유망한 기술이다. 이 기술은 존재하지 않는 twin을 생성하는 영화산업에서 광범위하게 사용된다. 산업에서의 face swapping 방식은 배우의 얼굴모델을 재현하기 위한 최신 장비를 이용하고 일반적으로 사람이 접근할 수 없는 장면의 **lighting 조건**을 재구성한다. 최근, 최신 장비 없이 face swapping을 수행하는 방식은 관심을 끌어왔다.  
   
 face swapping에서 어려움은 다음과 같다.  
 1) 강력한 일반화 능력을 가진 face swap 프레임워크를 **임의의 얼굴에 맞게 조정**해야 한다.  
@@ -33,9 +33,9 @@ Fig. FSGAN
 2) Target-oriented : feature level로 target에서 작업  
 Target의 feature를 수정하고 source의 변화에 잘 적응 할 수 있다.  
   
-open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생성할 수 있지만 일반화는 부족하다. GAN 방식은 source의 ID와 target의 attribute를 feature 수준에서 결합하고 임의의 ID로 확장한다. Face shifter는 두 단계의 framework을 활용하며 고품질 결과를 달성한다. **그러나 이 방법론은 ID 수정에 과도하게 집중하며 attribute 보존에 약한 제약을 가하여 표정/자세 불일치를 겪는다.** 일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 face swap 프레임워크를 제안한다. ID별 얼굴 교환 방식을 분석하고, decoder가 단일 ID에만 적용되도록 ID를 디코더에 통합함으로써 일반화 부족이 발생한다는 것을 알아냈다.  
+open-source 알고리즘은 두 특정 ID 사이에서의 face swapping을 생성할 수 있지만 일반화는 부족하다. GAN 방식은 source의 ID와 target의 attribute를 feature 수준에서 결합하고 임의의 ID로 확장한다. Face shifter는 두 단계의 framework을 활용하며 고품질 결과를 달성하지만 ** ID 수정에 과도하게 집중하며 attribute 보존에 약한 제약을 가하여 표정/자세 불일치를 겪는다.** 일반화 및 속성 보존의 결함을 극복하기 위해 SimSwap이라는 효율적인 face swap 프레임워크를 제안한다. ID별 FS 방식을 분석하고, decoder가 단일 ID에만 적용되도록 ID를 디코더에 통합함으로써 일반화 부족이 발생한다는 것을 알아냈다.  
 
-이러한 통합을 방지하기 위해 ID injection module을 제시한다. IIM은 source의 ID를 내장하여 target의 attribute를 수정하므로, ID와 decoder의 weight 사이의 관련성을 제거하고 임의 ID에 아키텍처를 적용할 수 있다. 또한 ID와 attribute 정보는 feature level에서 크게 결합되어 있다. 전체 feature를 직접 수정하면 attribute 성능이 저하되므로 영향을 완화하기 위해 training loss를 사용해야 한다. Target attribute를 match하기 위해 결과 이미지의 attribute를 각각 명시적으로 제한하는 대신 Weak Feature Matching Loss를 제안한다. Weak Feature Matching Loss는 생성된 결과를 high semantic level에서 입력 대상에 정렬하고 아키텍처가 target attribute를 보존하는 데 암시적으로 도움이 된다. 이 loss를 통해 SimSwap은 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 ID performance를 달성할 수 있다. 
+이러한 통합을 방지하기 위해 ID injection module을 제시한다. IIM은 source의 ID를 내장하여 target의 attribute를 수정하므로, ID와 decoder의 weight 사이의 관련성을 제거하고 임의 ID에 아키텍처를 적용할 수 있다. 또한 ID와 attribute 정보는 feature level에서 크게 결합되어 있다. 전체 feature를 직접 수정하면 attribute 성능이 저하되므로 영향을 완화하기 위해 training loss를 사용해야 한다. Target attribute를 match하기 위해 결과 이미지의 attribute를 각각 명시적으로 제한하는 대신 Weak Feature Matching Loss를 제안한다. Weak Feature Matching Loss는 생성결과를 high semantic level에서 target 이미지에 정렬하고 아키텍처가 target attribute를 보존하는 데 암시적으로 도움이 된다. 이 loss를 통해 SimSwap은 나은 attribute 보존 기술을 보유하면서 경쟁력 있는 ID performance를 달성할 수 있다.  
 
 Q) ID injection을 decoder에서 배제하는것이 임의 source입력에 도움 준다는 주장에 대한 판단근거는?
  - Faceshifter는 decoder에 ID injection 했지만 임의 입력에 대해서도 문제없이 작동함
@@ -43,15 +43,17 @@ Q) ID injection을 decoder에서 배제하는것이 임의 source입력에 도�
 ## 2 Related Work
 
 Face Swapping은 오랫동안 연구되어 왔다.
-방법은 크게 이미지 수준에서 source에서 작동하는 source 지향 방법과 feature level에서 target face에서 작동하는 target 지향 방법의 두 가지로 나눌 수 있다.
+방법은 크게 아래 두가지로 나눌 수 있다.  
+1) Image level에서 source에서 작동하는 source oriented method  
+2) Feature level에서 target face에서 작동하는 target oriented method  
 
 #### Source-oriented Methods
-Attribute를 target에서 source로 전송한 다음 source를 target 이미지로 혼합한다.  
+Attribute를 target에서 source로 전송한 다음 source를 target 이미지로 혼합x한다.  
 초기 방법은 3D 모델을 사용하여 자세와 조명을 전송했지만 수동 작업이 필요했다.  
 자동 방법이 제안되었지만 특정 얼굴 라이브러리의 ID만 얼굴을 교환할 수 있었다.  
-Nirkin은 3D 얼굴 데이터 세트를 사용하여 표정/자세를 전송하고 포아송 블렌딩을 사용하여 source 얼굴을 target 이미지에 병합했다.  
+Nirkin1 : 3D 얼굴 데이터 세트를 사용하여 **표정/자세**를 전송하고 포아송 블렌딩을 사용하여 source 얼굴을 target 이미지에 병합했다.  
 그러나 3D 얼굴 데이터 세트의 표현력이 제한적이기 때문에 3D 모델에 응답하는 방법은 **표정을 정확하게 재현하지 못하는 경우**가 많다.  
-FSGAN은 face reenactment network로 표정 및 자세 전송을 먼저 수행한 다음  
+FSGAN : face reenactment network로 표정/자세 전송을 먼저 수행한 다음  
 다른 face inpainting network를 사용하여 source 얼굴을 target 이미지에 혼합하는 2단계 아키텍처를 제안했다.  
 이 방법의 일반적인 문제는 입력 **source 이미지에 민감**하다는 것이다.  
 Source의 과장된 표정이나 큰 자세는 face swapping 결과의 성능에 강한 영향을 미친다.  
@@ -66,17 +68,17 @@ target의 표정을 유지하지는 못했다.
 IPGAN은 source 이미지에서 identity vector를 추출하고 target 이미지에서 attribute 벡터를 추출한 후 decoder로 전송한다.  
 생성된 출력은 source의 ID 전달에는 좋았지만 target 얼굴의 표정이나 자세를 유지하지 못하는 경우가 많았다.  
 최근에 제안된 FaceShifter 방법은 높은 충실도의 face swap 결과를 생성할 수 있었다.  
-FaceShifter는 정교한 2단계 프레임워크를 활용하여 최첨단 신원 성능을 달성했다.  
-그러나 **attribute에 너무 약한 제약**을 가하여 결과가 종종 **표정 불일치**의 어려움을 겪었다.  
+FaceShifter는 정교한 2단계 프레임워크를 활용하여 SOTA ID 표현 성능을 달성했다.  
+그러나 **attribute 제약**이 약해 결과가 종종 **표정 불일치**의 어려움을 겪었다.  
 
-Q) Faceshifter와의 attribute 제약 정도의 차이만 있는것이라면 att.제약 정도를 강화시키면 성능이 같아지는건지?
+Q) Faceshifter와의 attribute 제약 정도의 차이만 있는것이라면 att.제약 정도를 강화시키면 성능이 같아지는건지?  
 
 ## 3 Method
-Source와 target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
+Source/target이 주어지면, target의 attribute를 유지하고 source ID를 target으로 전송하는 프레임워크를 제시한다.  
 프레임워크는 ID별 face swap 아키텍처에서 확장되며 임의 ID에 맞게 조정될 수 있다.  
 1) Sec 3.1 : DeepFakes source 아키텍처 한계  
 2) Sec 3.2 : 임의의 ID를 위한 프레임워크로 확장  
-3) Sec 3.3 : target의 attribute를 보존하는 데 도움이 되는 Weak Feature Matching Loss 제시  
+3) Sec 3.3 : Target attribute를 보존하는 데 도움이 되는 Weak Feature Matching Loss 제시  
 4) Sec 3.4 : loss function  
 
 ### 3.1 Limitation of the DeepFakes
@@ -84,7 +86,7 @@ DeepFakes의 구조는 2개 파트(일반 Encoder **Enc**, 2개의 ID 특정 Dec
 학습 단계에서 𝐸𝑛𝑐-𝐷𝑒𝑐𝑆 아키텍처는 왜곡된 소스 이미지를 가져와 원래의 왜곡되지 않은 소스 이미지로 복원한다.  
 동일 과정이 target에 대해서도 𝐸𝑛𝑐-𝐷𝑒𝑐𝑇 구조에 대해 적용된다.  
 테스트 단계에서 target은 𝐸𝑛𝑐-𝐷𝑒𝑐𝑆에 넘겨질 것이다.  
-이 구조는 왜곡된 소스 이미지로 오인하여 소스의 정체성과 대상의 속성을 가진 이미지를 생성할 것이다.  
+이 구조는 왜곡된 소스 이미지로 오인하여 source ID와 target attribute를 가진 이미지를 생성할 것이다.  
 이러한 과정동안, Enc는 target의 ID, attribute 정보를 포함하는 feature를 추출한다.  
 디코더 𝐷𝑒𝑐𝑆 가 target의 feature를 source의 ID가 있는 이미지로 변환하므로 source의 ID 정보가 𝐷𝑒𝑐𝑆 의 weight에 통합되어야 한다.  
 그러므로 Deepface의 Decoder는 특정 ID에만 적용될 수 있다.  
