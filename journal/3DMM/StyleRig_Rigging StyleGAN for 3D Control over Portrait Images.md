@@ -57,11 +57,13 @@ Semantic control space -> training data -> network architecture -> loss function
 ## 4. Semantic Rig Parameters
 Semantic 제어 parameter 세트에 기반하여 styleGAN에서 생성한 이미지에 대한 명시적 rig-like 제어를 얻기 위해 parameteric face model을 사용한다.  
 Control parameter p(3DMM params.=257개)  
+2개의 저차원 affine 모델(200명의 얼굴 스캔을 기반한 PCA를 통해 계산된)을 이용해 a, b 제어 공간을 정의한다.  
 
 
 MoFA에서 소개한 3DMM parameter set, 모델에서는 PCA를 통해 alpha, beta, delta를 저차원으로 다룬다.  
   <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png" alt="factorio thumbnail" width=450 />
-200명의 얼굴을 조합하여 PC 성분을 추출하였으며 원 데이터 셋의 99%의 분산 분포를 cover하도록 PC를 선택했다.  
+AAfine 모델은 원 데이터 셋의 99%의 분산 분포를 cover한다.  
+
 
   ***
   
