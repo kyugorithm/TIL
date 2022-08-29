@@ -55,10 +55,12 @@ StyleGAN(w)은 latent code w를 이미지 Iw로 mapping해주는 함수로 볼 �
 Semantic control space -> training data -> network architecture -> loss function
   
 ## 4. Semantic Rig Parameters
-<p align="center" style="color:gray">
-  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png" alt="factorio thumbnail" width=450 />
-</p>
+Semantic 제어 parameter 세트에 기반하여 styleGAN에서 생성한 이미지에 대한 명시적 rig-like 제어를 얻기 위해 parameteric face model을 사용한다.  
+Control parameter p(3DMM params.=257개)  
+
+
 MoFA에서 소개한 3DMM parameter set, 모델에서는 PCA를 통해 alpha, beta, delta를 저차원으로 다룬다.  
+  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122594579-27721780-d0a2-11eb-9f12-283c0449ba7d.png" alt="factorio thumbnail" width=450 />
 200명의 얼굴을 조합하여 PC 성분을 추출하였으며 원 데이터 셋의 99%의 분산 분포를 cover하도록 PC를 선택했다.  
 
   ***
