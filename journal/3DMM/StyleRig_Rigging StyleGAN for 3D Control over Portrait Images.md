@@ -49,13 +49,10 @@ self-supervised 2-way-consistency loss를 기반으로 한다.
 GAN은 잘 정의된 semantic parameter에 따라 조절된 이미지 합성뿐만 아니라 이미지를 생성했다.  
 
 ## 3. Overview
-<p align="center" style="color:gray">
-  <img style="margin:50px 0 10px 0" src="https://user-images.githubusercontent.com/40943064/122589553-5b960a00-d09b-11eb-9a4f-a48d5152ef79.png" alt="factorio thumbnail" width=450 />
-</p>
+StyleGAN(w)은 latent code w를 이미지 Iw로 mapping해주는 함수로 볼 수 있다. 생성 이미지 품질은 1024의 고품질이 될 수 있지만 생성 이미지는 자세, 표정, 조명등의 semantic한 제어가 존하지 않는다. StyleRig는 의미론적이고 해석 가능한 제어 parameter의 항목으로 StyleGAN 생성 얼굴 이미지에 대해 rig-like 제어를 얻을 수 있도록 해준다.  
   
-**StyleGAN as function from w : latent code to Iw : latent code의 output image**  
-
-  ***
+**순서**  
+Semantic control space -> training data -> network architecture -> loss function
   
 ## 4. Semantic Rig Parameters
 <p align="center" style="color:gray">
