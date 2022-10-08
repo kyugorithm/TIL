@@ -29,3 +29,14 @@
 : 프레임 수가 적은 비디오들에 대해 엄청나게 성능이 떨어진다.  
 
 본 논문에서는 parallel computation, long-range dependency modelling이 가능한 VRT를 제안한다. 
+VRT는 다중 스케일 프레임워크를 기반으로 비디오 시퀀스를 겹치지 않는 클립으로 나누고 클립 간 상호 작용을 활성화하기 위해 번갈아 이동한다. 특히 VRT의 각 스케일에는 여러 개의 TMSA 모듈과 병렬 warping 모듈이 있다. TMSA에서 mutual attention은 인접 두 프레임 클립 간의 상호 정렬에 초점을 맞추고 self attention은 feature 추출에 사용된다. 각 해상도의 끝에서 parallel warping을 사용하여 인접 프레임 정보를 현재 프레임에 fusion한다. Multi-scale feature extraction, alignment 및 fusion 후 HQ 프레임은 해당 프레임 feature에서 개별적으로 재구성된다.  
+
+VRT는 기존 비디오 방식 대비 몇 가지 이점을 제공합니다.  
+1) 긴 비디오 시퀀스에 대해 병렬로 학습되고 테스트된다. 반면 sliding window 기반 방법과 recurrent 방법 모두 프레임별로 테스트되는 경우가 많다.  
+2) 각 프레임을 재구성하는 동안 여러 인접 프레임의 정보를 활용하여 장거리 시간 의존성을 모델링할 수 있다. 반면, sliding window 기반 방법은 긴 시퀀스 모델링으로 쉽게 확장할 수 없는 반면, recurrent 방법은 여러 타임스탬프 후에 먼 정보를 잊어버릴 수 있다.  
+3) joint feature alignment 및 fusion을 위해 mutual attention을 사용할 것을 제안한다. support 프레임의 feature를 적응적으로 활용하여 reference 프레임에 융합하는데, 이는 암묵적인 움직임 추정 및 feature 왜곡으로 간주할 수 있다.  
+
+우리의 기여는 다음과 같이 요약할 수 있다.
+  
+1) 병렬 계산과 장거리 종속 모델링을 특징으로 하는 비디오 복원 트랜스포머(VRT)라는 새로운 프레임워크를 제안합니다. 프레임 feature를 여러 scale로 공동으로 추출, align 및 fusion한다.
+2) 프레임 간의 상호 alignment에 대한 mutual attention를 제안한다. 이것은 implicit 움직임 추정 후 이미지 왜곡의 일반화된 "soft" 버전이다.
