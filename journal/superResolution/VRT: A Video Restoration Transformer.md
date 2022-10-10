@@ -38,5 +38,5 @@ VRT는 기존 비디오 방식 대비 몇 가지 이점을 제공합니다.
 
 우리의 기여는 다음과 같이 요약할 수 있다.
   
-1) 병렬 계산과 장거리 종속 모델링을 특징으로 하는 비디오 복원 트랜스포머(VRT)라는 새로운 프레임워크를 제안합니다. 프레임 feature를 여러 scale로 공동으로 추출, align 및 fusion한다.
-2) 프레임 간의 상호 alignment에 대한 mutual attention를 제안한다. 이것은 implicit 움직임 추정 후 이미지 왜곡의 일반화된 "soft" 버전이다.
+1) 병렬 계산과 장거리 종속 모델링을 특징으로 하는 비디오 복원 트랜스포머(VRT)라는 새로운 프레임워크를 제안한다. 프레임 feature를 여러 scale로 공동으로 extract/align/fusion한다.  
+2) 프레임 간 상호 alignment에 대한 mutual attention를 제안한다. (implicit motion 추정 후 이미지 warping의 일반화된 "soft" 버전)
