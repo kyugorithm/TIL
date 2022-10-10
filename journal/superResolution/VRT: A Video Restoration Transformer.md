@@ -40,3 +40,37 @@ VRT는 기존 비디오 방식 대비 몇 가지 이점을 제공합니다.
   
 1) 병렬 계산과 장거리 종속 모델링을 특징으로 하는 비디오 복원 트랜스포머(VRT)라는 새로운 프레임워크를 제안한다. 프레임 feature를 여러 scale로 공동으로 extract/align/fusion한다.  
 2) 프레임 간 상호 alignment에 대한 mutual attention를 제안한다. (implicit motion 추정 후 이미지 warping의 일반화된 "soft" 버전)
+
+## 3. Video Restoration Transformer
+### 3.1. Overall Framework
+
+I_LQ ∈ R(T x H x W x Cin) - Low-quality frames  
+I_HQ ∈ R(T x H x W x Cout) - High-quality frames  
+T(frame number),H(height),W(width),Cin/out(in/out ch no.)  
+s : upscaling facter(>=1)  
+
+아래 그림과 같이 두가지 부분으로 나뉠 수 있다. (Feature extraction / Reconstruction)  
+![image](https://user-images.githubusercontent.com/40943064/194894967-f6a7a0b5-9398-46ee-ba2a-0079c67faa92.png)  
+#### Feature extraction.
+먼저 단일 2D conv.를 이용해 LQ로부터 SF를 만든다. (I_SF ∈ R(T x H x W x C) - shallow features)  
+다음 단계로 여러 이미지 해상도에서 frame들을 align하는 multi-scale network를 제안한다.  
+특히, 총 scale 수가 S일 때, downsample을 S-1회 수행한다. : linear layer를 통해 channel 차원과 채널 개수를 2 x 2 neighborhood squeezing(**이해 필요**)  
+그리고 원 사이즈로 feature를 unsqueezing하여 점진적으로 feature를 upsample한다.  
+이러한 방식으로 feature를 extract하고 TMSA와 parallel 두 가지 종류의 모듈에 의해 서로 다른 scale의 object 또는 카메라 motion을 처리할 수 있다.  
+각 scale에 대해 skip connection을 더한다. 마지막으로 multi-scale feature **extraction/alignment/fusion** 후에 추가적인 feature refinement를 위해 몇개의 TMSA를 추가하고 I_DF ∈ R(T x H x W x C)를 얻는다.
+
+#### Reconstruction.
+다음 단계로 ISF + IDF로부터 HQ를 복원한다. 각 프레임은 각자 상응하는 feature들을 기반으로 독립적으로 복원된다. 게다가, feature learning의 burden을 줄이기 위해, global residual learning을 적용하고, biliearly upsampled LQ와 HQ 사이의 잔차를 추정하도록 한다. 실질적으로 목적에 따라 서로 다른 구조를 가진다. (SR:sub-pixel conv., , deblur : single conv.)  이와는 별개로 구조적 설계는 모든 테스크에 대해 동일하게 유지된다.  
+
+#### Loss function.  
+기존 방법과의 공정한 비교를 위해 I^RHQ와 I^HQ(GT) 사이에 일반적으로 사용되는 Charbonnier loss를 다음과 같이 사용한다.  
+![image](https://user-images.githubusercontent.com/40943064/194900606-bcdd7bbb-b3bb-4dc3-91a4-b6976275a086.png)
+
+
+
+### 3.2. Temporal Mutual Self Attention
+#### Mutual attention.
+#### Temporal mutual self attention (TMSA).
+#### Discussion.
+
+### 3.3. ParallelWarping
