@@ -53,59 +53,60 @@ Burkov는 ID와 표정 정보를 W 공간으로 encode하고 단순한 pipeline�
 
 ## 3 Our Approach
 #### Framework Overview. 
-약간의 style-based G 수정을 통해 FS 능력을 부야하도록 하는 StyleSwap framework를 제시한다.  
-3.1 : StyleGAN을 FS에 적용 방법
-3.2 : 간단한 학습 패러다임 실증
-3.3 : ID 유사도를 최적화 하기 위한 GAN inversion의 이점을 취하는 Swapping-Guided ID Inversion 
+약간의 style-based G 수정을 통해 FS 능력을 부여하도록 하는 StyleSwap framework를 제시한다.  
+3.1 : StyleGAN for FS  
+3.2 : Simple training paradigm  
+3.3 : ID 유사도 optimization을 위한 GAN inversion의 이점을 이용하는 Swapping-Guided ID Inversion  
 
 ### 3.1 Adapting Style-Based Generator to Face Swapping
 
 #### Revisiting StyleGAN2.
-기본 G는 상수 feature map으로부터 시작한다. 그리고 z를 랜덤 샘플링하여 mapping network를 통해 feature vector w로 mapping된다. w는 affine transformation을 통해 G의 각 레이어로 넘어가서 conv. kernel weight를 변조하는 style s가 된다. 각 해상도에서 ToRGB layer는 점진적으로 RGB 이미지를 뽑도록 설계된다. (이미지에 상 파란색 참고). StyleGAN2에서 attribute 분리 능력은 w나 확장된 w+ 공간에서 (서로다른 w feature들을 서로다른 레이어에 입력함으로써) 암시적으로 획득된다. 결과적으로 얼굴 이미지를 latent vector로 inverting하는 것이 요구되는데 이는 공간 정보의 보존에 해를 입는 방식이다. 우리의 FS에서 이 문제는 어떻게 G가 타겟과 ID 정보가 충분히 사용될 수 있을지에 놓여있다.
+기본 G는 상수 feature map으로부터 시작한다. 그리고 z를 랜덤 샘플링하여 mapping network를 통해 feature vector w로 mapping된다. w는 affine transformation을 통해 G의 각 레이어로 넘어가서 conv. kernel weight를 변조하는 style s가 된다. 각 해상도에서 ToRGB layer는 점진적으로 RGB 이미지를 뽑도록 설계된다. StyleGAN2에서 attribute disentanglement 능력은 w나 확장된 w+ space에서 (서로다른 w feature를 서로다른 레이어에 분리하여 입력함으로써) implicit하게 얻어진다. 결과적으로 얼굴 이미지를 latent vector로 inverting하는 것이 요구되는데 이방법을 이용하면 spatial information 보존에 손실이 생긴다. 우리의 FS에서 이 문제는 어떻게 G가 타겟과 ID 정보가 충분히 사용될 수 있을지에 놓여있다.  
 
 <img width="1144" alt="image" src="https://user-images.githubusercontent.com/40943064/196635157-601ba272-bae9-4e02-a85a-74b4c30d0915.png">
 
 #### Infusing Attribute Information. 
-Attribute 정보를 보존하기 위해 타겟 프레임의 공간 정보를 feature vector 대신 feature map으로 주입하는것을 제안한다.
-얼굴 복원 연구인 GPEN은 StyleGAN2의 아래와 두가지 중요한 특성을 검증한다.  
+Attribute 정보 보존을 위해 타겟 이미지의 spatial information를 feature vector 대신 feature map으로 주입하는것을 제안한다. GPEN(face restoration)은 StyleGAN2의 두가지 중요한 특성을 검증한다.  
 
-1) Noise map을 G의 각 레이어에 결합하는 것은 네트워크의 생성적 능력에 영향을 주지 않는다.  
-2) 이 noise map은 spatial feature map 입력으로 대채할 수 있고 이를 통해 StyleGAN2의 생성적 prior와 입력의 구조적 정보가 함께 보존 될 수 있다.  
+1) Noise map을 각 레이어에 결합하는 것은 네트워크의 생성적 능력에 영향을 주지 않는다.  
+2) Noise map은 spatial feature map 입력으로 대채할 수 있고 이를 통해 StyleGAN2의 생성적 prior와 입력의 structural information이 함께 보존 될 수 있다.  
 
-이러한 관찰에 영감을 받아 비슷한 수정을 적용한다. It를 spatial feature maps Ft att의 서로다른 해상도에 주입하는 단순한 encoder Ett를 이용한다.  
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/40943064/196639061-eb596adf-71af-4c48-978a-d3bd92747fa9.png">
-이 Ft att는 GPEN을 따라 concat.을 통해 StyleGAN2의 개별 2l번째 레이어에 주입된다.  
+이러한 관찰에 영감을 받아 유사한 수정을 적용한다. It를 <img width="200" alt="image" src="https://user-images.githubusercontent.com/40943064/196639061-eb596adf-71af-4c48-978a-d3bd92747fa9.png"> Ft att (spatial feature maps)의 서로다른 해상도에 주입하는 단순한 encoder Ett를 이용한다.  
+
+이 Ft att는 GPEN과 동일하게 concat.을 통해 StyleGAN2의 각 2L번째 레이어에 주입된다.  
 
 #### Injecting Identity Feature. 
 다양한 target 시점에 적응하기 위해 ID 정보를 feature vector에 주입하는것은 자연스러운 것이다. 여기서 우리는 id feature를 주입하기 위해 사전학습된 ArcFace 모델을 사용한다.
 <img width="120" alt="image" src="https://user-images.githubusercontent.com/40943064/196639763-dfc8a8bb-9f07-4c0e-8c3c-34ca6b84dc2a.png">
 
 얼굴 attribute는 이미 혼합되었기 때문에 우리는 StyleGAN2애서 modulated conv.들이 자연스럽게 얼굴의 각 부분에 blending과 shapeshifting을 위해 적합하다는것을 확인한다. 
-그러므로 우리는 FC레이어인 FCw에 fsid를 W 공간의 ws(= FCw(fs id))에 직접적으로 mapping한다. 
+따라서 FCw에 fsid를 W space의 ws(= FCw(fs id))에 직접적으로 mapping한다. 
 
 지금까지 과정으로 FS 결과 <img width="150" alt="image" src="https://user-images.githubusercontent.com/40943064/196640770-33402336-2d9f-4b95-b288-38b0761b3d9b.png"> 는 이미 G에 의해 생성될 수 있다.
 
 #### Swapping-Driven Mask Branch. 
-그리고 우리는 대략적인 1채널 얼굴 마스크를 학습이 아래 두가지 관점에서 FS 전체 단계에 이점을 줄것임을 확인한다.  
+대략적인 1ch face mask 학습이 두가지 관점에서 FS 전체 단계에 이점을 줄 것임을 확인한다.  
 
 1) 이미지 도메인에서 mask을 이용해서 배경이나 머리카락같이 수정이 필요하지 않은 영역은 직접적으로 변하지 않도록 할 수 있다.
-2) 마스크가 점진적이고 암시적으로 G의 해상도에 따라 얻어질 수 있으면 FaceShifter 방법 처럼 저해상도 coarse 마스크는 attribute와 ID 정보에 균형을 맞추는데 도울 수 있다. 
+2) 마스크가 점진적이고 암시적으로 G의 해상도에 따라 얻어질 수 있으면 FaceShifter 처럼 저해상도 coarse 마스크는 attribute와 ID 정보에 균형을 맞추는데 도울 수 있다. 
 그러므로 우리는 StyleGAN2의 이점을 취할 수 있는 Swapping-Driven Mask Branch를 고안하여 추가 수정을 제안한다. 
-제안 구조는 ToRGB branch로부터 직접적으로 끌어와 ToMask로 명시한다. 여기서 우리는 0~1 사이 연속 값을 갖는 soft mask를 이용한다. Mask branch의 디테일은 fig. 3(a)을 통해 보여진다.  
+제안 구조는 ToRGB branch로부터 직접적으로 끌어와 ToMask로 명시한다. 여기서 우리는 0~1 사이 연속 값을 갖는 soft mask를 이용한다.  
+
+**Mask branch detail**  
 <img width="414" alt="image" src="https://user-images.githubusercontent.com/40943064/196644890-4c04410b-25af-4e0d-b04e-41cd0011ca5e.png">
 
 M'g(l)은 l번째 ToMask 네트워크의 1채널 출력이다. (동일 순서의 ToRGB 레이어와 +1 번째의 Ft att와 동일 해상도를 가진다.)  
-마스크 브랜치의 l번째 non-normalized mask ˜Mg(l)는 (l-1)번째 레이어와 M′ g(l)의 조합이다.  
+마스크 브랜치의 l번째 non-normalized mask ˜Mg(l)는 (l-1)번째 레이어 결과(upsample(M~g(l-1)))와 M′ g(l)의 조합이다.  
 <img width="388" alt="image" src="https://user-images.githubusercontent.com/40943064/196646522-c70f67ac-55de-409f-a6a7-1e65c09063b0.png">  
 여기서 upsample은 bilinear upsampling이다. 
 
 우리가 사용한 Soft 마스크는 normalized 결과(Mg(l) = Sigmoid( ˜Mg(l)))이다. 그러면 FS 결과는 아래와 같이 업데이트 될 수 있다.  
 <img width="300" alt="image" src="https://user-images.githubusercontent.com/40943064/196647059-28a84cb1-c3cb-4f82-8ba5-e7e46e33db4e.png">  
-(* = element-wise multiplicatio,  **1** = 각 해상도 사이즈의 1 tensor, 마스크는 RGB 채널과 맞추기 위해 채널 방향으로 세번 반복한다.)  
+(* = 성분곱,  **1** = 각 해상도 사이즈의 1 tensor, 마스크는 RGB 채널과 맞추기 위해 채널 방향으로 세번 반복한다.)  
 
 #### Masking Attribute Information. 
-위의 우리 설계는 얼굴의 attribute 정보를 모든 레이어에 주입한다. 그러나 mid와 low 레벨의 spatial 정보는 아마 얼굴 구조에 영향을 줄 것이다. 네트워크가 자동적으로 정보 균형을 맞추길 예상하지만 우리는 이러한 과정이 암시적으로 학습한 마스크에 의존하는 attribute 정보를 막음으로써 단순화돌 수 있다는 것을 확인한다. 그러므로 우리는 각 해상도 학습 마스크 Mg(l)와 다음 레이어의 attribute feature map Ft att(l+1)를 업데이트 버전으로 곱한다.  
+위의 우리 설계는 얼굴의 attribute 정보를 모든 레이어에 주입한다. 그러나 mid/low 해상도의 spatial information은 얼굴 구조에 영향을 줄 것이다. 네트워크가 자동적으로 정보 균형을 맞추길 예상하지만 이 과정이 암시적으로 학습한 마스크에 의존하는 attribute 정보를 막음으로써 단순화될 수 있다는 것을 확인한다. 따라서 각 해상도 학습 마스크 Mg(l)와 다음 레이어의 attribute feature map Ft att(l+1)를 업데이트 버전으로 곱한다.  
 <img width="300" alt="image" src="https://user-images.githubusercontent.com/40943064/196649669-481c8001-17de-4c13-877f-d70f77f6dcf0.png">  
 
 Mg(l) 와 Ft att(l+1)는 동일한 공간 해상도를 공유한다는 것과 초기 얼굴 attribute를 제공하는 Ft att(1)은 존재하지 않음을 주목하자.
-이 방법으로 Mg(l)가 점진적으로 GT mask에 도달하도록 점진적으로 성잠하면서 함께 암시적으로 attribute 정보가 ID 유사성에 영향을 주지 않도록 하게 된다.
+이 방법으로 Mg(l)가 점진적으로 GT mask에 도달하도록 점진적으로 커지며 함께 암시적으로 attribute 정보가 ID 유사성에 영향을 주지 않도록 하게 된다.
