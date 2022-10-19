@@ -26,3 +26,27 @@ Mode collapse를 피하기 위해 우리는 반복적으로 feature 최적화와
 1) StyleGAN을 간단하게 수정하고 Swapping-Driven Mask Branch를 설계하는 방법론을 제시한다. : 구현과 학습이 쉽다.
 2) ID 유사도를 향상하기 위해 StyleGAN 이점을 통해 새로운 Swapping-Guided ID Inversion 전략을 설계한다.
 3) 여러 실험을 통해 SOTA를 능가하고 robustness와 고품질 결과를 생성하는 능력을 가짐을 보인다. 
+
+
+## 2 Related Work
+### 2.1 Face Swapping
+
+#### Structural Prior-Guided Face Swapping
+3D 모델과 landmark와 같은 구조적 정보는 강한 prior 지식을 제공한다. Blanz는 3DMM을 이용했고 Bitouk은 adjustment-based 방법을 설계하기 위해 3D light basis를 사용한다. 두 방법 모두 manual interaction에 의존하고 소스 표정은 변하기 어렵다. Nirkin은 3DMM을 학습된 마스크로 포함하지만 비현실적 결과를 render한다.
+최근 연구는 identity agnostic FS를 위해 구조적 정보와 GAN을 결합한다. Xu와 Wang은 모두 설계한 구조에 3DMM 파라미터를 주입한다. High-fidelity 결과가 얻어지지만 3D 모델의 부정확성과 inpainting에 대한 필요성은 비디오 FS 세팅에서 이 방법론의 시간적 일관성과 강인성에 해를 입힌다. 
+
+#### Reconstruction-Based Face Swapping.
+반면 GAN을 이용한 순수 reconstruction기반의 방법론은 성공을 보여주고 있다. Korshunova(2016 : Fast Face-swap Using Convolutional Neural Networks)는 pair ID swapping을 위한 네트워크를 학습한다. 유명한 Deepfakes와 DeepFaceLab은 동일 세팅을 공유한다. 그러나 이 방법들은 임의 ID에 대해 일반화하지 못하고 실전적으로 활용하기 어렵다.  
+
+임의 소스 FS에 관해서 Li는 FaceShifter를 만들고 SimSwap은 표정일관성을 향상하지만 특정 환경에서 시각적 artifact와 함께 저품질 이미지를 생성한다. 최근에 InfoSwap은 세심한 loss 설계에 의존하는 piple을 생성하여 고품질 결과를 생성한다. 이 방법은 다양한 데이터셋에 대해 여러단계의 finetuning 포함한다. 이러한 방법과는 달리 우리는 StyleGAN G를 이용하여 네트워크 설계 과정을 쉽게 하고자 한다.  
+특히, Wang은 고해상도 FS를 위해 pretrained StyleGAN을 이용한다. 그러나 latent 공간을 적응시키기 위해 저자는 수많은 hyper-parameter와 ablative study를 포함하는 layer-specific fusion 전략을 설계한다. 더구나 이 방법들은 타겟 프레임의 조명 조건을 유지하지 못한다. 우리 작업에서 우리는  attribute 정보를 더 잘 보존하는 단순한 수정으로 StyleGAN G를 재학습한다.
+
+### 2.2 Facial Editing with Style-based Generator
+#### StyleGAN Inversion.
+대부분의 얼굴 attribute 수정 framework는 pretrained generator를 고정시킨채로 수정하고 StyleGAN inversion을 수행한다.
+Abdal(Image2StyleGAN : 최초 최적화기반 inversion)은 original W latent space를 inversion 동안 W+ space로 확장하여 더 나은 reconstruction 결과를 얻는다.
+최근 연구는 빠른 inversion을 위해 StyleGAN에 맞는 encoder를 사용한다. 우리 연구에서 우리는 StyleGAN inversion의 영감을 사용하고 ID 유사성을 향상하기 위해 우리의 ID feature를 W+ 공간으로 확장한다. StyleGAN specific encoder의 사용은 추후 연구로 남겨둔다.  
+
+#### Face Reenactment with Style-based Generator.
+Burkov는 ID와 표정 정보를 W 공간으로 encode하고 단순한 pipeline에서 G를 재학습한다.(Neural head reenactment with latent pose descriptors)  
+이후 연구는 audio-driven setting으로 확장한다.  
