@@ -1,8 +1,8 @@
 ## Abstract
-대부분의 현존 FS 방법론은 지루한 네트워크 및 손실항 설계에 집중하지만 여전히 소스와 타겟의 정보 균형을 맞추는데 어려움을 겪고 있으며 결과물들은 artifact가 발생하는 경향이 있다. 본 연구에서 우리는 간결하고 효과적인 StyleSwap이라는 이름의 프레임워크를 소개한다. 핵심 아이디어는 StyleGAN2 G 통해 high-fidelity & robust face swapping 부여하도록 하고 G의 이점이 identity 유사도를 최적하기 위해 사용될 수 있도록 하는 것이다. 우리는 최소의 수정 만으로 StyleGAN2를 이용해 소스와 타겟으로부터 바람직한 정보를 성공적으로 다룰 수 있음을 확인했다. ToRGB로부터 영감을 얻어 Swapping-Driven Mask Branch가 정보 blending을 더욱 향상하도록 고안되었다. 추가로 StyleGAN inversio의 이점이 채택될 수 있다. 부분적으로 Swapping-Guided ID Inversion 전략은 ID 유사도를 최적화하도록 고안된다.  
+대부분의 FS 방법론은 지루한 network 및 loss 설계에 집중하지만 여전히 소스와 타겟의 정보 균형을 맞추는데 어려움을 겪고 있으며 결과물들은 artifact가 발생하는 경향이 있다. 본 연구에서 우리는 간결하고 효과적인 StyleSwap 프레임워크를 소개한다. 핵심은 StyleGAN2를 통해 high-fidelity & robust face swapping 부여하도록 하고 G의 이점이 identity 유사도를 최적하기 위해 사용될 수 있도록 하는 것이다. 최소의 수정 만으로 StyleGAN2를 이용해 소스와 타겟으로부터 바람직한 정보를 성공적으로 다룰 수 있음을 확인했다. ToRGB로부터 영감을 얻어 Swapping-Driven Mask Branch가 정보 blending을 더욱 향상하도록 고안되었다. 추가로 StyleGAN inversion의 이점이 채택될 수 있다. 부분적으로 Swapping-Guided ID Inversion 전략은 ID 유사도를 최적화하도록 고안된다.  
 
 ## Introduction
-FS는 많은 연구가 이루어져 왔지만 단일 소스를 이용하지만 다양한 시나리오를 목표로 사용하는 ID-agnostic 세팅에서 여전히 어렵다. 핵심 문제는 아래 두가지로 정리할 수 있다. 
+FS는 단일 소스를 이용하면서 다양한 시나리오를 목표로 사용하는 ID-agnostic 세팅에서 여전히 어렵다. 핵심 문제는 아래 두가지로 정리할 수 있다.  
 1) ID 정보를 명시적으로 포착
 2) 타겟의 implicit attribute를 보존하면서 흔적없이 변환 얼굴을 blending
 
@@ -25,4 +25,4 @@ Mode collapse를 피하기 위해 우리는 반복적으로 feature 최적화와
 ### Contribution 
 1) StyleGAN을 간단하게 수정하고 Swapping-Driven Mask Branch를 설계하는 방법론을 제시한다. : 구현과 학습이 쉽다.
 2) ID 유사도를 향상하기 위해 StyleGAN 이점을 통해 새로운 Swapping-Guided ID Inversion 전략을 설계한다.
-3) 여러 실험을 통해 SOTA를 능가하고 Robustness와 고품질 결과를 생성하는 능력을 가짐을 보인다. 
+3) 여러 실험을 통해 SOTA를 능가하고 robustness와 고품질 결과를 생성하는 능력을 가짐을 보인다. 
