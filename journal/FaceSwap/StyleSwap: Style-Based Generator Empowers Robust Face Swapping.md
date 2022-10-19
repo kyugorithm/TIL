@@ -50,3 +50,18 @@ Abdal(Image2StyleGAN : 최초 최적화기반 inversion)은 original W latent sp
 #### Face Reenactment with Style-based Generator.
 Burkov는 ID와 표정 정보를 W 공간으로 encode하고 단순한 pipeline에서 G를 재학습한다.(Neural head reenactment with latent pose descriptors)  
 이후 연구는 audio-driven setting으로 확장한다.  
+
+## 3 Our Approach
+#### Framework Overview. 
+약간의 style-based G 수정을 통해 FS 능력을 부야하도록 하는 StyleSwap framework를 제시한다.  
+3.1 : StyleGAN을 FS에 적용 방법
+3.2 : 간단한 학습 패러다임 실증
+3.3 : ID 유사도를 최적화 하기 위한 GAN inversion의 이점을 취하는 Swapping-Guided ID Inversion 
+
+### 3.1 Adapting Style-Based Generator to Face Swapping
+
+#### Revisiting StyleGAN2.
+기본 G는 상수 feature map으로부터 시작한다. 그리고 z를 랜덤 샘플링하여 mapping network를 통해 feature vector w로 mapping된다. w는 affine transformation을 통해 G의 각 레이어로 넘어가서 conv. kernel weight를 변조하는 style s가 된다. 각 해상도에서 ToRGB layer는 점진적으로 RGB 이미지를 뽑도록 설계된다. (이미지에 상 파란색 참고). StyleGAN2에서 attribute 분리 능력은 w나 확장된 w+ 공간에서 (서로다른 w feature들을 서로다른 레이어에 입력함으로써) 암시적으로 획득된다. 결과적으로 얼굴 이미지를 latent vector로 inverting하는 것이 요구되는데 이는 공간 정보의 보존에 해를 입는 방식이다. 우리의 FS에서 이 문제는 어떻게 G가 타겟과 ID 정보가 충분히 사용될 수 있을지에 놓여있다.
+
+<img width="1144" alt="image" src="https://user-images.githubusercontent.com/40943064/196635157-601ba272-bae9-4e02-a85a-74b4c30d0915.png">
+
