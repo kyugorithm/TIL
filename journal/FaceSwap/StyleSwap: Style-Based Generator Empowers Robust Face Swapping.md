@@ -110,3 +110,16 @@ M'g(l)은 l번째 ToMask 네트워크의 1채널 출력이다. (동일 순서의
 
 Mg(l) 와 Ft att(l+1)는 동일한 공간 해상도를 공유한다는 것과 초기 얼굴 attribute를 제공하는 Ft att(1)은 존재하지 않음을 주목하자.
 이 방법으로 Mg(l)가 점진적으로 GT mask에 도달하도록 점진적으로 커지며 함께 암시적으로 attribute 정보가 ID 유사성에 영향을 주지 않도록 하게 된다.
+
+### 3.2 Training Paradigm
+내용  
+#### Identity Loss.
+내용  
+#### Adversarial Loss and Feature Matching Loss.
+내용  
+#### Reconstruction Loss.
+내용  
+#### Mask Loss.
+내용
+#### Overall Loss Function.
+![image](https://user-images.githubusercontent.com/40943064/196741452-c98ec457-d9c7-4757-805d-4a6a7d23e082.png)
