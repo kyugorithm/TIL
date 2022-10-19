@@ -18,4 +18,11 @@ FS는 많은 연구가 이루어져 왔지만 단일 소스를 이용하지만 �
 그리고 우리는 ID정보는 추출된 ID feature를 W space로 mapping함으로써 주입될 수 있음을 주장한다. 이 방법으로 ID 정보는 implicit하게 Conv. 연산에서 attribute와 혼합 될 수 있다.  
 또한 우리는 ToRGB와 동일한 Swapping-Driven Mask Branch를 제안 한다. 이는 자연스럽게 네트워크가 타겟의 high-level information에 덜 집중하도록 하고 최종 이미지 blending에 도움이 된다.
 
-We further illustrate the advantages of this architecture by involving a simple optimization strategy for improving identity similarity. As the identity feature is mapped to the W space, a natural inspiration from recent StyleGAN inversion studies [1,2] is to optimize a powerful W+ space through self-reconstruction. To avoid mode collapse, we introduce a novel Swapping-Guided ID Inversion strategy by iteratively performing feature optimization and face swapping. Armed with these tools, we show that our StyleSwap generates high-fidelity results with simple video training paradigms. It is particularly robust and can be supported with enhanced data for generating high-resolution results.
+우리는 ID 유사도를 향상하기 위해 단순한 최적화 전략을 포함함으로써 구조의 이점을 기술한다. ID feature가 W 공간에 mapping 되듯이 최근 StyleGAN inversion 연구의 자연스러운 영감은 self-reconstruction을 통해 강력한 W+ 공간을 최적화 하는 것이다.  
+Mode collapse를 피하기 위해 우리는 반복적으로 feature 최적화와 face swapping을 수행함으로써 새로운 Swapping-Guided ID Inversion 전략을 도입한다.  
+이 도구로 무장하여 우리는 우리 방법이 high-fidelity 비디오 학습 패러다임 결과를 생성함을 보인다. 이는 부분적으로 robust하고 고해상도 결과를 위해 향상된 데이터로 지지될 수 있다. 
+
+### Contribution 
+1) StyleGAN을 간단하게 수정하고 Swapping-Driven Mask Branch를 설계하는 방법론을 제시한다. : 구현과 학습이 쉽다.
+2) ID 유사도를 향상하기 위해 StyleGAN 이점을 통해 새로운 Swapping-Guided ID Inversion 전략을 설계한다.
+3) 여러 실험을 통해 SOTA를 능가하고 Robustness와 고품질 결과를 생성하는 능력을 가짐을 보인다. 
