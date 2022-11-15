@@ -34,5 +34,12 @@ Action Unit(AU)(눈 깜빡임, 헤드 포즈, 표정, id, 텍스처 및 조명)�
 처음에 전체 데이터 세트에 대해 훈련되고(4장) 짧은 비디오(2~3분)가 주어지면, 이 짧은 비디오로 미세 조정되어 그 안에 포함된 개인화된 정보를 캡처할 수 있다.  
 따라서 헤드 포즈와 같은 암시적 속성의 모든 음성, 상황 및 개인화된 정보를 잘 포착할 수 있다.  
 
-(3) 합성된 talking face에 있어 최종 rendering-video 모듈에 대한 보조 eye-attention map에 추가로 포함된 눈 깜빡임의 AU를 예측할 수 있다.
+(3) 최종 rendering-video 모듈에 대한 보조 eye-attention map에 embedding으로 포함된 눈 깜빡임의 AU를 예측할 수 있다.  
+
+excplicit/implicit attribute 공동 학습을 통해, SOTA결과를 얻는다.  
+이 논문의 기여는 세 가지이다.  
+
+(1) 오디오에 동기화된 (lip motion, 개인화되고 자연스러운 head motion 및 현실적인 눈 깜빡임)과 함께 사실적인 talking face video를 합성하기 위한 공동 explicit/implcit attribute 학습 프레임워크 제안  
+(2) 자연스러운 머리 움직임을 합성하는 데 필요한 implicit attribute를 모델링하기 위해 각 프레임의 음성 정보로 contenxt 정보를 인코딩하는 모듈을 설계  
+(3) 렌더링된 얼굴의 eye-attention map에 FACIAL-GAN 생성 눈 깜빡임 AU를 포함시켜 Rendering-to-Video 모듈에 의해 생성된 결과 비디오에서 현실적인 눈 깜빡임을 달성
 
