@@ -71,3 +71,27 @@ Kim : 생성된 3D 모델을 기반으로 (헤드 포즈, 얼굴 표정, 시선,
 
 ## 3. Approach
 ### 3.1. Problem Formulation
+
+
+## 5. Experiments
+### 5.1. Network Learning
+
+#### Training.
+(1) FACIAL-GAN 일반 학습 : 전체 학습 데이를 기반으로 L_facial 최적화 - audio와 생성된 attribute사이의 일반적인 mapping 고려
+(2) 파라미터 추출 : 레퍼런스 비디오 V가 주어지면 파라미터 추출 - a(audio feature), 3D face model, p(head pose), e(깜빡임 AU)  
+(3)-1 FACIAL-GAN 개별학습 : L_facial를 fine-tune 하여 개별 스타일에 일반화 된 표현 학습
+(3)-2 render2video 학습 : L_render를 통해 attention map과 redering을 이용
+
+#### Testing.
+1) 파라미터 추출 : fine-tuned FACIAL-GAN을 이용해 audio feature로 V의 개인화된 화법을 가지는 (표정-f, 포즈-p, 깜빡임-e) 추출  
+2) Render    : 얼굴이미지와 eye attention map render  
+3) render2video : V로 개인화된 스타일의 사실적 비디오로 변환  
+
+#### Experiment details.
+T(sliding window size) = 128. & Sliding distance = 5  
+General training : 50 epochs * batchSize 64  
+Fine training    : 10 epochs * batchSize 16
+R2V training     : 50 epochs * batchSize 1 (lr decay from 30 epochs)
+parameters : w(2, 1, 5, 10, 10, 0.1) / lambda(2, 10, 50)
+
+
