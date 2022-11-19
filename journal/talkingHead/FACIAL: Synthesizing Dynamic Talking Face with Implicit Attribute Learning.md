@@ -79,10 +79,10 @@ Kim : 생성된 3D 모델을 기반으로 (헤드 포즈, 얼굴 표정, 시선,
 ### 5.1. Network Learning
 
 #### Training.
-(1) FACIAL-GAN 일반 학습 : 전체 학습 데이를 기반으로 L_facial 최적화 - audio와 생성된 attribute사이의 일반적인 mapping 고려
+(1) FACIAL-GAN 일반 학습 : 전체 학습 데이를 기반으로 L_facial 최적화 - audio와 생성된 attribute사이의 일반적인 mapping 고려  
 (2) 파라미터 추출 : 레퍼런스 비디오 V가 주어지면 파라미터 추출 - a(audio feature), 3D face model, p(head pose), e(깜빡임 AU)  
-(3)-1 FACIAL-GAN 개별학습 : L_facial를 fine-tune 하여 개별 스타일에 일반화 된 표현 학습
-(3)-2 render2video 학습 : L_render를 통해 attention map과 redering을 이용
+(3)-1 FACIAL-GAN 개별학습 : L_facial를 fine-tune 하여 개별 스타일에 일반화 된 표현 학습  
+(3)-2 render2video 학습 : L_render를 통해 attention map과 redering을 이용  
 
 #### Testing.
 1) 파라미터 추출 : fine-tuned FACIAL-GAN을 이용해 audio feature로 V의 개인화된 화법을 가지는 (표정-f, 포즈-p, 깜빡임-e) 추출  
