@@ -72,14 +72,32 @@ Kim : 생성된 3D 모델을 기반으로 (헤드 포즈, 얼굴 표정, 시선,
 ## 3. Approach
 ### 3.1. Problem Formulation
 
-![image](https://user-images.githubusercontent.com/40943064/202851940-83e80216-f766-447b-86fa-0c58d4e20399.png)
+![image](https://user-images.githubusercontent.com/40943064/202853604-3117f56e-7b1f-457f-b3fb-8e3039f0dc6d.png)
+
+## Dataset Collection
+Explicit & implicit을 joint하게 통합하기 위해 Zhang의 talking head dataset을 이용한다. (dynamic head poses, eye motions, lip syncronization 등의 풍부한 정보를 지님)  
+#### Audio preprocessing.
+Speech feature(초당 50 프레임으로 문자의 log 확률을 정규화하여 출력)를 추출하기 위해 DeepSpeech를 사용한다. Feature dimention은 29이므로 50 X 29의 array 사이즈를 가진다.  
+이 데이터를 비디오 프레임과 맞추기 위해 30프레임으로 resample하여 30 X 29의 사이즈로 만든다.
+
+#### Head pose & eye moiton field.
+각 비디오 프레임에 대한 얼굴 파라미터 생성을 하기 위한 eye motion과 head pose를 수집하기 위해, OpenFace를 선택한다.  
+Rigid head pose와 3D translation vector는 각각 오일러 각도로 표현되어 6개 차원(pitch xy, yaw xy, roll xy)와 3차원 정보를 가진다.  
+Eye motion을 묘사(눈영역 주변의 근육에 대한 움직임 강도를 표현하기 위해 )하기 위해 AU를 사용한다.  
+
+#### 3D face reconstruction.
+Deng의 3D recon. 방법을 사용하여 3DMM파라미터 ID(80), 표정(64), 텍스쳐(80), 조도(27) 정보를 추출하도록 한다.
+
+#### Dataset statistics.
+제안한 데이터셋은 Agarwal에 의해 사용된 450개 이상의 풍부한 비디오 클립을 포함한다. 각 피디오 클립은 30fps에 1분(1800 frames) 가량 지속되어 총 535,400 frames의 양을 가진다.  
+이 데이터를 5-1-4(train/val/test)로 분할한다. 각 비디오 클립들은 안정적인 얼굴 생성을 위해 안정적으로 고정된 파라미터, 적절한 조명, 그리고 단일 화자의 환경이 유지된다.  
 
 
 ## 5. Experiments
 ### 5.1. Network Learning
 
 #### Training.
-(1) FACIAL-GAN 일반 학습 : 전체 학습 데이를 기반으로 L_facial 최적화 - audio와 생성된 attribute사이의 일반적인 mapping 고려  
+(1) FACIAL-GAN 일반 학습 : 전체 학습 데이터(Zhang) 기반 L_facial 최적화 - audio와 생성된 attribute사이의 일반적인 mapping 고려  
 (2) 파라미터 추출 : 레퍼런스 비디오 V가 주어지면 파라미터 추출 - a(audio feature), 3D face model, p(head pose), e(깜빡임 AU)  
 (3)-1 FACIAL-GAN 개별학습 : L_facial를 fine-tune 하여 개별 스타일에 일반화 된 표현 학습  
 (3)-2 render2video 학습 : L_render를 통해 attention map과 redering을 이용  
