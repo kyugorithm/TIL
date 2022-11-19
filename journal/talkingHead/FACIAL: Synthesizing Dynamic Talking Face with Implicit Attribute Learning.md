@@ -72,6 +72,8 @@ Kim : 생성된 3D 모델을 기반으로 (헤드 포즈, 얼굴 표정, 시선,
 ## 3. Approach
 ### 3.1. Problem Formulation
 
+![image](https://user-images.githubusercontent.com/40943064/202851940-83e80216-f766-447b-86fa-0c58d4e20399.png)
+
 
 ## 5. Experiments
 ### 5.1. Network Learning
