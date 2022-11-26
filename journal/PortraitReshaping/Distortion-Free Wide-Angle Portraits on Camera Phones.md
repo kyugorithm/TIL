@@ -1,8 +1,11 @@
 # Abstract
 FOV(field-of-view)가 넓은 사진은 왜곡이 강하게 발생한다.  
-이를 전문가의 manual한 수정이 아닌 알고리즘 접근을 통해 해결한다.  
-알고리즘은 다른 부분은 왜곡하지 않고 되돌려야하는 얼굴만 수정하도록 한다.  
-최적화 문제를 구성하여 얼굴 부위의 stereographic projection에 로컬하게 적응하고 배경을 통한 perspective projection으로 seamlessly evolve 하는 **content-aware warping mesh**를 생성한다.  
+이를 전문가의 수동 수정이 아닌 알고리즘 접근을 통해 해결한다.  
+알고리즘은 다른 부분은 왜곡하지 않고 되돌려야하는 얼굴만 수정한다.  
+#### 핵심
+아래 두개조건을 만족하도록 **content-aware warping mesh**를 생성하는 최적화문제를 구성한다.
+1) 얼굴 : Locally adapt to the stereographic projection
+2) 배경 : Seamlessly evolve to the perspective projection  
 
 ## 1. INTRODUCTION
 ### 1. 배경
@@ -11,24 +14,24 @@ FOV(field-of-view)가 넓은 사진은 왜곡이 강하게 발생한다.
 왜곡 발생
 ### 3. 해결방법
 입력 이미지가 주어지면 입력 이미지 위 coarse 메시에 vertex별 가중치를 할당하기 위해 대상 마스크를 계산한다.  
-구와 평면 사이의 conformal mapping인 stereographic projection을 국소적으로 emulate 하도록 facial vertex를 encourage하는 energy term을 구성한다.  
+구와 평면 사이의 conformal mapping인 stereographic projection을 locally emulate 하도록 facial vertex를 encourage하는 energy term을 구성한다.  
 방법론의 출력은 stereographic & perspective projections를 단일 이미지에 대해 결합한다.  
 제안하는 energy function은 얼굴 경계에서 충돌하는 두개의 projection들 사이에서 **부드러운 transition을 장려**한다.  
 ### 4. 성능검증
 다양한 이미지에 대해 검증 + 빠른 속도  
 ### 5. 기여
-왜곡을 자동적으로 해결하는 알고리즘을 제안하며, stereographic & perspective projection을 얼굴과 배경에 대해 통합한다.  
+왜곡을 자동으로 해결하는 알고리즘을 제안하며, stereographic & perspective projection을 얼굴과 배경에 대해 통합한다.  
 
 ## 2. RELATED WORK
 ### 3D Projection.
-3D projection은 필연적으로 렌더링된 2D 이미지에 왜곡을 초래한다. Perspective projection투시 투영은 카메라 중심에서 멀리 떨어진 물체에 대해 인식된 형상을 왜곡하는데, 특히 카메라 FOV가 우리의 시각 시스템의 편안한 영역보다 넓을 때 그렇다. 르네상스 초기까지 거슬러 올라가는 예술가들은 이미 원근 왜곡을 발견하고 그것을 "**anamorphosis**"라고 부른다. 그들은 FOV가 60°를 넘으면 건축 장면과 같은 더 넓은 그림을 조심스럽게 다룬다.  
+3D projection은 필연적으로 렌더링된 2D 이미지에 왜곡을 초래한다. Perspective projection은 카메라 중심에서 멀리 떨어진 물체에 대해 인식된 형상을 왜곡하는데, 특히 카메라 FOV가 우리의 시각 시스템의 편안한 영역보다 넓을 때 그렇다. 르네상스 초기까지 거슬러 올라가는 예술가들은 이미 원근 왜곡을 발견하고 그것을 "**anamorphosis**"라고 부른다. 그들은 FOV가 60°를 넘으면 건축 장면과 같은 더 넓은 그림을 조심스럽게 다룬다.  
 
-휴대용 카메라로 단체 사진을 찍으려면 60°보다 넓은 FOV가 필요한 경우가 많다. GoPro 카메라 및 파노라마와 같은 광각 이미지의 경우 투시 왜곡을 완화하기 위해 스테레오, Mercator 및 Pannini projection이 널리 사용된다. 이러한 global projection에는 인간이 만든 구조에서 흔히 볼 수 있는 길고 돌출된 직선 가장자리가 구부러지는 부작용이 있어, 결과적으로 photorealism의 손실을 초래한다(그림 2). 우리의 방법은 line-bending artifacts를 피하기 위해 locally adaptive mesh를 사용한다.  
+휴대용 카메라로 단체 사진을 찍으려면 60°보다 넓은 FOV가 필요한 경우가 많다. GoPro 카메라 및 파노라마와 같은 광각 이미지의 경우 투시 왜곡을 완화하기 위해 stereo, Mercator 및 Pannini projection이 널리 사용된다. 이러한 global projection에는 인간이 만든 구조에서 흔히 볼 수 있는 길고 돌출된 직선 가장자리가 구부러지는 부작용이 있어, 결과적으로 photorealism의 손실을 초래한다(그림 2). 우리의 방법은 line-bending artifacts를 피하기 위해 locally adaptive mesh를 사용한다.  
 
 ### Lens Distortion.
-렌즈 왜곡은 렌더링된 이미지에서 아티팩트를 유발하는 또 다른 요인이다. 렌즈 왜곡은 렌즈 설계 과정에서 기인하며 광각 렌즈의 경우 피하기 어렵다. 일반적으로 이미지 모서리의 직선을 왜곡다. 왜곡 프로파일은 보정할 수 있으며 다양한 방법으로 이 문제를 해결할 수 있다.  
+렌즈 왜곡은 렌더링된 이미지에서 아티팩트를 유발하는 또 다른 요인이다. 렌즈 왜곡은 렌즈 설계 과정에서 기인하며 광각 렌즈의 경우 피하기 어렵다. 일반적으로 이미지 모서리의 직선을 왜곡한다. 왜곡 프로파일은 보정할 수 있으며 다양한 방법으로 이 문제를 해결할 수 있다.  
 
-그러나 렌즈 왜곡 보정 이미지는 여전히 원근 왜곡을 보인다. 초상화 사진작가들은 망원 렌즈를 사용하거나 피사체를 카메라 센터로 조심스럽게 안내해야 한다. 우리의 방법은 카메라 뷰의 모든 곳에서 얼굴을 수정하고, 초상화 사진작가를 이러한 구성 제한으로부터 자유롭게 한다.
+그러나 렌즈 왜곡 보정 이미지는 여전히 perspective distortion을 보인다. 초상화 사진작가들은 망원 렌즈를 사용하거나 피사체를 카메라 센터로 조심스럽게 안내해야 한다. 우리의 방법은 카메라 뷰의 모든 곳에서 얼굴을 수정하고, 초상화 사진작가를 이러한 구성 제한으로부터 자유롭게 한다.
 
 ### Perspective Distortion Manipulation
 Projection center는 왜곡이 없기 때문에 새로운 가상 카메라 뷰나 planar projection geometry를 가진 새로운 영상 평면을 신중하게 선택하여 후처리의 왜곡을 줄일 수 있다. 기존 방법은 Photoshop의 Perspective Warp 기능과 같이 수동으로 결정된 글로벌 homography warping을 적용하거나 자동으로 적용한다. 대신, 우리의 작업은 원본 샷의 시야각과 FOV를 보존하기 위해 로컬 보정을 수행한다.  
