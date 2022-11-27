@@ -36,7 +36,7 @@ FOV(field-of-view)가 넓은 사진은 왜곡이 강하게 발생한다.
 ### Perspective Distortion Manipulation
 Projection center는 왜곡이 없기 때문에 새로운 가상 카메라 뷰나 planar projection geometry를 가진 새로운 영상 평면을 신중하게 선택하여 후처리의 왜곡을 줄일 수 있다. 기존 방법은 Photoshop의 Perspective Warp 기능과 같이 수동으로 결정된 글로벌 homography warping을 적용하거나 자동으로 적용한다. 대신, 우리의 작업은 원본 샷의 시야각과 FOV를 보존하기 위해 로컬 보정을 수행한다.  
   
-몇 가지 mesh 기반 방법은 사용자가 straight line 또는 vanishing point와 같은 scene constraint를 제공하고 conformality cost과 같은 왜곡 메트릭을 최소화하여 결과를 생성해야 한다. 대조적으로, 우리의 알고리듬은 완전 자동이며 즉각적인 공유를 위해 전화기에서 대화형 속도로 실행된다.
+몇 가지 mesh 기반 방법은 사용자가 straight line 또는 vanishing point와 같은 scene constraint를 제공하고 conformality cost과 같은 왜곡 메트릭을 최소화하여 결과를 생성해야 한다. 대조적으로, 우리의 알고리듬은 완전 자동이며 즉각적인 공유를 위해 모바일에서 실시간으로 실행된다.  
 
 ### Content-Aware Warping
 우리의 방법은 다양한 image manipulation, 즉 panorama stiching 및 reshaping, 광각 이미지 및 비디오 수정, 이미지 및 비디오 대상 변경, texture deformation, stereoscopic 편집 및 비디오 stabilization에 적용되어 온 content-aware warping에 속한다. 일반 객체의 기하학적 구조를 복원하는 기존 방법과 달리, 우리의 작업은 특히 인물사진을 다룬다. 인간의 눈은 얼굴의 artifact에 매우 민감하기 때문에, face-specific 문제는 여러 얼굴이 함께 있을 때 특히 어렵다.  
@@ -47,6 +47,8 @@ Fried는(Perspective-aware Manipulation of Portrait Photos) 3D 얼굴 모델을 
 아름다움에 대한 통계적 합의에 의존하는 얼굴 미화와는 달리, 우리의 목표는 사진 옆면의 얼굴을 최소한의 왜곡으로 카메라 중심에서 찍은 것처럼 보이게 하는 것이다. 이를 달성하기 위해, 우리는 미적 선호도에 의존하지 않고 단일 이미지에서 두 가지 다른 projection geometry의 조합 사용한다.  
 
 ## 3 PRELIMINARIES AND OVERVIEW
+<img width="1525" alt="image" src="https://user-images.githubusercontent.com/40943064/204079915-d49d3c23-bd97-4b84-98e1-021c15619d1e.png">
+
 이미지 입력은 perspective projection된 것으로 가정한다.  
 1) 인물 segmentation mask를 계산함으로써 먼저 얼굴 영역을 확인  
 2) Camera focal length를 이용해 stereographic projection 추정
