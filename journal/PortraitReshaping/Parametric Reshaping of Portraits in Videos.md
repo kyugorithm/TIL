@@ -119,7 +119,14 @@ Reshaped 3D face model Xi\*는 neutral reshaped face model의 선형결합으로
 
 ### 5.2 Consistent Video Deformation
 Reshaped 3D face를 guide로 사용하여, artifact 없이 2D에서의 target shape를 가지는 얼굴을 생성하기 위해 이미지를 warp한다.  
-먼저 warping proxy로써 uniform grid Mu = {ui}를 위치시킨다.  (ui:이미지상의 grid point 2D 좌표)
+1) warping proxy로써 uniform grid Mu = {ui}를 위치시킨다.  (ui:이미지상의 grid point 2D 좌표)  
+2) Face deformation에 의해 유도된 이미지 왜곡을 구동하는 set of control points을 찾는 새로운 방법을 제안한다.  
+3) 전체 grid의 왜곡을 최소화함으로써 모든 다른 grid 포인트들을 warp하기 위해 LS 최적화를 적용한다. 
+
+#### Control points selection.
+3D face model 위에서 control point를 선택하는것은 직관적이다.  
+Jain은 face mesh vertex 들을 선택하고 2D 사영시켜 control point들로 사용했다.
+
 ![image](https://user-images.githubusercontent.com/40943064/171131883-0890ee38-3d1b-461f-9118-bd73a3dd8d11.png)  
 
 #### control points selection
