@@ -38,3 +38,18 @@ FFHQ를 사용하여 GAN based texture decoder를 추가로 학습하고 texture
 • 공개적으로 사용 가능한 최초의 대규모 정규화된 face UV texture 데이터 세트, 즉 FFHQ-UV에는 사실적인 digital human을 rendering하기 위한 face-asset으로 직접 사용할 수 있는 50,000개 이상의 고품질의 균일하게 조명된 face texture UV map이 포함되어 있다.  
 • StyleGAN 기반 face image editing, elaborate UV texture extraction/editing/completion 절차로 구성된 대규모 wilt face image 데이터 세트에서 제안된 UV texture 데이터 세트를 생성하기 위한 완전 자동 및 강력한 파이프라인.  
 • FFHQ로 학습된 GAN 기반 texture decoder를 기반으로 fidelity와 quality 측면에서 SOTA를 능가하는 3D face recon. 알고리즘.
+
+
+## 3. FFHQ-UV: Normalized UV-Texture Dataset
+3.1 - Wild face image(Sec. 3.1)에서 normalized된 UV texture 데이터 세트를 생성하기 위한 전체 파이프라인을 설명  
+3.2 - 데이터 세트의 diversity와 quality를 분석하기 위한 광범위한 연구 제시  
+
+### 3.1. Dataset Creation 
+
+파이프라인은 아래 세단계로 구성된다.  
+StyleGAN 기반 얼굴 이미지 편집 > 얼굴 UV texture 추출 > UV texture 수정/완성  
+
+### 3.1.1 StyleGAN-Based Facial Image Editing 
+실제 얼굴 이미지에서 고품질 텍스처 맵을 추출하기 위해 먼저 단일 뷰 이미지에서 정규화된 다중 뷰 얼굴 이미지를 도출합니다. 중립적 표현 및 가려짐 없음(예: 안경, 머리카락). 특히 StyleFlow와 InterFaceGAN을 사용하여 StyleGAN2의 W+ 잠재 공간에서 이미지 속성을 자동으로 편집합니다. 각 야생 얼굴 이미지 I에 대해 먼저 GAN 반전 방법 e4e를 사용하여 W+ 공간에서 잠재 코드 w를 얻은 다음 StyleGAN 생성기 G에서 반전된 이미지 Iinv = G(w)의 속성 값을 감지합니다. 다음 시맨틱 편집에서 이러한 속성을 정규화할 수 있습니다. 정규화하려는 속성에는 조명, 안경, 머리카락, 머리 자세 및 표정이 포함됩니다. SH(Spherical Harmonic) 계수로 표현되는 조명 조건은 DPR 모델을 사용하여 예측되고 다른 속성은 Microsoft Face API를 사용하여 감지됩니다.
+
+조명 정규화를 위해 대상 조명 SH 계수를 설정하여 첫 번째 차원만 유지하고 나머지 차원은 0으로 재설정한 다음 StyleFlow를 사용하여 균일하게 조명된 얼굴 이미지를 얻습니다. SH 표현에서와 같이 SH 계수의 첫 번째 차원만 모든 방향에서 균일한 조명을 나타내는 반면, 다른 차원은 원하지 않는 특정 방향에서 오는 조명을 나타냅니다. 조명 정규화 후 목표 값을 0으로 설정하여 안경, 머리카락 및 머리 포즈 속성을 정규화하고 편집된 잠재 코드 w 0 을 얻습니다. 얼굴 표정 속성은 InterFaceGAN과 유사하게 SVM을 사용하여 얼굴 표정을 편집하는 방향 β를 찾고 w 0 에서 시작하여 방향 β를 따라 걸어가면서 정규화된 잠재 코드 what을 달성합니다. 과도한 편집을 피하기 위해 걷기의 정지 조건을 결정하는 표현식 분류기를 추가로 도입합니다. 여기에서 정규화된 얼굴 이미지 In = G(what)을 얻습니다. 마지막으로 머리 포즈 속성을 수정하여 StyleFlow를 사용하여 두 개의 측면 얼굴 이미지 I l n 및 I r n을 생성합니다.
