@@ -44,3 +44,9 @@ I2I 변환 작업으로 re-aging을 공식화하면 몇 가지 이점이 있다.
 3) 입력 비디오 프레임에 대한 시간적인 부드러움은 자연스럽게 FRAN의 출력에서 우수한 시간적 일관성에 기여한다.  
 위 이러한 요소가 결합되어 FRAN은 비디오에서 실제 얼굴 re-aging을 위한 우수한 프로덕션 준비 솔루션이 된다.
 
+
+#### Discriminator
+PatchGAN discriminator, re-aged RGB 이미지와 target age map을 입력으로 사용한다. 생성된 re-aging 모양이 학습 데이터 세트에서 대상 연령과 일치하는지 여부를 판단하는 것이다. D는 주요 re-aging U-Net과 함께 훈련된다. 올바른 age lagel이 있는 합성 데이터 세트의 샘플은 'real' 예제로 제공되고 재노화 네트워크에서 생성된 샘플은 '가짜' 예제로 제공된다. 또한 추가 'fake'의 예로 age map이 잘못된 실제 이미지를 제공한다. 
+
+#### Losses
+<img width="546" alt="image" src="https://user-images.githubusercontent.com/40943064/209640501-0c7cf57f-8688-4dc1-aed9-2da120c19fc9.png">
