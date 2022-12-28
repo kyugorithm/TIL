@@ -50,11 +50,13 @@ FFHQ를 사용하여 GAN based texture decoder를 추가로 학습하고 texture
 StyleGAN 기반 얼굴 이미지 편집 > 얼굴 UV texture 추출 > UV texture 수정/완성  
 
 ### 3.1.1 StyleGAN-Based Facial Image Editing 
-얼굴 이미지에서 고품질 텍스처 맵을 추출하기 위해  
-Single view image에서 normalized multi-view face image(Neutral expression 및 no occlusion)   
+얼굴 이미지에서 고품질 텍스처 맵을 추출하기 위해 single view image에서 normalized multi-view face image(Neutral expression 및 no occlusion) 추출  
 StyleFlow와 InterFaceGAN을 사용하여 StyleGAN2의 W+ latent space에서 image attribute를 자동으로 편집  
 I(wild face image)에 대해 e4e를 사용하여 W+에서 w를 얻은 다음 StyleGAN G에서 inverted image Iinv = G(w)의 속성 값을 감지  
 Semantic editing에서 이러한 attribute를 정규화(조명, 안경, 머리카락, pose 및 표정)  
-SH(Spherical Harmonic) 계수로 표현되는 조명 조건은 DPR 모델을 사용하여 예측하고 다른 속성은 Microsoft Face API를 사용하여 감지한다.  
+SH(Spherical Harmonic) coefficient로 표현되는 조명 조건은 DPR 모델을 사용하여 예측하고 다른 속성은 Microsoft Face API를 사용하여 감지한다.  
 
-조명 정규화를 위해 대상 조명 SH 계수를 설정하여 첫 번째 차원만 유지하고 나머지 차원은 0으로 재설정한 다음 StyleFlow를 사용하여 균일하게 조명된 얼굴 이미지를 얻습니다. SH 표현에서와 같이 SH 계수의 첫 번째 차원만 모든 방향에서 균일한 조명을 나타내는 반면, 다른 차원은 원하지 않는 특정 방향에서 오는 조명을 나타냅니다. 조명 정규화 후 목표 값을 0으로 설정하여 안경, 머리카락 및 머리 포즈 속성을 정규화하고 편집된 잠재 코드 w 0 을 얻습니다. 얼굴 표정 속성은 InterFaceGAN과 유사하게 SVM을 사용하여 얼굴 표정을 편집하는 방향 β를 찾고 w 0 에서 시작하여 방향 β를 따라 걸어가면서 정규화된 잠재 코드 what을 달성합니다. 과도한 편집을 피하기 위해 걷기의 정지 조건을 결정하는 표현식 분류기를 추가로 도입합니다. 여기에서 정규화된 얼굴 이미지 In = G(what)을 얻습니다. 마지막으로 머리 포즈 속성을 수정하여 StyleFlow를 사용하여 두 개의 측면 얼굴 이미지 I l n 및 I r n을 생성합니다.
+조명 정규화를 위해 대상 조명 SH 계수를 설정하여 첫 번째 차원만 유지하고 나머지 차원은 0으로 재설정한 다음 StyleFlow를 사용하여 균일하게 조명된 얼굴 이미지를 얻는다.  
+SH 표현에서와 같이 SH 계수의 첫 번째 차원만 모든 방향에서 균일한 조명을 나타내는 반면, 다른 차원은 원하지 않는 특정 방향에서 오는 조명을 나타낸다.  
+조명 정규화 후 목표 값을 0으로 설정하여 안경, 머리카락, 포즈 속성을 정규화하고 편집된 latent w' 을 얻는다. 얼굴 표정 속성은 InterFaceGAN과 유사하게 SVM을 사용하여 얼굴 표정을 편집하는 방향 β를 찾고 w' 에서 시작하여 방향 β를 따라 걸어가면서 정규화된 잠재 코드 what을 달성합니다. 과도한 편집을 피하기 위해 걷기의 정지 조건을 결정하는 표현식 분류기를 추가로 도입한다.  
+여기에서 정규화된 얼굴 이미지 In = G(what)을 얻습니다. 마지막으로 머리 포즈 속성을 수정하여 StyleFlow를 사용하여 두 개의 측면 얼굴 이미지 In^l  및 In^r을 생성합니다.  
