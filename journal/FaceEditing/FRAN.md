@@ -50,3 +50,16 @@ PatchGAN discriminator, re-aged RGB 이미지와 target age map을 입력으로 
 
 #### Losses
 <img width="546" alt="image" src="https://user-images.githubusercontent.com/40943064/209640501-0c7cf57f-8688-4dc1-aed9-2da120c19fc9.png">
+
+## 4.6 Extent of Re-aging
+다음을 변화시키지 않음 : 어린이 / 두피 / 머리 모양의 큰 변화  
+주름같은 질감 변화가 쉽게 눈에 띄는 반면, 다른 얼굴 특징을 변경하고 현실적인 재노화에도 중요한 아래의 기하학적 변화를 도입한다.  
+눈가(주름, 눈썹 처짐, 눈밑 처짐), 입가(입술이 얇아짐), 연골 조직 크기(귓볼, 코)  
+![image](https://user-images.githubusercontent.com/40943064/212268400-f7514a1e-7e4e-423c-9e6d-a8186bb1d919.png)
+
+### 4.7 Segmentation at Inference
+Segmentation mask를 사용하여 얼굴의 피부 픽셀에 대해서만 aging을 guide하는 효과를 평가한다.(그림 17)  
+![image](https://user-images.githubusercontent.com/40943064/212259754-7b4dfbb6-c811-4602-889b-5076a4ead458.png)
+입력 이미지의 모든 픽셀(마스크 없는 결과)에 대해 35 > 65로 균일하게 설정하고 입력 및 출력, 에이징된 이미지 차이를 보여준다.  
+배경 픽셀에 대해서 대상-입력 연령이 다르므로 배경에 원하지 않는 변경 사항이 포함된다.  
+우리는 Bisenet V2로 추출한 segmentation mask에 의해 정의된 피부 픽셀에 대해서만 목표 연령을 65로 설정하는 실험을 반복하고 이 마스크 외부의 모든 픽셀에 대해 목표 연령을 35로 한다(입력 연령과 동일)(마스크와 함께 "표시된 결과"). 차이 영상에서 볼 수 있듯이 해당 출력 영상에는 원하지 않는 배경 변경이 없다.
