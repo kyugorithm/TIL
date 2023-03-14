@@ -22,9 +22,9 @@ Audio-to-expression : 습관, 태도 등과 같은 high-level semantic이 없는
 Neural-renderer는 픽셀을 데이터가 없는 추정된 표정을 기반으로 시각적 모양을 합성  
 
 이러한 일대다 매핑 문제를 완화하기 위해 본 논문에서는 두 단계 방식을 각각 따르는 implicit memory와 explicit memory를 고안하여 mission information을 메모리로 보완하는 방법을 제안한다.  
-implicit memory는 의미적으로 정렬된 정보를 보완하기 위해 audio2expression과 공동으로 최적화되는 반면, 
-explicit memory는 non-parametric 방식으로 구성되고 각 target person에 맞게 조정되어 시각적 세부 사항을 보완한다.  
-따라서 입력 오디오를 직접 사용하여 표현을 예측하는 대신 Audio-to-expression은 추출된 audio feature를 query로 활용하여 implicit memory에 주의를 기울인다.  
+implicit memory : 의미적으로 정렬된 정보를 보완하기 위해 audio2expression과 공동으로 최적화  
+explicit memory : non-parametric 방식으로 구성되고 각 target person에 맞게 조정되어 시각적 세부 사항을 보완한다.  
+따라서 입력 오디오를 직접 사용하여 표정을 예측하는 대신 Audio-to-expression은 추출된 audio feature를 query로 활용하여 implicit memory에 주의를 기울인다.  
 의미적으로 정렬된 정보로 제공되는 attention 결과는 audio feature로 보완되어 표현 출력을 생성한다.  
 end-to-end 학습을 가능하게 함으로써 implicit memory는 audio-expression 공유 공간에서 high-level-semantics를 연관시키도록 하여 입력 오디오와 출력 표정 사이의 의미론적 격차를 좁힌다.  
 표정을 얻은 후 Neural-renderer를 사용하여 표정 추정에서 얻은 입 모양을 기반으로 시각적 외모를 합성한다.  
