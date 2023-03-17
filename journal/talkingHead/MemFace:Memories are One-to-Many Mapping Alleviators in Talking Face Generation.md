@@ -38,6 +38,14 @@ Implicit/Explicit memory와 관련된 작업을 소개한다.
 #### Explicit memory
 Explicit external memory로 신경망을 증강하는 것은 최근 NLP에서 주목을 받고 있다. 학습 데이터 자체만 활용했던 초기 시도와 달리 검색 기반 시각적 모델의 경우 최근의 발전으로 text-image 생성을 위한 외부 메모리가 도입되었다. 모든 샘플에 대해 통합 메모리를 구축한 이러한 접근 방식과 달리, 우리는 각 id에 대한 Explicit memory를 구축하여 사실적인 talking face 생성을 위한 개인화된 시각적 세부 사항을 보완한다. Yi와 Park은 말하는 talking face generation에 memory를 도입했다다.  
 
-우리의 솔루션은  
-1) 메모리 네트워크가 렌더링 프로세스를 개선하기 위해 더 많은 ID 정보를 제공하는 paired spatial features(사전 훈련된 ResNet-18에서 추출)과 identity features(사전 훈련된 ArcFace에서 추출)을 저장한다는 점에서 다르다. 대조적으로, 우리는 Explicit memory로 대상의 비디오에서 입 관련 이미지 패치를 직접 검색하여 메모리 구성을 더 쉽게 하고 모델을 더 시각적인 세부 정보로 보완한다.  
+해결책은 아래와 같다.  
+1) 메모리 네트워크가 렌더링 프로세스를 개선하기 위해 더 많은 ID 정보를 제공하는 paired spatial features(사전 훈련된 ResNet-18에서 추출)과 id features(사전 훈련된 ArcFace에서 추출)을 저장한다는 점에서 다르다. 대조적으로, 우리는 Explicit memory로 대상의 비디오에서 입 관련 이미지 패치를 직접 검색하여 메모리 구성을 더 쉽게 하고 모델을 더 시각적인 세부 정보로 보완한다.  
 2) SyncTalkFace는 오디오 립 메모리를 활용했다, 여기서 audio feature와 lip feature는 각각 키와 값으로 간주된다. 오디오와 시각적 외관 사이의 큰 차이 때문에, 두 가지 양식을 정렬하기 위해 명시적인 제약 조건을 사용했다. 그러나 하나의 메모리에서 의미론과 시각적 세부 사항을 동시에 정렬하는 것은 여전히 어렵다. 대조적으로, 우리의 MemFace는 의미론적으로 정렬된 정보와 픽셀 수준의 세부 사항을 각각 보완하기 위해 Implicit memory와 explicit memory를 사용하여 예측을 더 쉽게 만든다.
+
+## 3. MemFace
+### Preliminaries.
+Raw audio waveform 대신 DeepSpeech2를 이용하여 오디오 feature A를 추출한다. 중간 표현으로 3D facemodel의 blendshape coefficient를 선택한다.  
+본 논문에서는 Fake it till you make it을 따라 각 파라미터를 labeling 한다. 우리 모델에서 3D 얼굴을쉽게 활용하기 위해 우리는 3D face를 perspective camera 모델을 이용하여 2D 이미지 평면에 사영하여 I3D를 얻는다. 3D 얼굴 모델의 coefficient를 이용해 3D 얼굴을 reconstruct하고 vertex O 좌표를 추출한다. 입 관련 영역이 발화와 연관되었으므로 사전 정의된 입 관련 vertex Om만을 사용한다. 획득된 Om은 audio2expression 모델과 rendering 모델에서 함께 사용한다.  
+### Method overview.  
+![image](https://user-images.githubusercontent.com/40943064/225829900-c38d41ef-b23b-4518-bd80-98da32be43a4.png)
+
