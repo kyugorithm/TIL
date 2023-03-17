@@ -48,4 +48,10 @@ Raw audio waveform 대신 DeepSpeech2를 이용하여 오디오 feature A를 추
 본 논문에서는 Fake it till you make it을 따라 각 파라미터를 labeling 한다. 우리 모델에서 3D 얼굴을쉽게 활용하기 위해 우리는 3D face를 perspective camera 모델을 이용하여 2D 이미지 평면에 사영하여 I3D를 얻는다. 3D 얼굴 모델의 coefficient를 이용해 3D 얼굴을 reconstruct하고 vertex O 좌표를 추출한다. 입 관련 영역이 발화와 연관되었으므로 사전 정의된 입 관련 vertex Om만을 사용한다. 획득된 Om은 audio2expression 모델과 rendering 모델에서 함께 사용한다.  
 ### Method overview.  
 ![image](https://user-images.githubusercontent.com/40943064/225829900-c38d41ef-b23b-4518-bd80-98da32be43a4.png)
+Audio feature A와 대상 인물의 template video 입력을 구성한다. 
+(Neural voice puppetry, Photorealistic audio-driven video portraits, Audio-driven talking face video generation with
+learning-based personalized head pose) 방법을 따라 얼굴에 마스킹을 한다. 예측이 얼굴에 집중되도록 하기 위해 템플릿 비디오의 나머지 부분을 입력으로 사용하여 추가 정보를 생성한다. 
+audio2expression 모델 f를 사용하여 추출된 audio feature A를 받아들이고 입과 관련된 표현 계수 a^exp를 예측한다. 그런 다음 a^exp는 템플릿 비디오의 원래 shape 및 pose coefficient와 병합되고 예측한 expression coefficient에 해당하는 I3D를 생성한다. 다음으로, neural-rendering 모델 g는 I3D와 maked template video를 가져와 I3D의 입 모양에 해당하는 최종 결과를 출력한다. 이러한 방식으로 audio2expression 모델은 립싱크 품질을 담당하고 반면, neural-rendering은 렌더링 품질을 담당한다.  
+
+그러나 각 단계는 입력에 의해 누락된 정보(예: 습관, 주름 등)를 예측하도록 최적화되어 있기 때문에 이 2단계 프레임워크는 여전히 일대일 매핑 어려움을 해결하기에 충분하지 않다. 따라서 missing information을 정보를 memory로 보완할 것을 제안한다(자세한 내용은 3.1절 참조). 또한,  f와 g가 말하는 얼굴 생성에서 서로 다른 역할을 한다는 점을 고려하여, 그에 따라 missing information을 보완하기 위한 두 가지 변형의 메모리를 고안한다. 메모리를 f와 g에 적용하기 위한 세부사항은 각각 3.2절과 3.3절에 자세히 설명되어 있다.  
 
