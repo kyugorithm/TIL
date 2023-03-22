@@ -72,7 +72,6 @@ VQ codebook을 얼굴 dictionary로 사용하고 parallel decoder 설계를 통�
 ### 기여사항
 1. HQ detaill 정보를 가지는 VQ dcitionary를 제안한다. FR에서 compression patch size의 중요성과 함께 VQ 분석을 통해 잠재성과 한계를 보인다.
 2. VQ codebook(HQ의 디테일을 손상시키지 않으면서 fidelity를 유지하는)으로부터 입력과 texture feature를 점진적으로 fuse 하기위해 Parallel decoder를 제안한다.
-![image](https://user-images.githubusercontent.com/40943064/226803616-11a26314-affb-490a-acdc-0ba23aa2671c.png)
 
 ## 2. Related Works
 ### Vector-Quantized Codebook
