@@ -75,7 +75,7 @@ VQ codebook을 얼굴 dictionary로 사용하고 parallel decoder 설계를 통�
 
 ## 2. Related Works
 ### Vector-Quantized Codebook
-VQVAE(NIPS/2017) : VQ codebook은 VQ-VAE에서 처음 도입되었다. 인코더 네트워크 출력이 discrete하며 코드북에 캡슐화된 prior가 정적이 아니라 학습됩니다.  
+VQVAE(NIPS/2017) : VQ codebook은 VQ-VAE에서 도입되었다. 인코더 네트워크 출력이 discrete하며 코드북에 캡슐화된 prior가 정적이 아니라 학습된다.  
 VQVAE2(NIPS/2019) : 더 나은 이미지 생성을 위한 멀티스케일 코드북을 도입했다.  
 VQGAN(CVPR/2021) : 적대적 목적으로 코드북을 훈련하므로 코드북은 높은 지각 품질을 달성할 수 있다.  
 
