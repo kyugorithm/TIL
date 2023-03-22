@@ -81,4 +81,25 @@ VQGAN(CVPR/2021) : 적대적 목적으로 코드북을 훈련하므로 코드북
 
 코드북 사용을 개선하기 위해 일부 연구에서는 L2 normalization 혹은 periodically re-initialization 같은 학습 기술을 탐색한다.  
 이러한 VQ codebook은 patch tokenizer이며 이미지 생성, 다중 모달 생성 및 대규모 사전 훈련과 같은 여러 작업에 채택될 수 있다.  
-VQ codebook을 사용하여 토큰 기능을 얻는 이전 작업과 달리 VQ 코드북을 HQ 얼굴 세부 정보 사전으로 탐색한다.
+VQ codebook을 사용하여 token feature를 얻는 이전 작업과 달리 VQ codebook을 HQ facial details dictionary로 탐색한다.
+
+## 3. Methodology
+저하된 얼굴의 fidelity를 유지하면서 사실적인 얼굴 detail로 고품질 얼굴을 복원하며 1) VQ dictionary, 2) parallel decoder 두 가지 핵심 요소를 탐색한다.  
+![image](https://user-images.githubusercontent.com/40943064/226813682-fc449dd3-3a1d-44b6-a896-7a09ba4fbfb8.png)
+VQFR에는 encoder, parallel decoder 및 pretrained HQ codebook이 포함되어 있다. 먼저 VQ 기법에 의해 encoder-decoder 구조로 HQ face 만으로 VQ 코드북을 학습한다.  
+다음 degraded face는 다운샘플링 계수 f를 사용하여 압축된 latent representation으로 인코딩된다. 이 latent representation의 각 공간 위치에서 latent vector를 HQ codebook에서 가장 가까운 코드로 대체한다. 그 후, 대체된 latent representation은 이미지 공간, 즉 고품질 얼굴 디테일로 복원된 이미지로 다시 디코딩된다.  
+
+3.1. : FR에서 texture dictionary 역할로써 VQ 기법의 잠재성과 한계
+3.2. : 풍부한 high-quality facial detail을 유지하면서 fidelity를 보존하는 parallel decoder
+3.3. : Loss function
+
+### 3.1 Vector-Quantized Codebook
+### 3.2 Parallel Decoder
+### 3.3 Model Objective
+#### Pixel Reconstruction Loss
+L1
+#### Code Alignment Loss
+#### Perceptual Loss
+
+#### Adversarial Loss
+
