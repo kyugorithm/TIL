@@ -36,13 +36,25 @@ GLEAN은 StyleGAN의 prior를 효과적으로 사용하기 위해 네트워크 �
 3) Controllability  
 
 ### Paragpraph5. 
-먼저 고정 이미지 사이즈 해결을 위한 핵심 솔루션을 구성하는 StyleGAN의 translation equivariant를 분석한다.  
+고정 사이즈 솔루션을 구성하는 StyleGAN의 translation equivariant를 분석한다.  
 VToonify는 StyleGAN과 I2I 변환의 장점을 결합하여 제어 가능한 high-resolution portrait video style transfer를 달성한다.  
-고해상도 style transfer를 위해 Toonify 방식을 채택하지만 고정 크기 입력 기능과 저해상도 레이어를 제거하여 I2I 방식과 유사하게 다양한 비디오 크기를 지원하는 새로운 완전 컨벌루션 인코더 생성기 아키텍처를 구성한다.  
+High-resolution style transfer를 위해 Toonify 방식을 채택하지만 고정 크기 입력 기능과 저해상도 레이어를 제거하여 I2I 방식과 유사하게 다양한 비디오 크기를 지원하는 새로운 완전 컨벌루션 인코더 생성기 아키텍처를 구성한다.  
 원래의 high-level style code와 별도로, 생성기에 대한 추가 contents condition으로 입력 프레임의 multi-scale contents feature를 추출하도록 encoder를 학습시켜 style transfer 중에 프레임의 주요 시각적 정보가 더 잘 보존될 수 있도록 한다.  
 Chen을 따라 합성된 paired 데이터에서 StyleGAN을 추출한다.  
 또한 flickering을 제거하기 위해 단일 합성 데이터에 대한 카메라 모션 시뮬레이션을 기반으로 flicker supression loss를 제안한다.  
 따라서 VToonify는 실제 데이터, 복잡한 비디오 합성 또는 명시적인 optical flow 없이 빠르고 일관된 비디오 번역을 학습할 수 있다.  
 Chen의 표준 I2IT 프레임워크와 달리 StyleGAN 모델을 G에 통합하여 데이터와 모델을 모두 추출한다.  
 따라서 VToonify는 StyleGAN의 스타일 조정 유연성을 상속할 수 있다.  
-StyleGAN을 생성기로 재사용함으로써 인코더만 훈련하면 되므로 훈련 시간과 훈련 난이도가 크게 줄어든다.
+StyleGAN을 생성기로 재사용함으로써 인코더만 훈련하면 되므로 훈련 시간과 훈련 난이도가 크게 줄어든다.  
+
+### Paragraph6. 
+두 가지 대표적인 StyleGAN 백본인 Toonify 및 DualStyleGAN의 portrait video toonification을 위한 것이다.  
+Toonify : 데이터셋의 전체 스타일을 기반으로 얼굴 스타일을 지정하고, DualStyleGAN : 데이터셋의 단일 이미지를 사용하여 그림 1의 오른쪽 상단과 같이 세부적인 스타일을 지정한다.  
+DualStyleGAN의 스타일 제어 모듈을 적용하여 인코더의 기능을 조정하고 데이터 생성 및 교육 목표를 정교하게 설계하기 위해 VToonify는 DualStyleGAN의 유연한 스타일 제어 및 스타일 정도 조정을 상속하고 이러한 기능을 비디오로 확장한다(예: 그림 1의 오른쪽 상단). 실험에서 우리는 VToonify가 백본만큼 고품질의 양식화된 프레임을 생성할 뿐만 아니라 입력 프레임의 세부 사항을 더 잘 보존한다는 것을 보여준다.  
+
+### 요약
+
+• StyleGAN의 fixed-crop 제한을 분석하고 StyleGAN의 translation equivariant를 기반으로 해당 솔루션을 제안
+• 정렬되지 않은 얼굴과 다양한 비디오 크기를 지원하는 제어 가능한 고해상도 세로 비디오 스타일 전송을 위한 새로운 fully convolution 프레임워크를 제안
+• Toonify/DualStyleGAN 백본을 기반으로 VToonify를 구축하고 데이터 및 모델 측면에서 백본을 추출하여 컬렉션 기반 및 예시 기반 세로 비디오 스타일 전송을 실현
+• 원칙에 입각한 데이터 친화적인 교육 체계를 설계하고 비디오 스타일 전송 모델을 교육하는 데 효율적이고 효과적인 시간적 일관성을 위한 optical flow 없는 flicker supression을 제안
