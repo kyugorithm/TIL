@@ -54,7 +54,7 @@ DualStyleGAN의 스타일 제어 모듈을 적용하여 인코더의 기능을 �
 
 ### 요약
 
-• StyleGAN의 fixed-crop 제한을 분석하고 StyleGAN의 translation equivariant를 기반으로 해당 솔루션을 제안
-• 정렬되지 않은 얼굴과 다양한 비디오 크기를 지원하는 제어 가능한 고해상도 세로 비디오 스타일 전송을 위한 새로운 fully convolution 프레임워크를 제안
-• Toonify/DualStyleGAN 백본을 기반으로 VToonify를 구축하고 데이터 및 모델 측면에서 백본을 추출하여 컬렉션 기반 및 예시 기반 세로 비디오 스타일 전송을 실현
-• 원칙에 입각한 데이터 친화적인 교육 체계를 설계하고 비디오 스타일 전송 모델을 교육하는 데 효율적이고 효과적인 시간적 일관성을 위한 optical flow 없는 flicker supression을 제안
+• StyleGAN의 fixed-crop 제한을 분석하고 StyleGAN의 translation equivariant를 기반으로 해당 솔루션을 제안  
+• 정렬되지 않은 얼굴과 다양한 비디오 크기를 지원하는 제어 가능한 고해상도 portraits video style transfer를 위한 새로운 fully convolution 프레임워크를 제안  
+• Toonify/DualStyleGAN 백본을 기반으로 VToonify를 구축하고 데이터 및 모델 측면에서 백본을 추출하여 컬렉션 기반 및 예시 기반 세로 비디오 스타일 전송을 실현  
+• 원칙에 입각한 데이터 친화적인 교육 체계를 설계하고 비디오 스타일 전송 모델을 교육하는 데 효율적이고 효과적인 시간적 일관성을 위한 optical flow 없는 flicker supression을 제안  
