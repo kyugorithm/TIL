@@ -36,11 +36,11 @@ GLEAN은 StyleGAN의 prior를 효과적으로 사용하기 위해 네트워크 �
 3) Controllability  
 
 ### Paragpraph5. 
-먼저 고정 이미지 사이즈 해결을 위한 핵심 솔루션을 구성하는 StyleGAN의 translation equivariant를 분석한다. 
+먼저 고정 이미지 사이즈 해결을 위한 핵심 솔루션을 구성하는 StyleGAN의 translation equivariant를 분석한다.  
 VToonify는 StyleGAN과 I2I 변환의 장점을 결합하여 제어 가능한 high-resolution portrait video style transfer를 달성한다.  
-우리는 고해상도 스타일 전송을 위해 Pinkney의 방식을 따르는 StyleGAN 아키텍처를 채택하지만 고정 크기 입력 기능과 저해상도 레이어를 제거하여 StyleGAN을 채택하여 I2I 방식과 유사한 다양한 비디오 크기를 지원하는 새로운 완전 컨벌루션 인코더 생성기 아키텍처를 구성한다.  
-원래의 high-level style code와 별도로, 생성기에 대한 추가 콘텐츠 condition으로 입력 프레임의 다중 스케일 콘텐츠 feature를 추출하도록 인코더를 학습시켜 스타일 전송 중에 프레임의 주요 시각적 정보가 더 잘 보존될 수 있도록 합니다.  
-Chen을 따라 합성된 쌍 데이터에서 StyleGAN을 추출합니다.  
+고해상도 style transfer를 위해 Toonify 방식을 채택하지만 고정 크기 입력 기능과 저해상도 레이어를 제거하여 I2I 방식과 유사하게 다양한 비디오 크기를 지원하는 새로운 완전 컨벌루션 인코더 생성기 아키텍처를 구성한다.  
+원래의 high-level style code와 별도로, 생성기에 대한 추가 contents condition으로 입력 프레임의 multi-scale contents feature를 추출하도록 encoder를 학습시켜 style transfer 중에 프레임의 주요 시각적 정보가 더 잘 보존될 수 있도록 한다.  
+Chen을 따라 합성된 paired 데이터에서 StyleGAN을 추출한다.  
 또한 flickering을 제거하기 위해 단일 합성 데이터에 대한 카메라 모션 시뮬레이션을 기반으로 flicker supression loss를 제안한다.  
 따라서 VToonify는 실제 데이터, 복잡한 비디오 합성 또는 명시적인 optical flow 없이 빠르고 일관된 비디오 번역을 학습할 수 있다.  
 Chen의 표준 I2IT 프레임워크와 달리 StyleGAN 모델을 G에 통합하여 데이터와 모델을 모두 추출한다.  
