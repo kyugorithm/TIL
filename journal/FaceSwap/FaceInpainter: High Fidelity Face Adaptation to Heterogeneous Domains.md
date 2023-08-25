@@ -125,4 +125,6 @@ Data Augmentation: Cropping, flipping, rotation, blur, variations in brightness,
 
 1) Perceptual Path Length Loss
 2) Residual map of JR-Net to refine the result.
+3) Paper: Recovering realistic texture in image super-resolution by deep spatial feature transform
+4) Paper: Blind face restoration via deep multi-scale component dictionaries
 
