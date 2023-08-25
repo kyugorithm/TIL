@@ -1,4 +1,4 @@
-![image](https://github.com/kyugorithm/TIL/assets/40943064/5b0df474-5856-423c-be34-686eaa283069)## Abstract
+## Abstract
 **Two-stage** framework for controllable Identity Guided Face Inpainting (IGFI) under heterogeneous domains.  
 
 
