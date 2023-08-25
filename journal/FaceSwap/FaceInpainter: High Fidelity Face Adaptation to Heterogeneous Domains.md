@@ -1,4 +1,4 @@
-## Abstract
+![image](https://github.com/kyugorithm/TIL/assets/40943064/5b0df474-5856-423c-be34-686eaa283069)## Abstract
 **Two-stage** framework for controllable Identity Guided Face Inpainting (IGFI) under heterogeneous domains.  
 
 
@@ -62,17 +62,17 @@ Ic(StyleGAN output) and bg fused to maintain Hi-fi scene.
 <img src="https://github.com/kyugorithm/TIL/assets/40943064/4858f1b3-dd1c-4edc-80d9-bef3986dacdb" width=300>
 
 ### Loss
-Lid : Cosine Similarity between Xs and Y^st  
-Lexp : expression 3dmm param. loss between Xt and Y^st  
-Lpos : pose 3dmm param. loss between Xt and Y^st  
-LGAN : pass  
-Lrec : applied when Xs and Y^st are same  
-LCX : Contextual loss to avoid artifacts where ArcFace causes hair in the source to appear. It allows for shape deformation while preserving the texture.  
-Lppl :  
+Lid: Cosine Similarity between Xs and Y^st  
+Lexp: expression 3dmm param. loss between Xt and Y^st  
+Lpos: pose 3dmm param. loss between Xt and Y^st  
+LGAN: pass  
+Lrec: applied when Xs and Y^st are same  
+LCX: Contextual loss to avoid artifacts where ArcFace causes hair in the source to appear. It allows for shape deformation while preserving the texture.  
+Lppl:  
 The technique commonly used in StyleGAN to improve **the diversity and consistency of generated images**.  
 It ensures that small changes in the latent code result in proportionate changes in the output image, **preventing extreme variations**.   
 When applied to face-swapping models like FaceSwap, it allows for more nuanced and natural adjustments to facial features and styles.  
-By capturing subtle differences between the original and target faces more effectively it creates more natural-looking results.  
+By capturing subtle differences between the original and target faces more effectively creates more natural-looking results.  
 Additionally, this regularization prevents the model from over-focusing on specific features, promoting better generalization across various styles and attributes.  
 Overall, using Path Length Regularization in SFI-Net training can lead to more stable and natural face-swapping outcomes for a variety of inputs.
 
@@ -85,6 +85,39 @@ To make the generated image occlusion-aware, a **residual map** representing the
 This approach aims to improve **the finesse and adaptability of the face-swapping process**.  
 
 <img src="https://github.com/kyugorithm/TIL/assets/40943064/d30779ce-116d-4b78-b781-9ad7e8654d91" width=500>    
+
+
+
+Embeddings(Attribute: 512 and extracted using VGG. + ID embedding of Xs) => AdaIN to transfer feature styles of swapped, delta Xt
+![image](https://github.com/kyugorithm/TIL/assets/40943064/8199dbdb-72bf-41ab-b677-9222c085f361)
+
+
+Moreover, model uses DFDnet based SR shcematic based on multi-scale component dictionaries from high-quality reference images.
+
+Specifically, in DFT, the offline generated dictionaries are modulated via AdaIN, based on texture features of the corresponding eye, nose, and mouth from { ˆYs,t, △Xt}. Then the matched restored features are used for feature modulation in Dec, via the corresponding SFT.
+
+### Loss
+LCX: Contextual loss to avoid artifacts where ArcFace causes hair in the source to appear. It allows for shape deformation while preserving the texture.  
+Lid: Cosine Similarity between Xs and Yst  
+Lrec: applied when Xs and Y^st are same  
+Lvgg: VGG19 feature l2 loss between Xt and Yst(if Xs=Xt) otherwise 0  
+LGAN: pass  
+
+## 4. Experiment
+
+### SFI-Net
+Datasets: CelebA-HQ, FFHQ, VGGFace(256×256)  
+Face Alignment: Five point landmarks (Joint cascade face detection and alignment).
+Get 3DMM Parameters using 3DDFA2
+Dimensionality: zexp(Xt): 10, zpos(Xt): 12, zid(Xs) & ztex(Xfg t) & ztex(Xt): 512
+Fusion Module Output Dimension: 1024  
+Equation Weights: 'id'=20, other weights=10  
+
+### JR-Net
+Datasets: CelebA-HQ, FFHQ, VGGFace(512x512)
+Warping: Warps ˆYt,t according to facial landmarks of Xt. Focuses more on occlusion via △Xt.
+Architecture Blocks: 8 AdaIN residual blocks + Downsampling Blocks: 3 + Upsampling Blocks: 4  
+Data Augmentation: Cropping, flipping, rotation, blur, variations in brightness, saturation, contrast, and color jittering  
 
 
 
