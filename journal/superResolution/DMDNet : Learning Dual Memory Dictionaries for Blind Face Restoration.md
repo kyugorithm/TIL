@@ -34,6 +34,6 @@ A new HQ dataset has been constructed to foster research in specific face restor
 ## Tech flow
 (2022-TPAMI) DMDNet: Learning Dual Memory Dictionaries for Blind Face Restoration  
 (2020-CVPR) ASFFNet: Enhanced blind face restoration with multi-exemplar images and adaptive spatial feature fusion  
-(2020-ECCV) DFDNet: Blind Face Restoration via Deep Multi-scale Component Dictionaries
+(2020-ECCV) DFDNet: Blind Face Restoration via Deep Multi-scale Component Dictionaries  
 (2019-CVPRW) GWAInet: Exemplar guided face image super-resolution without facial landmarks  
 (2018-ECCV) GFRNet: Learning Warped Guidance for Blind Face Restoration  
