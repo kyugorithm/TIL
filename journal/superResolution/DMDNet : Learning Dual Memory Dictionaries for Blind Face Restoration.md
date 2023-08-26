@@ -31,6 +31,11 @@ A new HQ dataset has been constructed to foster research in specific face restor
 
 ## Introduction
 
+### Contribution
+1. Instead of directly mapping low to HQ features, we use external HQ features to aid blind face restoration learning.
+2. Manage both referenced and unreferenced degraded images using dual memory dictionaries for generic and specific features.
+3. A DTM(Dictionary Transform Module) adaptively fuses the two types of dictionaries, working well even when references are absent.
+
 ## Tech flow
 (2022-TPAMI) DMDNet: Learning Dual Memory Dictionaries for Blind Face Restoration  
 (2020-CVPR) ASFFNet: Enhanced blind face restoration with multi-exemplar images and adaptive spatial feature fusion  
