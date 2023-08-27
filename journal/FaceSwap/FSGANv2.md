@@ -1,4 +1,4 @@
-
+![image](https://github.com/kyugorithm/TIL/assets/40943064/3a73b8e1-5a23-4fec-9774-d233c146d325)
 ## Abstract
 
 ### 1) Subject Agnostic Swapping
@@ -69,3 +69,10 @@ Gb = Enhancer(Global(1; 1; 1); 1)
 ![image](https://github.com/kyugorithm/TIL/assets/40943064/9d593c76-2e24-47f2-bdf7-41daedb200d8)
 
 ### 3.3 Training losses
+(Reconstruction Loss : Domain specific perceptual loss + Reconstruction loss) + Adversarial Loss
+Trained model to compare high-frequency details using multiple face recognition and attribute classification datasets instead of a generic ImageNet-based CNN  
+
+### 3.4 Face Segmentation
+Improvements: The inclusion of hair information and data augmentation techniques aim to improve the model's stability and accuracy.
+
+### 3.5 Face reenactment
