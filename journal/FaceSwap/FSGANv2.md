@@ -1,4 +1,3 @@
-![image](https://github.com/kyugorithm/TIL/assets/40943064/3a73b8e1-5a23-4fec-9774-d233c146d325)
 ## Abstract
 
 ### 1) Subject Agnostic Swapping
