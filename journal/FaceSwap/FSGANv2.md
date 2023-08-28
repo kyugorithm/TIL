@@ -3,19 +3,19 @@
 ### 1) Subject Agnostic Swapping
 Swapping does not require training on specific face pairs, making it more flexible.
 
-### 2) Iterative Deep Learning for Reenactment
+### 2) Iterative Deep Learning for Reenactment(Iterative Gr)
 Employs a new iterative deep learning approach to adjust significant variations in pose and facial expressions.
 
 ### 3) Application on Single Images and Video
 Can be applied to either a single image or a sequence of video frames.
 
-### 4) Continuous Interpolation for Video
+### 4) Continuous Interpolation for Video(Delaunay triangle)
 Uses continuous interpolation, Delaunay Triangulation, and barycentric coordinates for smoother face views for video sequences.
 
-### 5) Handling Occluded Regions
+### 5) Handling Occluded Regions(Gc: inpainting)
 A face completion network is used to handle occlusions in the facial region.
 
-### 6) Seamless Face Blending
+### 6) Seamless Face Blending(Gb: blending)
 Uses a face blending network that leverages a novel **Poisson blending loss** for a smooth transition while preserving skin color and lighting.
 
 ## Introduction
