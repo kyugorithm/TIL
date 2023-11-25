@@ -1,29 +1,28 @@
-# Cross-Domain Style Mixing for Face Cartoonization
+초록
+이전 방법들은 많은 트레이닝 이미지가 필요하거나 추상적인 카툰 얼굴을 지원하지 못하는 등 중요한 제약들을 제대로 해결하지 못했어.
+최근에 Toonify는 제한된 수의 트레이닝 이미지만 필요로 했지만, 여전히 좁은 사용 사례를 가지고 있어. 이는 기존의 문제들을 그대로 물려받았기 때문이야.
 
-## Abstract
-
-Previous methods not properly addressed the critical constraints, such as requiring a large number of training images or the lack of support for abstract cartoon faces. 
-Recently, Toonify required only a limited number of training images; however, its use cases are still narrow as it inherits the remaining issues.  
-
-#### Solution
-Cross-domain Style mixing(CDSM): combines two latent codes from two different domains.  
-Effectively stylizes faces into multiple cartoon characters at various face abstraction levels using **only a single G without even using a large number of training images.**cartoons  
+### Solution
+Cross-Domain Style Mixing(CDSM): 두 가지 다른 도메인의 두 가지 latent codde를 결합  
+많은 트레이닝 이미지를 사용하지 않고 하나의 G만 사용하면서도 다양한 cartoon 캐릭터 얼굴을 효과적으로 스타일화할 수 있다.  
 
 ## 1. Introduction
-**Portrait stylization to the cartoon domain**  
-I2IT is a notable approach (Cartoongan, U-GAT-IT) but requires many of cartoon images and exhaustive GPU resources.  
-In addition, it often lacks the ability to express **character-specific cartoon features**, thus limiting its practical application.  
+Cartoongan, U-GAT-IT 같은 I2IT는 주목할 만한 접근법인데, 카툰 이미지가 많이 필요하고 광범위한 GPU 자원을 소모하며 특정한 카툰 특징을 표현하는 데 종종 부족해서 한계가 있다.
 
-To mitigate these issues,  
-Toonify:  
-Toonify uses layer swapping using 2 StyleGANs and is trained on hundreds of training images.  
-But the method suffers from critical quality issues(cannot be expressed in fine detail and the colors may be distorted in some parts of the output images.)  
-These problems deteriorate when the texture and abstraction level of the target cartoon character are vastly different from those of human faces, as commonly seen in the style of Japanese animation.
-레이어 스왑을 쓰고 수백장 이미지를 이용하여 학습하나 상세하게 표현될 수 없거나 출력 이미지 일부분의 색상이 왜곡된다. 이러한 문제는 특히 카툰 도메인의 추상화(e.x., 데포르메)가 클 수록(일본 애니메이션) 커진다.
+이 문제들을 완화하기 위해,
+Toonify는 2개의 StyleGAN을 사용한 레이어 스왑과 수백 개의 트레이닝 이미지를 사용해 학습하는데, 여기서 중요한 품질 문제(세부적으로 표현이 안 되거나 출력 이미지의 일부 색상 왜곡)가 있다. 또한 카툰 도메인의 추상화가 클수록(예를 들어, 일본 애니메이션 스타일에서 자주 보이는 것처럼) 더 심해진다.  
 
-#### Solution
-CDSM combines latent codes from two different domains. 
-We obtain the latent codes for both the input natural face (source domain) and the cartoon (target domain) images and perform style mixing in the same latent space of the layer-swapped generator (Figure 3). 
-In detail, we first carefully design inversion strategies for generating the latent codes for the source and target domains. 
-We employ a pretrained encoder (e.g., ReStyle [2]) for the source domain and a projection protocol for the target domain, both in the expressiveW+ space [1]. 
-This makes the latent codes suitable for combining. Then, we perform style mixing on them in the S space (StyleSpace [24]).
+### Solution
+두 다른 도메인의 잠재 코드를 결합한다. 입력된 실제 얼굴(source domain)과 카툰(target domain) 이미지들에 대한 latent code를 얻고, later swap된 G의 같은 latent space에서 스타일 혼합을 수행한다.  
+즉, source/target domain에 대한 latent code를 생성하기 위해 신중한 inversion을 설계한다. source domain에는 사전 학습 인코더(예를 들어, ReStyle)를 사용하고, target domain에는 projection protocol**을 사용한다.(모두 표현력 있는 W+ 공간에서 작업).  
+이렇게 해서 latent code를 결합하기에 적합하게 만들고 S(style space) space에서 각 스타일 혼합한다.  
+
+이 방법은 성공적으로 카툰의 세부적인 특징들을 유지하지만, Tonify의 layer swap에서도 발생하는 문제와 동일하게 출력에서 색상 왜곡이 있다는 걸 발견한다. 분석하면, layer swapped G는 사전 트레이닝된 인코더로부터 입력받은 잠재 코드를 사용할 때 도메인 차이 때문에 색상 아티팩트가 있는 이미지를 만들어내는 경향이 있기 때문에 tRGB replacement 방법을 적용한다. 이는 입력 이미지의 스타일 파라미터(s∈S)의 일부를 조작해서, 출력 이미지가 목표 cartoon domain 색상 분포를 따르게 하고, 결국 색상 아티팩트를 성공적으로 제거하게 해준다.  
+
+제안 방법은 품질과 안정성 측면에서 간단하지만 효과적이며 단일 G가 다양한 추상화 수준에서 카툰 얼굴에 대한 일괄 스타일화를 수행할 수 있게 한다(Figure 1 참고). 이전 방법들은 캐릭터별 “G”를 준비해야 했지만 제안 방법이 character별 “latent”를 활용하기 때문이다. 우리 프레임워크는 추가적인 학습 트릭(예를 들어, 보조 손실이나 정규화 같은)이나 StyleGAN2 G의 미세 조정 외에 다른 아키텍처 조정이 필요하지 않다는 점도 강조한다. 그래서, 학습및 배포에서의 높은 효율성 덕분에 활용성이 높다.
+
+### Contribution
+
+• 다양한 추상적 얼굴과 스타일을 가진 카툰 스타일화로서 layer swap 방식의 한계 조사  
+• 카툰 도메인에 특화된 단순하지만 고품질 stylization 프레임워크를 제안한다. 최소한의 학습과 데이터셋(<100)만 필요해하며 이때 단일 G가 캐릭터 ID를 바꿔주는 것만으로 여러 카툰 캐릭터 얼굴을 스타일화할 수 있다.  
+• 몇 가지 추가 모듈과 결합하면, 심지어 더 우수한 사진이나 비디오 카툰화 결과를 제공할 수 있다는 걸 보인다.
