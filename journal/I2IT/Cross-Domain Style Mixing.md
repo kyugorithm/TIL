@@ -54,9 +54,9 @@ Layer swap 방식은 inversion을 활용하는데 이 때문에 색상에 한정
 ## 4. Method
 
 I2I 방법의 한계를 극복하고 layer swap 방법의 두 가지 주요 문제를 해결하는 새로운 portrait stylization, 즉 CDSM을 제안한다. 이전 방법들과 달리, 단일의 G로 다양한 cartoon 스타일을 표현하기 때문에 실용성이 높다.  
-이전 스타일 혼합 방법들(Encoding in style, AgileGAN)은 같은 domain에서 두 개의 잠재 코드를 가져와 사전 학습된 G를 통해 출력을 해석하지만 우리는 서로 다른 domain에 속하는 latent code를 결합하고 layer swap된 G를 사용해서 결과를 해석한다. 이를 위해, 각 domain에 대해 각기의 inversion을 사용하고 S(style) space에서 style mixing을 수행한다. 색상 왜곡 문제를 해결하기 위해 tRGB swapping을 적용해(Figure 3 참고).  
+이전 스타일 혼합 방법들(Encoding in style, AgileGAN)은 같은 domain에서 두 개의 잠재 코드를 가져와 사전 학습된 G를 통해 출력을 해석하지만 우리는 서로 다른 domain에 속하는 latent code를 결합하고 layer swap된 G를 사용해서 결과를 해석한다. 이를 위해, 각 domain에 대해 각기의 inversion을 사용하고 S(style) space에서 style mixing을 수행한다. 색상 왜곡 문제를 해결하기 위해 tRGB swapping을 적용한다(Figure 3 참고).  
 
-4.1. Framework
+### 4.1. Framework  
 xf(real), xc(대상 cartoon 캐릭터 ID)  
 목표: 입력(xf)을 원하는 캐릭터(c)로 스타일화하여 ^xc를 생성  
 1) 먼저 layer swap 방법(Toonify)의 G_swap를 구성한다.
@@ -67,18 +67,28 @@ xf(real), xc(대상 cartoon 캐릭터 ID)
 CDSM(wf;wc;m) = SM(R(sf;sc),sc,m)
 sf = A(wf), sc = A(wc)
 
-여기서 A는 StyleGAN2 생성기의 레이어별 affine 레이어를 나타내며, StyleSpace에서 제안된 것처럼 덜 엉킨 스타일 파라미터 s 2 S를 제공해.
+여기서 A는 StyleGAN2 생성기의 레이어별 affine 레이어를 나타내며, StyleSpace에서 제안된 것처럼 덜 엉킨 스타일 파라미터 s(∈S)를 제공해.
 
-4.2. StyleSpace에서의 스타일 혼합
-우리는 우리 프레임워크에서 StyleSpace에서의 스타일 혼합 방법 SM(:)에 대해 먼저 설명할게. 기존의 스타일 혼합 방법들과 달리, 우리 방법은 두 가지 다른 인버전 기술을 사용한 다음 S 공간에서 스타일 혼합을 수행해.
+### 4.2. StyleSpace에서의 스타일 혼합
+프레임워크에서 StyleSpace에서의 스타일 혼합 방법 SM(:)에 대해 먼저 설명한다. 기존의 SM과 달리, 우리 방법은 두 가지 다른 inversion을 사용한 다음 S 공간에서 스타일 혼합을 수행한다.  
 
-자연 이미지를 위한 인버전.
-특히, 우리는 우리 프레임워크에서 wf를 얻기 위해 Restyle 인코더를 선택했는데, 이 인코더는 우수한 재구성과 특징 보존으로 알려진 W+ 공간을 기반으로 해. 게다가, 그것의 feed-forward 추론 특성은 많은 실용적인 애플리케이션에 이상적이야. 그러나, 이 인코더를 사용하면, 레이어 스왑된 생성기가 예상치 못하게 색상 왜곡 이미지를 만들어낸다는 것을 발견했어. 이 문제는 우리 프레임워크의 tRGB 교체 방법(Section 4.3)에 의해 완전히 해결되어, 품질 저하 없이 인코더를 견고하게 사용할 수 있도록 해.
+#### Inversion for the natural image.
+특히, 프레임워크에서 wf를 얻기 위해 Restyle 인코더를 선택했는데, 이 인코더는 우수한 재구성과 특징 보존으로 알려진 W+ 공간을 기반으로 하고 feed-forward 추론 특성은 많은 실용적인 애플리케이션에 이상적이다. 그러나, 이 인코더를 사용하면, 레이어 스왑된 생성기가 예상치 못하게 색상 왜곡 이미지를 만들어낼 수 있다. 이 문제는 tRGB 교체 방법(Section 4.3)에 의해 완전히 해결되어, 품질 저하 없이 인코더를 견고하게 사용할 수 있도록 한다.  
 
-카툰 이미지를 위한 인버전.
-카툰 이미지 wc의 잠재 코드를 생성하는 것은 다른 인버전 방식을 필요로 해. 먼저, 코드는 모두 look-up table에 저장되어 있고 나중에 원하는 캐릭터 ID로 요청할 때 조회되므로 사전에 처리될 수 있어. 둘째, 각 캐릭터 ID에 대해 제한된 수의 학습 이미지만 존재하기 때문에 인코더를 트레이닝하는 것은 단순하지 않아.
+#### Inversion for the cartoon image.
+wc를 생성하는 것은 다른 inversion 방식을 필요로 하다. 먼저, 코드는 모두 look-up table에 저장되어 있고 나중에 원하는 캐릭터 ID로 요청할 때 조회되도록 사전에 처리된다. 둘째, 각 캐릭터 ID에 대해 제한된 수의 학습 이미지만 존재하기 때문에 인코더를 트레이닝하는 것은 단순하지 않다.  
+누군가는 StyleGAN2에 대해 높은 충실도를 가진 이미지를 생성하는 직관적인 방법으로 Gswap의 원래 잠재 공간에서 wc를 샘플링하는 경향이 있을 수 있어. 그러나, 우리는 이것이 Gswap에 대해 다르게 동작한다는 것을 발견했다(Figure 2 참고). Gswap의 저해상도 레이어는 cartoon 이미지에 fine-tuned된 고해상도 레이어에 적합하지 않은 자연 얼굴에 대한 feature map을 생성한다는 것을 이해해야 해. 따라서 대신 cartoon 이미지를 반전하고 W+ 공간에서 각 캐릭터 ID별로 평균을 내어 명시적으로 wc를 생성한다(eq 1). 이 연산을 통해 wc는 pose 및 noise 불변성이 높아지며, 이는 다음 style mixing 절차에 바람직한 특성이다.
 
-누군가는 StyleGAN2에 대해 높은 충실도를 가진 이미지를 생성하는 직관적인 방법으로 Gswap의 원래 잠재 공간에서 wc를 샘플링하는 경향이 있을 수 있어. 그러나, 우리는 이것이 레이어 스왑된 생성기에 대해 다르게 동작한다는 것을 발견했어(Figure 2 참고). Gswap의 저해상도 레이어는 카툰 이미지에 fine-tuned된 고해상도 레이어에 적합하지 않은 자연 얼굴에 대한 feature map을 생성한다는 것을 이해해야 해. 따라서 대신 만화 이미지를 반전하고 W+ 공간에서 각 캐릭터 ID별로 평균을 내어 명시적으로 wc를 생성합니다(방정식 1). 이 연산을 통해 wc는 포즈 및 노이즈 불변성이 높아지며, 이는 다음 스타일 믹싱 절차에 바람직한 특성입니다.
+#### Style mixing.  
+주어진 입력 코드 wf와 wc를 섞는다. 이를 위해 affine layer A를 통과시켜 해당 스타일 파라미터 sf, sc를 S 공간에서 얻는다 (Equation 4). 그 다음 sf의 일부를 sc로 tRGB 교체 방법(4.3절에서 논의)을 사용해 바꾼다. 결국 두 세트의 스타일 파라미터, sf와 sc는 S 공간에서 다음과 같이 스타일 믹싱된다.  
+SM(sf; sc; m) = {sf_1,...t(m)-1} ∪ {sc_t(m),...26}
+여기서 t(m)은 잠재 코드 w(∈W+)의 인덱스를 해당 스타일 파라미터 s ∈ S로 매핑하는 함수야.
+
+### 4.3 tRGB 교체
+본 방법에서는 source domain의 encoder가 Gswap의 W+ 공간에 있는 latent code를 생성하도록 설정돼 있어. 우리는 이 공간을 사용하는 것이 색상 왜곡을 일으킬 수 있다고 가정한다. 왜냐하면 원래 W 공간은 색상 아티팩트가 전혀 없는 것으로 나타났거든 (Figure 4b). StyleGAN2에서 tRGB 레이어를 제어하는 스타일 파라미터 stRGB의 일부만 조작하여 이미지의 지역적 또는 전역적인 영역의 색상만 변경할 수 있다고도 제안돼 (24). 이런 맥락에서, 우리는 인코더가 tRGB 레이어에 대해 분포 벗어난 s_tRGB를 생성하며 심각한 색상 왜곡을 일으키는 것을 발견했어 (Figure 4a). 이를 바탕으로, 우리는 색상 왜곡의 원인을 style parameter에 국한시키고, 출력 이미지의 색상 분포를 변경하기 위해 오직 s_tRGB만 조작하는 tRGB 교체 방법을 개발했어. 구체적으로, 자연스러운 얼굴 이미지 sf의 tRGB 스타일 파라미터 부분 sf tRGB은 대상 카툰 캐릭터 sc의 tRGB 부분 sc tRGB으로 교체되어, sf가 대상 캐릭터 이미지의 색상 분포를 나타내는 tRGB 부분을 가지도록 해 (Figure 3). 우리는 이 방법이 색상 왜곡 문제를 해결할 뿐만 아니라 (Figure 7b), 스타일 믹싱 구성 요소와 함께 적용될 때 캐릭터 특정 세밀한 특징을 전달하는 데도 도움이 된다는 것을 보여줘 (Figure 5).
+
+## 5. 실험 & 응용
+FFHQ 사전 학습된 StyleGAN2를 ADA와 함께 기본 설정을 사용하여 카툰 dataset에서 fine-tuning한다(스타일 믹싱 확률은 0으로 설정). Fine-tuned된 generator는 FFHQ 사전 학습된 generator와 32x32 해상도에서 layer-swapped 한다. 기본적으로 스타일 믹싱 레벨 m은 6으로 설정한다. 캐릭터별 ID에 대해 우리는 훈련 dataset에서 무작위로 k = 50 이미지를 샘플링하고 이들을 W+ 공간에 invert하여 캐릭터 ID별 latent code wc를 준비했어.
 
 
 
