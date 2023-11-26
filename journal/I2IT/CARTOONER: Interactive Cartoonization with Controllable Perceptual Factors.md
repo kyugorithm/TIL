@@ -23,32 +23,74 @@ Color stylization()
 
 본 작업에서는 카툰화에서 효율적인 interactivity를 포함하는 방식을 제시한다.  
 제안된 솔루션은 texture와 color를 제어할 수 있도록 하는데 집중한다.  
-Texture 제어: stroke 두깨와 추상화에 대한 조절로 정의한다. 이 컨셉은 많은 시나리오에서 활용될 수 있다. 예를들어 예술가는 자연스러운 시점을 묘사하거나 캐릭터 디테일을 강조하기 위해 먼거리 장면 디테일을 추상화할 수 있다. 제작자들은 마찬가지로 brushstroke의 미묘함을 수정해서 장면을 합성할 때 object 질감을 맞출 수 있다.  
-Color 제어: 창작자가 자유롭게 임의 영억을 원하는 색상으로 조절할 수 있는 시스템을 만든다. 이것은 color stylization과정에서 예술가를 돕도록 설계했다.  
+1) Texture 제어: stroke 두께와 추상화에 조절 - 이는 많은 시나리오에서 활용될 수 있는데, 예술가는 자연스러운 시점을 묘사하거나 캐릭터 디테일을 강조하기 위해 먼거리 장면 디테일을 추상화할 수 있다. 제작자들은 마찬가지로 brushstroke의 미묘함을 수정해서 장면을 합성할 때 object 질감을 맞출 수 있다.  
+2) Color 제어: 창작자가 자유롭게 임의 영억을 원하는 색상으로 조절할 수 있는 시스템을 만든다. 이것은 color stylization과정에서 예술가를 돕도록 설계했다.  
 
-카툰화에서 사용자 조절성을 얻기 위해, 우리는 텍스처와 색상 디코더를 별도로 구축해서 기능 간의 간섭을 최소화해(그림 3 참조). 우리는 또한 분해된 아키텍처가 텍스처 스타일화의 강건함과 뛰어난 품질을 제공한다는 것을 발견했어.
+카툰화에서 사용자 조절성을 얻기 위해, 우리는 텍스처와 색상 디코더를 별도로 구축해서 기능 간의 간섭을 최소화(그림 3 참조)하고 분리된 아키텍처가 텍스처 스타일화의 강건함과 뛰어난 품질을 제공한다는 것을 발견했다.  
+<img width="552" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/6964204a-863a-4773-9c6d-edaa2bade33e">
 
-텍스처 컨트롤에 대해, 우리는 수용 필드(receptive field, RF)와 타겟 이미지 해상도가 스트로크 두께와 추상화 수준에 어떤 역할을 하는지 조사했어. 이러한 관찰을 바탕으로, 우리는 네트워크의 수용 필드를 중간 특징의 동적 교체를 통해 조절하는 텍스처 컨트롤러를 제시해.
+1) Texture 제어: 수용영역과 타겟 이미지 해상도가 stroke 두께와 추상화 수준에 어떤 역할을 하는지 조사했어. 이러한 관찰을 바탕으로, 우리는 intermediate feature의 dynamic replacement를 통해 네트워크의 수용영역을 조절하도록 제시한다.  
+2) Color 제어: 제안된 HSV augmentation에 기반한 paired dataset과 함께 지도학습으로 color decoder를 공동으로 학습한다. 이 전략으로 다양한 색상을 생성하는 능력을 얻는다.  
 
-색상 컨트롤에 대해서는, 제안된 HSV 증강에 기반한 쌍 데이터셋과 함께 감독 방식으로 색상 디코더를 공동으로 훈련해. 이 훈련 전략을 통해 색상 모듈은 다양한 색상을 생성하는 능력을 얻게 돼.
+분리된 텍스처와 색상 모듈의 조합으로, 우리는 사용자와의 의사소통에 따라 다양한 카툰화 결과를 만들 수 있는 두 차원의 제어 공간을 달성해. 이러한 디자인은 강건하고 perceptually으로 고품질의 카툰화 결과를 제공한다.  
 
-분리된 텍스처와 색상 모듈의 조합으로, 우리는 사용자와의 의사소통에 따라 다양한 카툰화 결과를 만들 수 있는 두 차원의 컨트롤 공간을 달성해. 이러한 디자인은 강건하고 인지적으로 고품질의 카툰화 결과를 제공해.
+3. Method
+Texture와 color decoder를 분리하는 작업은 전문 예술가의 작업방식을 관찰하므로써 정했다. (추가로 분리된 모델링은 신뢰할 수 있는 고품질 카툰화 결과를 만든다는것을 검사한다.)
 
-우리가 아는 한, 우리의 프레임워크는 깊은 학습 기반 카툰화에 인터랙티비티를 제시하는 첫 번째 접근 방법이야. 제안된 솔루션을 바탕으로, 사용자의 의도에 따라 다양한 설정으로 카툰화된 이미지를 생성할 수 있는 응용 시나리오를 보여줘. 광범위한 실험들은 제안된 솔루션이 인지적 품질 측면에서 이전 카툰화 방법들을 능가하며, 사용자의 텍스처와 색상 선택에 따라 다수의 이미지를 생성할 수 있음을 보여줘.
+#### 제어가능 특징
+1) Texture 수준: 벡터 α  
+2) Color 수정: c  
+
+#### 목표:
+주어진 사진(Isrc)으로부터 사용자의 의도(α와 c)를 따르는 카툰화된 이미지(ˆItgt) 생성
+
+#### 방법:
+이미지를 공유된 Eshared를 통해 잠재 특징으로 인코딩하고 별도의 디코더인 S_texture와 S_color에 전달
+
+#### 색상 공간:
+Lab 색상 공간 사용 (RGB 대신)
+(텍스처 모듈: L-채널 텍스처 맵 생성 /  색상 모듈: ab-채널 색상 맵 생성)
+#### 최종 과정:
+생성된 출력물을 RGB 공간으로 되돌림
 
 
+### 3.1. Texture module 
+
+#### Analysis of texture level. 
+
+이 모듈에서의 주요 목표는 세밀한 제어 메커니즘을 제공하는 것이며, texture 제어는 stroke 두께와 이미지 추상화를 변경하는 것으로 정의해. 이를 위해, stroke 두께와 추상화 변화에 영향을 미치는 구성 요소를 분석했어.  
+실험에서 확인한 사항은 두가지임.  
+1) Target cartoon 이미지의 해상도 - stroke 두께  
+2) G의 수용 필드 -  abstraction 수준  
+<img width="1268" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/d211463c-7868-4e89-80e4-e252841fa710">
 
 
+#### Stroke thickness change:  
+고정된 RF를 가진 손실 네트워크(예: VGG나 판별자)가 관련되어 있다고 주장해(그림 5a 참조). 고정된 손실 네트워크에서 카툰 이미지의 해상도를 높이면(녹색 상자), RF 창 내에서 stroke가 확대되어, G는 훈련 중에 두꺼운 stroke를 만들도록 학습해. 해상도를 낮추면(빨간 상자) 반대 현상이 일어나. 이는 카툰 이미지가 대부분 평평한 텍스처 영역을 가지고 있기 때문에 카툰화에 더 큰 영향을 미쳐.
 
+#### abstraction change(이해 필요)  
+장면의 복잡성이 이에 영향을 미친다고 주장해(그림 5b 참조). G의 RF를 확장하면(파란 상자), 네트워크는 콘텐츠 이미지의 더 넓은 영역을 인지할 수 있어서 장면 복잡성이 높아져. 반대로, 카툰 이미지의 해상도가 높아지면, 손실 네트워크가 상대적으로 작은 영역만 볼 수 있기 때문에 장면 복잡성이 낮아져(녹색 상자). 이렇게 해서, 고해상도 카툰 이미지 I^HR_tgt로 G를 훈련시키면(녹색과 파란 상자 각각), G는 고복잡성 장면의 복잡성을 줄이도록 유도돼. 이는 손실 네트워크에서 추출한 저복잡성 장면으로 손실 계산이 이루어지기 때문이야. 결과적으로, 큰 RF를 가진 G는 복잡한 디테일을 'Abstraction'할 수 있는 능력을 얻어. 낮은 RF(분홍색 창)의 경우 반대 현상이 일어나지만, 추상화 변화는 높은 것만큼 극적이지 않아, 일반적으로 카툰의 장면 복잡성이 콘텐츠 이미지보다 낮기 때문이야. 우리는 또한 G의 RF만 확장하는 시나리오를 분석했지만, 결과는 그림 4b처럼 극적이지 않아, G가 다른 복잡성의 카툰 장면에 의해 유도되지 않기 때문이야. Jing은 스타일 전송 문헌에서 해상도와 RF의 역할을 조사했지만, 우리의 심층적인 분석은 그들의 행동 패턴이 카툰화에서 상이하다는 것을 밝혀냈어.
 
+#### Texture controller. 
+위의 분석은 다양한 수준을 처리하기 위해 여러 네트워크가 필요하며, 서로 일관된 스타일을 생성할 수 없어. 또한, 이 방법은 discrete 제어만 지원해서 실제로 사용하기 어려워. 그래서 이 분석을 바탕으로, 우리는 간단하지만 효과적인 texture 제어 모듈인 texture controller(그림 6 참조)를 소개해. 이는 stroke와 abstraction 제어 유닛으로 구성되어 있고, 두 유닛 모두 multi-branch 구조로 설계되어 있어. Stroke 유닛에서는 각 브랜치가 연속된 3x3 컨볼루션(conv) 레이어 두 개로 구성되어 있고, 이들은 게이팅 모듈에 의해 결합돼. Abstraction 유닛은 stroke 유닛과 구조가 동일하지만, 큰 커널 사이즈 K1 < K2 < ... < KN을 사용하는 conv 레이어를 사용해.
 
-To obtain user controllability in cartoonization, we separately build texture and color decoders to minimize interference across the features (Figure 3). 
-We also found that the decomposed architecture provides a robust and superb quality of texture stylization. 
-For texture control, we investigated the role of the receptive field and the target image resolution in the level of stroke thickness and abstraction. 
-Based on these observations, we present a texture controller, which adjusts the receptive field of the network through a dynamic replacement of the intermediate features. 
-For color control, we jointly train the color decoder in a supervised manner with the paired dataset that is built based on the proposed HSV augmentation. 
-Throughout this training strategy, the color module gains the ability to produce diverse colors. 
-With the combination of the decoupled texture and color modules, we achieve a two-dimension of control space that can create a variety of cartoonized results upon user communication. 
-Such a design also provides robust and perceptually high-quality cartoonized outcomes. 
+Texture controller는 텍스처 레벨 α = {αs, αa}에 영향을 받는데, 특히 스트로크와 추상화 유닛은 각각 stroke 두께(αs)와 추상화 수준(αa)에  의해 조절돼. 인코더로부터의 특징 f와 함께 stroke 유닛은 conv 브랜치를 통해 feature 집합 gs = {g1 s, ..., gN s}를 생성하고, abstraction 유닛은 ga를 동일한 방식으로 생성해. 그 다음, 텍스처 레벨 α{s,a}에 따라, 텍스처 레벨에 가장 가까운 두 g{s,a} 특징이 선택돼. 선택된 특징들은 α{s,a}와 인덱스 간의 각 거리에 기반하여 보간(interpolated)되고, 이는 요소별(element-wise) 추가 연산을 통해 결합돼.
 
-To the best of our knowledge, our framework is the first approach that presents interactivity to deep learning-based cartoonization. Based on the proposed solution, we demonstrate application scenarios that permit user intentions to create cartoonized images with diverse settings. Extensive experiments demonstrate that the proposed solution outperforms the previous cartoonization methods in terms of perceptual quality, while also being able to generate multiple images based on the user’s choices of texture and color.
+우리는 stroke 제어 유닛을 모두 3x3 conv 레이어로 설계했는데, 이는 texture 레벨 분석에서 G의 RF가 stroke 두께에 영향을 미치지 않는다는 것을 보여주기 때문이야. 대신, 각 브랜치는 타겟 카툰 이미지의 다른 해상도로 훈련되어 있어. 추론 시, αs를 통한 특징 보간은 스트로크 두께에 대한 연속적인 제어를 가능하게 해. 추상화 유닛에 대해서는 분석을 바탕으로 단일 모듈을 구축했지만, stroke 유닛과 달리, 각 브랜치는 커널 사이즈가 증가하는 순서로 다른 conv 레이어를 포함해. 이는 G의 RF와 타겟 이미지의 해상도를 변경하면 추상화가 변경되기 때문이야. 출력 특징은 αa를 통해 스트로크 유닛과 동일하게 보간돼. stroke와 abstraction를 병렬로 분리된 구조로 설계함으로써, 각 유닛은 다른 측면에 집중할 수 있고, texture를 두 차원 공간으로 제어할 수 있는 능력을 제공해.
+
+<img width="541" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/ffbdc7c6-ab18-4ec0-886c-50fd6cdd5a96">  
+<img width="556" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/fb6a124d-e128-4af1-904e-ed15990ea991">  
+
+### 3.2. Color module
+The goal is to transfer the color of a given source photo to a provided color intention while reflecting the color nuance of the target cartoon. CARTOONER takes an input photo ILab src as well as an input color map ¯ CLab src and generates an ab-channel image ˆIab src, which is later concatenated with the texture map ˆIL tgt generated from the texture decoder. To simulate control manipulation, we synthetically generate a color map, ¯ CLab src (Figure 7). Given an input photo IRGB src , we create an initial color map CRGB src by applying a superpixel algorithm. Without this, fine details of an input image become too noisy and thus not adequate to be utilized as a color cue; a superpixel is used as a noise reduction procedure. Then, the HSV augmentation changes the color of IRGB src and CRGB src , creating color manipulated images ¯IRGB src and ¯ CRGB src . These are converted to Lab space. Note that we observed that color transfer to either input or output image, unlike ours, cannot achieve faithful visual quality. HSV augmentation is a simple but effective method that can reflect diverse color control intentions from a user. It randomly alters all color channels of HSV; hue, saturation, and value (brightness). To prevent the color shifting from generating perceptually implausible outputs, we further apply the L caching trick [7] prior to the color augmentation, which caches the luminance (L) of image and reverts the luminance of the augmented image to a cached one. We cache L instead of V-channel since V indirectly interferes with L, which is important in regard to diverse cartoonization.
+
+<img width="373" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/1bf0ff96-7312-457c-8897-633f9d74e36e">
+<img width="367" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/a1d7554e-1b78-4f9e-899e-463a54bae7e8">
+
+### 3.3. Model training
+이전의 깊은 카툰화 방법과 달리, CARTOONER에서는 network warm-up을 수행하지 않는다.  
+전체 프레임워크를 abstraction 제어 유닛을 제외하고 L = L_texture + L_color로 훈련  
+abstraction 유닛은 L_texture를 통해 훈련되며, 다른 구성 요소는 모두 고정 상태로 유지  
+G에 다양한 해상도의 이미지를 제공하기 위해, IRGB tgt를 α(텍스처 레벨)에 따라 크기 조정(그림 7 참조)  
+abstraction 유닛의 kernel 사이즈 {K1, K2, ..., KN}를 각각 {3, 7, 11, 15, 19}로 설정
+CARTOONER 훈련 시, α{s,a} ∈ {1, ..., 5}를 무작위로 선택하여 IRGB tgt를 각각 {2562, 3202, 4162, 5442, 8002} 해상도로 조정하지만, 추론 시 α{s,a}는 임의의 숫자로 확장
