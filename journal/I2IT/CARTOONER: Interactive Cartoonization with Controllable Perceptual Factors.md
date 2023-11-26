@@ -1,57 +1,55 @@
 ## Abstract 
-Cartoonization은 자연이미지를 만화 스타일로 변경하는 작업이다.  
-이전 딥러닝 방식은 end-to-end를 이용하기 때문에 editability가 지원되지 않는다. 이를 해결하기 위해 대신 만화 창작 과정을 기반으로 texture 및 color의 편집 기능을 갖춘 참신한 솔루션을 제안한다.  
-이를 위해 texture와 color 속성 분리를 위해 개별 decoder를 사용하는 구조를 설계한다.  
-Texture decoder: 다양한 만화 질감을 만들기 위해서 stroke style 과 abstraction을 사용자가 제어할 수 있도록 texture controller를 제안한다.  
-Color decoder: 다양하고 제어가능한 색상 변형을 만들기 위해 HSV color augmentation을 제안한다.  
-* 최초의 딥러닝 기반 cartoonization 제어를 위한 첫 방법이다.
+문제: 자연 이미지를 만화 스타일로 변경(Cartoonization)  
+한계: 기존 방식은 end-to-end를 이용하기 때문에 제어가 불가능하다.  
+목표: 만화 창작 과정을 기반으로 texture 및 color의 제어 기능을 제공  
+해법: texture와 color 분리를 위해 개별 decoder를 사용하는 구조를 설계  
+Texture decoder: 다양한 만화 질감을 만들기 위해서 stroke style 과 abstraction을 사용자가 제어  
+Color decoder: 다양하고 제어가능한 색상 변형을 만들기 위해 HSV color augmentation  
 
 ## Introduction
-보편적 만화 제작과정: Character drawing -> BG composition -> Post-processing(Shading 등)  
+만화 제작과정: Character drawing -> BG composition -> Post-processing(Shading 등)  
 이러한 제작과정 하에서 전문가들도 만화 제작은 고된 작업이다.  
 작가들은 캐릭터 생성에 집중하기 위해 배경 사진을 카툰화하는 방법을 활용한다. (Animegan, Cartoongan, Learning to Cartoonize Using White-box Cartoon Representation)  
-그러나, 이전 딥러닝 방식은 카툰 제작 과정에 대한 중간 과정을 생략해서 작가들이 결과물을 제어할 수가 없다.
-예술가들은 사진으로부터 BG 이미지를 생성할때 일련의 단계를 거친다.  
-Color stylization()
+<img width="994" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/2d427f3a-be72-4453-a03a-5ea61a633f7e">
+예술가들은 사진으로부터 BG 이미지를 생성할때 아래의 단계를 거친다.  
+1) Color stylization: 하늘 이미지 합성 -> 지역적/전역적으로 색상을 변경  
+2) Texture stylization: 추가 스케치 선을 그리고 서로 다른 추상화를 얻기 위해 fine detail들은 선택적으로 제거  
+3) Post-processing : 조명과 이미지 필터링 적용  
+
 <img width="1145" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/690e4931-6771-447e-8259-f79762eddcee">
 
-
-1) Color stylization: 하늘을 합성 -> 지역적/전역적으로 색상을 변경  
-2) Texture stylization: 추가 스케치 선들을 그리고 서로 다른 추상화를 얻기 위해 fine detail들은 선택적으로 제거  
-3) Post-processing : 조명과 이미지 필터링 적용  
 그러나 이 과정에서 end-to-end 방법을 사용하기 때문에 예술가들은 생성 과정에 대한 제어를 할 수 없고 입력 사진이나 최종 사진을 수정하는것만 가능하고 이는 제작 방식에 어려움이 있다.  
 
 본 작업에서는 카툰화에서 효율적인 interactivity를 포함하는 방식을 제시한다.  
 제안된 솔루션은 texture와 color를 제어할 수 있도록 하는데 집중한다.  
-1) Texture 제어: stroke 두께와 추상화에 조절 - 이는 많은 시나리오에서 활용될 수 있는데, 예술가는 자연스러운 시점을 묘사하거나 캐릭터 디테일을 강조하기 위해 먼거리 장면 디테일을 추상화할 수 있다. 제작자들은 마찬가지로 brushstroke의 미묘함을 수정해서 장면을 합성할 때 object 질감을 맞출 수 있다.  
-2) Color 제어: 창작자가 자유롭게 임의 영억을 원하는 색상으로 조절할 수 있는 시스템을 만든다. 이것은 color stylization과정에서 예술가를 돕도록 설계했다.  
-
-카툰화에서 사용자 조절성을 얻기 위해, 우리는 텍스처와 색상 디코더를 별도로 구축해서 기능 간의 간섭을 최소화(그림 3 참조)하고 분리된 아키텍처가 텍스처 스타일화의 강건함과 뛰어난 품질을 제공한다는 것을 발견했다.  
+1) Texture 제어: stroke 두께와 abstraction 수준 조절 - 예술가는 자연스러운 시점을 묘사하거나 캐릭터 디테일을 강조하기 위해 먼거리 장면 디테일을 추상화할 수 있다. 제작자들은 마찬가지로 brush stroke의 미묘함을 수정해서 장면을 합성할 때 object 질감을 맞출 수 있다.  
+2) Color 제어: 창작자가 자유롭게 임의 영역을 원하는 색상으로 조절할 수 있도록 한다.  
+  
+카툰화에서 사용자 제어를 위해, 텍스처와 색상 디코더를 별도로 구축해서 기능 간의 간섭을 최소화하고 분리된 아키텍처가 텍스처 스타일화의 강건함과 뛰어난 품질을 제공한다는 것을 발견했다.  
 <img width="552" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/6964204a-863a-4773-9c6d-edaa2bade33e">
-
-1) Texture 제어: 수용영역과 타겟 이미지 해상도가 stroke 두께와 추상화 수준에 어떤 역할을 하는지 조사했어. 이러한 관찰을 바탕으로, 우리는 intermediate feature의 dynamic replacement를 통해 네트워크의 수용영역을 조절하도록 제시한다.  
+  
+1) Texture 제어: 수용영역과 타겟 이미지 해상도가 stroke 두께와 추상화 수준에 어떤 역할을 하는지 조사한다. 이러한 관찰을 바탕으로, intermediate feature의 dynamic replacement를 통해 네트워크의 수용영역을 조절한다.  
 2) Color 제어: 제안된 HSV augmentation에 기반한 paired dataset과 함께 지도학습으로 color decoder를 공동으로 학습한다. 이 전략으로 다양한 색상을 생성하는 능력을 얻는다.  
+분리된 텍스처와 색상 모듈의 조합으로, 사용자의 제어에 따라 다양한 카툰화 결과를 만들 수 있는 두 차원의 제어 공간을 달성한다. 이러한 디자인은 robust하고 perceptually으로 고품질의 카툰화 결과를 제공한다.  
 
-분리된 텍스처와 색상 모듈의 조합으로, 우리는 사용자와의 의사소통에 따라 다양한 카툰화 결과를 만들 수 있는 두 차원의 제어 공간을 달성해. 이러한 디자인은 강건하고 perceptually으로 고품질의 카툰화 결과를 제공한다.  
-
-3. Method
-Texture와 color decoder를 분리하는 작업은 전문 예술가의 작업방식을 관찰하므로써 정했다. (추가로 분리된 모델링은 신뢰할 수 있는 고품질 카툰화 결과를 만든다는것을 검사한다.)
+## 3. Method
+Texture와 color decoder를 분리하는 작업은 전문 예술가의 작업방식을 관찰을 통해 정했다. (추가로 분리된 모델링은 신뢰할 수 있는 고품질 카툰화 결과를 만든다는것을 검사한다.)
 
 #### 제어가능 특징
-1) Texture 수준: 벡터 α  
-2) Color 수정: c  
+1) Texture=α  
+2) Color=c  
 
 #### 목표:
 주어진 사진(Isrc)으로부터 사용자의 의도(α와 c)를 따르는 카툰화된 이미지(ˆItgt) 생성
 
 #### 방법:
-이미지를 공유된 Eshared를 통해 잠재 특징으로 인코딩하고 별도의 디코더인 S_texture와 S_color에 전달
+Eshared(공유 Encoder)를 통해 latent feature로 인코딩하고 개별 디코더인 S_texture와 S_color에 전달  
 
 #### 색상 공간:
-Lab 색상 공간 사용 (RGB 대신)
-(텍스처 모듈: L-채널 텍스처 맵 생성 /  색상 모듈: ab-채널 색상 맵 생성)
+RGB 대신 Lab 색상 공간 사용 (텍스처 모듈: L-채널 텍스처 맵 생성 /  색상 모듈: ab-채널 색상 맵 생성)  
+
 #### 최종 과정:
-생성된 출력물을 RGB 공간으로 되돌림
+생성된 출력물을 RGB 공간으로 되돌림  
 
 
 ### 3.1. Texture module 
