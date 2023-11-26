@@ -66,8 +66,8 @@ Texture와 color decoder를 분리하는 작업은 전문 예술가의 작업방
 Texture controller는 텍스처 레벨 α = {αs, αa}에 영향을 받는데, 특히 stroke와 abstraction 유닛은 각각 stroke 두께(αs)와 추상화 수준(αa)에 의해 조절돼. 인코더로부터의 특징 f와 함께 stroke 유닛은 conv 브랜치를 통해 feature 집합 gs = {g1 s, ..., gN s}를 생성하고, abstraction 유닛은 ga를 동일한 방식으로 생성해. 그 다음, 텍스처 레벨 α{s,a}에 따라, 텍스처 레벨에 가장 가까운 두 g{s,a} 특징이 선택돼. 선택된 특징들은 α{s,a}와 인덱스 간의 각 거리에 기반하여 보간(interpolated)되고, 이는 요소별(element-wise) 추가 연산을 통해 결합돼.  
 우리는 stroke 제어 유닛을 모두 3x3 conv 레이어로 설계했는데, 이는 texture 레벨 분석에서 G의 RF가 stroke 두께에 영향을 미치지 않는다는 것을 보여주기 때문이야. 대신, 각 브랜치는 타겟 카툰 이미지의 다른 해상도로 훈련되어 있어. 추론 시, αs를 통한 특징 보간은 스트로크 두께에 대한 연속적인 제어를 가능하게 해. 추상화 유닛에 대해서는 분석을 바탕으로 단일 모듈을 구축했지만, stroke 유닛과 달리, 각 브랜치는 커널 사이즈가 증가하는 순서로 다른 conv 레이어를 포함해. 이는 G의 RF와 타겟 이미지의 해상도를 변경하면 추상화가 변경되기 때문이야. 출력 특징은 αa를 통해 스트로크 유닛과 동일하게 보간돼. stroke와 abstraction를 병렬로 분리된 구조로 설계함으로써, 각 유닛은 다른 측면에 집중할 수 있고, texture를 두 차원 공간으로 제어할 수 있는 능력을 제공해.
 
-<img width="541" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/ffbdc7c6-ab18-4ec0-886c-50fd6cdd5a96">  
-<img width="556" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/fb6a124d-e128-4af1-904e-ed15990ea991">  
+<img width="550" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/ffbdc7c6-ab18-4ec0-886c-50fd6cdd5a96">  
+<img width="550" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/fb6a124d-e128-4af1-904e-ed15990ea991">  
 
 ### 3.2. Color module
 목표: 주어진 I^Lab_src 색상을 사용자의 색상 의도에 맞게 카툰 이미지로 전달하면서, 타겟 카툰의 색상 뉘앙스를 반영  
@@ -89,9 +89,9 @@ HSV 증강을 통해 IRGB src와 CRGB src의 색상을 변경하여 색상 조�
 색상 증강 전에 L 캐싱 트릭을 적용하여 이미지의 밝기(L)를 캐시하고, 증강된 이미지의 밝기를 캐시된 것으로 되돌립니다.  
 이는 색상 변화가 인지적으로 비현실적인 결과를 생성하는 것을 방지하기 위함입니다.  
 
-<img width="373" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/1bf0ff96-7312-457c-8897-633f9d74e36e">  
-  
-<img width="367" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/a1d7554e-1b78-4f9e-899e-463a54bae7e8">  
+<img width="550" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/1bf0ff96-7312-457c-8897-633f9d74e36e">    
+    
+<img width="550" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/a1d7554e-1b78-4f9e-899e-463a54bae7e8">    
 
 ### 3.3. Model training
 이전의 깊은 카툰화 방법과 달리, CARTOONER에서는 network warm-up을 수행하지 않는다.  
@@ -100,3 +100,18 @@ abstraction 유닛은 L_texture를 통해 훈련되며, 다른 구성 요소는 
 G에 다양한 해상도의 이미지를 제공하기 위해, IRGB tgt를 α(텍스처 레벨)에 따라 크기 조정(그림 7 참조)  
 abstraction 유닛의 kernel 사이즈 {K1, K2, ..., KN}를 각각 {3, 7, 11, 15, 19}로 설정  
 CARTOONER 훈련 시, α{s,a} ∈ {1, ..., 5}를 무작위로 선택하여 IRGB tgt를 각각 {2562, 3202, 4162, 5442, 8002} 해상도로 조정하지만, 추론 시 α{s,a}는 임의의 숫자로 확장  
+
+
+## D. Discussion
+### Jing et al.와의 비교
+Style transfer는 일반적인 예술적 그림을 사용하지만, 카툰화에서 추상화 표현은 중요합니다. 카툰 장면에는 많은 평면 영역이 있기 때문입니다. 따라서 우리는 stroke를 두께와 추상화로 분해했다. 스트로크 두께에 대한 우리의 관찰은 Jing et al.의 스트로크 크기 분석과 유사하지만 카툰의 특징적인 수많은 평면 영역 때문에 이 구별이 style transfer보다 더 뚜렷하다고 주장한다.  
+추상화에 대해 우리는 장면의 복잡성에 기반한 분석이 카툰 도메인에 더 적합하다고 주장한다. 이 장르에서 평면 영역과 추상화의 만연함을 고려할 때, 이는 더 관련이 있다.  
+
+WhiteBoxGAN과의 비교
+우리의 제안된 방법과 WhiteBoxGAN 사이의 비교를 제시합니다. 두 방법 모두 특징을 분리하여 훈련 및 합성 품질을 개선하는 것이 공통된 목표입니다. WhiteBoxGAN은 구조, 텍스처, 표면 손실과 같은 손실 디자인을 통해 표현을 분해하여 달성합니다. 반면에 Cartooner는 모델 디자인에서 표현을 분리합니다(예: 텍스처 및 색상 디코더). 손실과 모델 디자인에서의 "분해"를 비교할 때, 후자의 접근 방식은 각 디코더가 텍스처 또는 색상 맵 생성과 같은 특정 작업에 집중할 수 있게 함으로써 특징의 더 명확한 분리를 제공합니다. 반면에 단일 디코더에 여러 손실이 통합될 때(WhiteBoxGAN처럼), 디코더는 다양한 합성 작업에서 발생하는 다양한 신호로 인해 혼란스러워질 수 있습니다. 결과적으로, 우리의 프레임워크는 훈련 과정에서 더 효율적이며, 적은 아티팩트로 우수한 품질을 달성하는 데 중요한 장점을 제공합니다【238†source】.
+Stable diffusion과의 비교
+이미지 대 이미지(I2I) 기반 카툰화에 대해 다루었습니다. 이는 소스 사진의 구조를 유지하면서 스타일과 분위기를 변경하는 것이 필요합니다. 이 관점에서 우리는 제안된 방법을 비쌍 I2I 접근법과 비교했습니다. 그러나 최근 확산 모델의 카툰화 작업에서의 놀라운 진보를 고려할 때, 이를 조사하는 것은 가치가 있습니다. 우리는 사전 훈련된 Stable diffusion(SD)을 Dreambooth 전략을 통해 미세 조정한 다음, 가장 인기 있는 I2I 방법인 SDEdit를 통합하여 SD를 I2I 프레임워크로 만들었습니다. 그러나 SD와 SDEdit는 Cartooner에 비해 만족스러운 결과를 생성하는 데 어려움을 겪었습니다【239†source】.
+카툰 필터와의 비교
+대부분의 상업 소프트웨어의 카툰 필터는 전통적인 알고리즘에 의존하므로 매우 제한된 카툰 스타일만 지원합니다. 이에 비해 "딥 카툰화" 연구는 필터가 생성할 수 있는 다양한 스타일에 비해 우수한 품질로 다양한 스타일의 이미지를 스타일화할 수 있습니다【240†source】.
+한계
+Cartooner는 카툰화 작업에 대한 인터랙티브한 접근법을 성공적으로 시연했지만, 더 예술가 친화적인 솔루션으로 변환하기 위해 다른 속성을 통합할 수 있습니다. 우리의 연구에서는 초기 인터뷰에서 예술가들에게 가장 필요한 것으로 판단되는 색상과 텍스처에 중점을 두었습니다【241†source】.
