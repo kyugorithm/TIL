@@ -68,7 +68,82 @@ LDM은 다양한 이미지 모달리티에 대한 유연하고 계산적으로 �
 그림 7에서는 CelebA-HQ와 ImageNet에서 학습된 모델들을 DDIM 샘플러로 노이즈 제거 단계 수에 따른 샘플링 속도와 FID 점수를 비교해. LDM-f4-8은 perceptual and conceptual 압축 비율이 적절하지 않은 모델들보다 성능이 좋아. 특히 DM에 비교해서 훨씬 낮은 FID 점수를 달성하면서 샘플 처리량도 크게 증가시켜. ImageNet 같은 복잡한 데이터셋은 품질을 줄이지 않기 위해 압축률을 줄여야 해. 요약하자면, LDM-4와 -8이 고품질 합성 결과를 얻는데 최적의 조건을 제공한다.  
 <img width="763" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/651d5a18-01db-417f-8696-b0270f80dbfe">  
 
+### 4.3. Conditional Latent Diffusion
+#### 4.3.1 Transformer Encoders for LDMs
+LDMs에 cross-attention을 도입하여 이전에 DM에서 탐구되지 않았던 다양한 조건부 모달리티 적용  
+
+
+##### Text2Image 모델링:
+LAION-400M 데이터셋에서 1.45B 매개변수 KL-reg LDM 학습.
+언어 프롬프트에 기반한 학습.
+BERT 토크나이저와 transformer 사용.
+Latent code를 UNet으로 매핑하기 위해 cross-attention 적용.
+
+##### 성능 평가:
+사용자 정의 텍스트 프롬프트에 잘 일반화됨(MS-COCO 검증 세트에서 AR 및 GAN 기반 방법보다 뛰어남)  
+Classifier free  Diffusion guide로 샘플 품질이 크게 향상됨  
+<img width="700" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/0fe643f0-8d5d-4e9c-ac2f-9eb78385fc6e"> 
+
+<img width="300" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/083e66ab-d63d-42a5-8418-40db481c74d0"> 
+
+<img width="300" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/ee05dfa3-09bb-4d45-a5b7-70f8deb6d2af">  
 
 
 
+##### cross-attention의 유연성 추가 분석:
+OpenImages에서 의미적 레이아웃 기반 이미지 합성 모델 학습.
+COCO에서 미세 조정.
+정량적 평가와 구현 세부사항은 섹션 D.3 참조.
+![image](https://github.com/kyugorithm/TIL/assets/40943064/c8329ac2-6c48-4a41-ad40-a210a4cfc3a9)  
+![image](https://github.com/kyugorithm/TIL/assets/40943064/7a03e090-6497-408d-9988-b04b588b2ba1)  
 
+
+
+##### 클래스 조건부 ImageNet 모델 평가:
+Section 4.1의 f ∈ {4, 8}인 모델 평가  
+계산 요구 사항과 매개변수 수 줄이면서 최신 디퓨전 모델 ADM 능가  
+
+
+#### 4.3.2 Convolutional Sampling Beyond 256^2
+Spatially aligned 조건부 정보를 ϵ𝜃의 입력에 concatenate 함으로써 LDMs는 효율적인 범용 I2IT 모델로 활용될 수 있다. 이를 활용해 semantic synthesis, super-resolution, inpainting을 위한 모델을 학습했다. 의미론적 합성을 위해, 풍경 이미지와 의미 지도를 짝지어 사용하고, 의미 지도의 다운샘플된 버전을 f = 4 모델의 잠재 이미지 표현과 연결했어(VQ-정규화, 표 8 참조). 입력 해상도는 256(384 크롭에서)로 학습했지만, 모델이 더 큰 해상도로 일반화되어 메가픽셀 범위의 이미지를 컨볼루셔널 방식으로 생성할 수 있음을 발견했어(그림 9 참조).   
+<img width="400" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/55d3847d-086f-44c8-9be8-00b39183eb30">   
+이런 행동을 활용해 SR(Sec. 4.4) 모델과 inpainting(Sec. 4.5) 모델도 512에서 1024 사이의 큰 이미지를 생성하는 데 적용했어. 이러한 응용에서 잠재 공간의 스케일에 의해 유발되는 SNR이 결과에 크게 영향을 미쳐. Sec. D.1에서 이를 보여주는데, (i) f = 4 모델(KL-정규화, 표 8 참조)에 의해 제공되는 잠재 공간을 학습하고, (ii) 구성 요소별 표준 편차로 스케일된 버전을 사용하는 것을 비교했어. 후자는 classifier-free guidance와 함께 256 이상 이미지를 직접 합성하는 데도 사용될 수 있어, 예를 들어 text-conditional LDM-KL-8-G에서 그림 13과 같이 말이야.   
+  
+![image](https://github.com/kyugorithm/TIL/assets/40943064/df22cd74-90a4-4c9f-af03-86f3bf95c636)  
+
+### 4.4. SuperResolution with Latent Diffusion
+Concat을 통해 저해상도 이미지에 conditioning을 직접적으로 함으로써 SR에 효율적으로 학습 될 수 있다. 
+첫 실험은 SR3를 따르고 image degradation은 "bicubic interpolation with 4 -downsampling"로 수정하고 SR3의 데이터 처리 파이프라인을 따라 ImageNet에서 학습했다. OpenImages에 학습된 모델 "f=4 & VQ-reg"을 사용한다. (tau_theta = the identity)  
+정성/정량 평가는 SR3과 상응하는 결과를 보여준다. (FID는 높고 IS는 낮음)
+
+<img width="300" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/bb0f682b-da02-4749-9f38-6c92acbc292e">   
+<img width="300" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/eb37246e-4eb4-4233-8174-561bac499ead">   
+
+단순 이미지 회귀 모델이 가장 높은 PSNR 및 SSIM 점수를 달성하지만, 이러한 지표들은 인간의 지각과 잘 일치하지 않고, 완벽하게 정렬되지 않은 고주파수 세부사항보다 흐릿함을 선호한다. 또한 DM과 우리 모델을 비교하기 위해 user study를 수행한다.  
+![image](https://github.com/kyugorithm/TIL/assets/40943064/158f13e4-09fe-49d7-8b54-855c2d7a8ca0)
+* User study는 저해상도 좌우에 각 고해상도 이미지를 배열한 사람이 있는 SR3의 방식을 따라 수행했다.  
+Post-hoc guiding mechanism(classifier guidance)을 사용하여 PSNR과 SSIM을 개선할 수 있으며, 우리는 지각 손실을 통해 이 image-based guider를 구현합니다(Section D.6 참조). Bicubic degradation process는 이러한 전처리를 따르지 않는 이미지에는 잘 일반화되지 않기 때문에 보다 다양한 열화를 사용하여 일반 모델인 LDM-BSR도 학습한다. 결과는 섹션 D.6.1에 나와 있습니다.
+
+### 4.5. Inpainting with Latent Diffusion
+#### 1. Inpainting Task and Evaluation Method  
+이미지의 마스킹된 부분을 새로운 내용으로 채우는 작업을 인페인팅이라고 한다. 이미지의 일부가 손상되었거나 이미지 내 원치 않는 내용을 대체하기 위해 수행된다. 우리는 일반적인 조건부 이미지 생성 방법이 이 작업을 위한 더 전문화되고 최신의 접근법들과 어떻게 비교되는지 평가한다. 우리의 평가는 최근 인페인팅 모델인 LaMa(Fast Fourier Convolutions 아키텍쳐)의 프로토콜을 따른다. 정확한 학습 및 평가 프로토콜은 Places에서 설명된 바와 같다.  
+
+#### 2. Design Choices and Their Impact on Inpainting  
+첫 번째 단계의 다양한 디자인 선택이 인페인팅 효율에 미치는 영향을 분석한다. 특히, 픽셀 기반 조건부 Diffusion Model인 LDM-1과 LDM-4를 KL 및 VQ 정규화와 함께 비교한다. 또한, 첫 번째 단계에서 어떠한 attention도 사용하지 않는 VQLDM-4도 비교한다(표 8 참조). 후자는 높은 해상도에서 GPU 메모리를 줄인다. 비교를 위해 모든 모델의 매개변수 수를 고정한다. 표 6은 256 및 512 해상도에서의 학습 및 샘플링 처리량, 에포크당 총 학습 시간(시간 단위) 및 6 에포크 후 검증 분할에서의 FID 점수를 보고한다. 전반적으로, 픽셀 기반과 잠재 기반 Diffusion Model들 사이에서 최소 2.7배의 속도 향상을 관찰하며, FID 점수는 최소 1.6배 개선된다.
+
+#### 3. Comparative Analysis with Other Inpainting Approaches
+다른 인페인팅 접근법과의 비교에서, 우리의 attention 기반 모델은 LaMa에 비해 FID로 측정된 전반적인 이미지 품질을 향상시킨다. 마스크가 없는 이미지와 우리 샘플 사이의 LPIPS는 LaMa보다 약간 높다. 이는 LaMa가 평균 이미지를 더 많이 복구하는 경향이 있는 단일 결과만 생성하는 반면, 우리의 LDM은 다양한 결과를 생성하기 때문이라고 추정한다. 또한 사용자 연구(표 4)에서 인간 참가자들은 LaMa의 결과보다 우리의 결과를 선호한다.  
+<img width="100" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/46397ae4-3597-48fb-bb99-8b99ccfced39">
+<img width="300" alt="image" src="https://github.com/kyugorithm/TIL/assets/40943064/a799f56f-2ff3-4be3-824a-701f7f0da3e4">
+
+## 5. Limitations & Societal Impact
+### Limitations
+LDM은 픽셀 기반 접근 방식에 비해 계산 요구 사항을 크게 줄이지만, 순차 샘플링 프로세스로 인해 GAN에 비해 느리다.  
+높은 정밀도가 요구되는 경우 LDM의 사용에 의문이 생길 수 있다. f = 4 자동 인코딩 모델에서는 이미지 품질 손실이 매우 작지만(그림 1 참조), 픽셀 공간에서 세밀한 정확도가 필요한 작업에서는 재구성 기능이 병목 현상이 될 수 있다.  
+초해상도 모델(4.4절)은 이러한 측면에서 이미 어느 정도 한계가 있다.
+
+### Societal Impact
+이미지와 같은 미디어를 위한 생성 모델은 양날의 검과도 같다: 한편으로는 다양한 창의적인 애플리케이션을 가능하게 하고, 특히 훈련 및 추론 비용을 절감하는 저희와 같은 접근 방식은 이 기술에 대한 접근을 용이하게 하고 그 탐구를 민주화할 수 있는 잠재력을 가지고 있다. 반면 조작된 데이터를 생성하고 유포하거나 잘못된 정보와 스팸을 퍼뜨리는 것이 더 쉬워진다는 의미이기도 하다. 특히 이미지의 고의적인 조작("딥페이크")은 이러한 맥락에서 흔히 발생하는 문제이며, 특히 여성은 불균형적으로 영향을 받고 있습니다. 생성 모델은 학습 데이터를 공개할 수도 있는데, 데이터에 민감하거나 개인 정보가 포함되어 있고 명시적인 동의 없이 수집된 경우 큰 우려가 된다. 그러나 이것이 이미지의 DM에도 어느 정도 적용되는지는 아직 완전히 이해되지 않았으며, 마지막으로 딥러닝 모듈은 데이터에 이미 존재하는 편향을 재생산하거나 악화시키는 경향이 있다. DM이 GAN 기반 접근 방식보다 데이터 분포에 대한 더 나은 커버리지를 달성하지만, 적대적 학습과 확률 기반 목표를 결합한 2단계 접근 방식이 데이터를 얼마나 왜곡하는지는 중요한 연구 문제로 남아 있다.  
+
+## 6. Conclusion 
+품질 저하 없이 노이즈 제거 DM의 훈련 및 샘플링 효율을 크게 향상시킬 수 있는 간단하고 효율적인 방법인 LDM을 제시했다. 이 모델과 cross attention conditioning mechanism을 기반으로 한 실험을 통해 작업별 아키텍처 없이도 광범위한 조건부 이미지 합성 작업에서 최첨단 방법과 비교했을 때 유리한 결과를 얻을 수 있었다.
