@@ -1,3 +1,13 @@
+## Abstract
+Nonequilibrium thermodynamics를 고려하여 설계된 latent variable 모델인 diffusion probabilistic model을 사용하여 고품질의 이미지 합성 결과를 제시한다.  
+최상의 결과는 diffusion probabilistic model과 Langevin dynamics를 이용한 denoising score-matching 간의 새로운 연결에 따라 설계된 weighted variational bound에서 학습함으로써 진다.  
+저자들의 모델은 progressive lossy decompression 방식을 자연스럽게 허용하며, 이는 autoregressive decoding의 일반화로 해석될 수 있다. 
+
+
+Nonequilibrium thermodynamics로부터 영감을 받은 latent variable 모델의 클래스인 Diffusion probabilistic model을 사용하여 고품질 이미지 합성 이미지 합성 결과를 제시한다.  
+최고의 결과는 diffusion probabilistic model과 Langevin dynamics를 포함하는 denoising score matching 사이의 새로운 연결에 따라 설계된 "weighted variational bound" 하에서 얻어진다.  
+그리고 우리 모델은 자연적으로 점진적 손실 분해방식 
+Our best results are obtained by training on a weighted variational bound designed according to a novel connection between diffusion probabilistic models and denoising score matching with Langevin dynamics, and our models naturally admit a progressive lossy decompression scheme that can be interpreted as a generalization of autoregressive decoding. On the unconditional CIFAR10 dataset, we obtain an Inception score of 9.46 and a state-of-the-art FID score of 3.17. On 256x256 LSUN, we obtain sample quality similar to ProgressiveGAN. Our implementation is available at https://github.com/hojonathanho/diffusion.
 
 ## 4 Experiments
 T = 1000 (이전 논문들과의 동등한 비교를 위해)  
