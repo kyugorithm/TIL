@@ -2,10 +2,10 @@
 Nonequilibrium thermodynamics에서 온 고려사항에 영감을 받은 잠재 변수 모델인 diffusion probabilistic models을 사용하여 고품질 이미지 합성 결과를 제시한다. 최고의 결과는 diffusion probabilistic models과 Langevin dynamics를 이용한 denoising score matching 사이의 새로운 연결에 따라 설계된 가중된 변분 경계에 대한 학습을 통해 얻어진다. 그리고 우리의 모델은 점진적인 손실 압축 해제 방식을 자연스럽게 수용하는데, 이는 autoregressive decoding의 일반화로 해석될 수 있다.
 
 ## 1. Introduction
-### 다양한 딥 생성 모델들의 최근 진보
+### 생성 모델의 최근 진보
 최근 다양한 데이터 형식에서 모든 종류의 딥 생성 모델들이 고품질 샘플을 선보였다. GANs, autoregressive models, flows, VAEs는 인상적인 이미지와 오디오 샘플을 합성했으며, 에너지 기반 모델링과 score matching 분야에서도 주목할 만한 발전이 있었다. 이러한 기술로 GANs와 비교할 수 있는 이미지를 생성하는 데 성공했다.
 
-### Diffusion Probabilistic Models의 발전
+### DPM의 발전
 본 논문은 diffusion probabilistic models의 발전을 소개한다. Variational inference 사용하여 학습된 매개변수화된 Markov chain이다. 이 체인의 전환은 데이터에 점차적으로 노이즈를 추가하는 diffusion process를 역으로 진행하도록 학습된다. Diffusion이 작은 양의 Gaussian 노이즈로 구성될 때, 샘플링 체인 전환을 조건부 Gaussian으로 설정하는 것으로 충분하며, 이를 통해 간단한 신경망 매개변수화가 가능하다. 
 
 ### 고품질 샘플 생성 및 특정 매개변수화의 중요성
