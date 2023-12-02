@@ -1,13 +1,20 @@
 ## Abstract
-Nonequilibrium thermodynamics를 고려하여 설계된 latent variable 모델인 diffusion probabilistic model을 사용하여 고품질의 이미지 합성 결과를 제시한다.  
-최상의 결과는 diffusion probabilistic model과 Langevin dynamics를 이용한 denoising score-matching 간의 새로운 연결에 따라 설계된 weighted variational bound에서 학습함으로써 진다.  
-저자들의 모델은 progressive lossy decompression 방식을 자연스럽게 허용하며, 이는 autoregressive decoding의 일반화로 해석될 수 있다. 
+Nonequilibrium thermodynamics에서 온 고려사항에 영감을 받은 잠재 변수 모델인 diffusion probabilistic models을 사용하여 고품질 이미지 합성 결과를 제시한다. 최고의 결과는 diffusion probabilistic models과 Langevin dynamics를 이용한 denoising score matching 사이의 새로운 연결에 따라 설계된 가중된 변분 경계에 대한 학습을 통해 얻어진다. 그리고 우리의 모델은 점진적인 손실 압축 해제 방식을 자연스럽게 수용하는데, 이는 autoregressive decoding의 일반화로 해석될 수 있다.
+
+## 1. Introduction
+### 1. 다양한 딥 생성 모델들의 최근 진보
+최근 다양한 데이터 형식에서 모든 종류의 딥 생성 모델들이 고품질 샘플을 선보였다. GANs, autoregressive models, flows, VAEs는 인상적인 이미지와 오디오 샘플을 합성했으며, 에너지 기반 모델링과 score matching 분야에서도 주목할 만한 발전이 있었다. 이러한 기술로 GANs와 비교할 수 있는 이미지를 생성하는 데 성공했다.
+
+### 2. Diffusion Probabilistic Models의 발전
+본 논문은 diffusion probabilistic models의 발전을 소개한다. Variational inference 사용하여 학습된 매개변수화된 Markov chain이다. 이 체인의 전환은 데이터에 점차적으로 노이즈를 추가하는 diffusion process를 역으로 진행하도록 학습된다. Diffusion이 작은 양의 Gaussian 노이즈로 구성될 때, 샘플링 체인 전환을 조건부 Gaussian으로 설정하는 것으로 충분하며, 이를 통해 간단한 신경망 매개변수화가 가능하다. 
+
+### 3. 고품질 샘플 생성 및 특정 매개변수화의 중요성
+Diffusion models는 간단하고 효율적으로 학습할 수 있지만, 고품질 샘플을 생성할 수 있다는 사실이 입증되지 않았다. 이 논문에서는 diffusion models가 실제로 고품질 샘플을 생성할 수 있음을 보여주며, 때로는 다른 생성 모델들의 결과보다 더 나은 결과를 보여준다. 또한, diffusion models의 특정 매개변수화가 학습 중 다중 노이즈 레벨에 대한 denoising score matching과 샘플링 중 annealed Langevin dynamics와 동등함을 밝혀낸다. 이 매개변수화를 사용하여 최고의 샘플 품질 결과를 얻었으며, 이는 주요 기여 중 하나로 간주된다.  
+
+### 4. 로그 우도 및 이미지 세부사항에 대한 분석
+우리의 모델은 샘플 품질에도 불구하고 다른 우도 기반 모델들과 비교할 때 경쟁력 있는 로그 우도를 가지고 있지 않다. 하지만 에너지 기반 모델과 score matching에 대해 보고된 것보다는 더 나은 로그 우도를 가진다. 우리 모델들의 대부분의 손실 없는 코드 길이는 눈에 띄지 않는 이미지 세부사항을 설명하는 데 사용된다. 이 논문에서는 이 현상에 대한 더 정교한 분석을 the language of lossy compression으로 제시하며, diffusion models의 샘플링 절차가 autoregressive decoding과 유사한 형태의 점진적 디코딩이라는 것을 보여준다. 이는 autoregressive models에서 일반적으로 가능한 것보다 훨씬 더 광범위하게 일반화된 비트 순서를 따른다.
 
 
-Nonequilibrium thermodynamics로부터 영감을 받은 latent variable 모델의 클래스인 Diffusion probabilistic model을 사용하여 고품질 이미지 합성 이미지 합성 결과를 제시한다.  
-최고의 결과는 diffusion probabilistic model과 Langevin dynamics를 포함하는 denoising score matching 사이의 새로운 연결에 따라 설계된 "weighted variational bound" 하에서 얻어진다.  
-그리고 우리 모델은 자연적으로 점진적 손실 분해방식 
-Our best results are obtained by training on a weighted variational bound designed according to a novel connection between diffusion probabilistic models and denoising score matching with Langevin dynamics, and our models naturally admit a progressive lossy decompression scheme that can be interpreted as a generalization of autoregressive decoding. On the unconditional CIFAR10 dataset, we obtain an Inception score of 9.46 and a state-of-the-art FID score of 3.17. On 256x256 LSUN, we obtain sample quality similar to ProgressiveGAN. Our implementation is available at https://github.com/hojonathanho/diffusion.
 
 ## 4 Experiments
 T = 1000 (이전 논문들과의 동등한 비교를 위해)  
