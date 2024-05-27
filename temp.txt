@@ -1,0 +1,58 @@
+	1.	Black and White: Check if the video appears in black and white.
+	2.	Aliasing: Check for aliasing or distortion in the video.
+	3.	Solarization: Check for areas in the video that are overexposed and have inverted colors.
+	4.	Sawtooth: Check if straight lines appear jagged or sawtooth-shaped.
+	5.	Logo Detection: Check for the presence of specific logos in the video.
+	6.	Flicker: Check if the video screen flickers.
+	7.	VBI Lines: Check for lines appearing in the vertical blanking interval.
+	8.	Blank Frames: Check if there are blank frames in the video.
+	9.	Action Safe Area: Ensure important actions occur within the safe area of the screen.
+	10.	Credit Detection: Check for the presence of credits or subtitles in the video.
+	11.	Image Presence: Verify the presence of a specific image in the video.
+	12.	Pixelation: Check if the video is pixelated, resulting in loss of detail.
+	13.	PSE Video Flash: Check for flashes in the video that might cause visual discomfort.
+	14.	Moire Pattern: Check for moire patterns caused by overlapping repetitive patterns.
+	15.	High Frequency Noise: Check for high-frequency noise in the video.
+	16.	Analog Noise: Check for noise introduced from analog sources.
+	17.	Video Dropout: Check for temporary interruptions in the video signal.
+	18.	Defective Pixel: Check for stuck or defective pixels on the screen.
+	19.	Film Grain Noise: Check for film grain effect in the video.
+	20.	Field Order: Verify the correct field order in interlaced video.
+	21.	Image Tilting: Check if the video image is tilted.
+	22.	Color Banding: Check for color banding where color transitions are not smooth.
+	23.	Upconversion: Check the quality when low-resolution video is converted to high resolution.
+	24.	Telecine: Check for issues arising from converting film to video.
+	25.	Motion Jerk: Check for jerky motion in the video.
+	26.	Field Dominance Error: Check for errors in the field dominance setting.
+	27.	QR Code: Verify the presence of a QR code in the video.
+	28.	Pulsing Noise: Check for periodic noise in the video.
+	29.	Media Offline: Check if the media file is missing or inaccessible.
+	30.	Shot Transition: Ensure smooth transitions between video shots.
+	31.	Phosting Artifact: Check for trailing artifacts behind moving objects.
+	32.	Duplicate Frames: Check for repeated frames in the video.
+	33.	Freeze Frames: Check if the video freezes.
+	34.	Pattern Noise: Check for repetitive pattern noise in the video.
+	35.	Halfline Blanking: Check if only half of the line is blanked out.
+	36.	White Point: Ensure the white point is displayed accurately in the video.
+	37.	Chroma Change: Check for changes in color information.
+	38.	Combing Artifact: Check for combing artifacts in interlaced video.
+	39.	Frame-Average Light Level: Verify the average light level of frames.
+	40.	Frame-Maximum Light Level: Verify the maximum light level of frames.
+	41.	Light Level: Check the overall brightness of the video.
+	42.	Composite Signal Level: Check the level of the composite video signal.
+	43.	RGB Color Gamut: Ensure RGB colors are accurately represented.
+	44.	Out of Range Pixels: Check for pixels with color values out of the permissible range.
+	45.	Narrow/Full Range: Verify if the color range is narrow or full.
+	46.	Low Chroma: Check if the color saturation is low.
+	47.	Video Signal Level: Check the level of the video signal.
+	48.	Contrast: Verify the contrast level of the video.
+	49.	Brightness: Verify the brightness level of the video.
+	50.	Black Frames: Check for the presence of black frames in the video.
+	51.	Black Bars: Check for black bars (letterboxing) in the video.
+	52.	Blurriness: Check if the video appears blurry.
+	53.	Mosquito Noise: Check for noise caused by digital compression.
+	54.	Ringing Artifacts: Check for ring-like noise around edges in the video.
+	55.	Content Complexity: Check the complexity level of the video content.
+	56.	Blockiness: Check for blockiness due to compression.
+	57.	Compression Score: Verify the video compression quality score.
+	58.	Color Bar: Check for the presence of color bars in the video.
