@@ -1,27 +1,34 @@
-import xml.etree.ElementTree as ET
+import cv2
+import numpy as np
 
-# Function to parse the XML file and extract bounding box information
-def parse_xml_and_save(xml_file_path, output_file_path):
-    # Load and parse the XML file
-    tree = ET.parse(xml_file_path)
-    root = tree.getroot()
+def draw_equidistant_lines(image, line_spacing):
+    height, width = image.shape[:2]  # 이미지의 높이와 너비를 가져옵니다.
+    color = (255, 0, 0)  # 선의 색깔을 파란색으로 설정합니다. BGR 포맷입니다.
+    thickness = 2  # 선의 두께를 설정합니다.
 
-    # Extract bounding box information
-    bbox_data = []
-    for obj in root.findall('.//object'):
-        bndbox = obj.find('bndbox')
-        xmin = bndbox.find('xmin').text
-        ymin = bndbox.find('ymin').text
-        xmax = bndbox.find('xmax').text
-        ymax = bndbox.find('ymax').text
-        bbox_data.append(f"{xmin} {ymin} {xmax} {ymax}\n")
+    # 수평선 그리기
+    for y in range(0, height, line_spacing):
+        start_point = (0, y)
+        end_point = (width, y)
+        image = cv2.line(image, start_point, end_point, color, thickness)
 
-    # Save the bounding box information to a text file
-    with open(output_file_path, 'w') as file:
-        file.writelines(bbox_data)
+    # 수직선 그리기
+    for x in range(0, width, line_spacing):
+        start_point = (x, 0)
+        end_point = (x, height)
+        image = cv2.line(image, start_point, end_point, color, thickness)
 
-# Example usage
-xml_file_path = 'path_to_your_xml_file.xml'  # Change this to the path of your XML file
-output_file_path = 'bounding_boxes.txt'  # The text file where you want to save the data
+    return image
 
-parse_xml_and_save(xml_file_path, output_file_path)
+# 이미지를 로드합니다. 적절한 경로로 변경하세요.
+image_path = 'path/to/your/image.jpg'
+image = cv2.imread(image_path)
+line_spacing = 50  # 선 간의 간격을 픽셀 단위로 설정합니다.
+
+# 선을 그린 이미지를 생성합니다.
+modified_image = draw_equidistant_lines(image, line_spacing)
+
+# 결과 이미지를 보여줍니다.
+cv2.imshow('Image with Equidistant Lines', modified_image)
+cv2.waitKey(0)  # 윈도우가 키보드 입력을 기다립니다.
+cv2.destroyAllWindows()  # 모든 OpenCV 윈도우를 종료합니다.
