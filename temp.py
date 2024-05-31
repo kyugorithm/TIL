@@ -1,22 +1,7 @@
-import cv2
-
-def draw_bbox(image, bbox, color=(255, 0, 0), thickness=2):
-    # bbox는 [x_min, y_min, width, height] 형태
-    x_min, y_min, width, height = bbox
-    top_left = (int(x_min), int(y_min))
-    bottom_right = (int(x_min + width), int(y_min + height))
-    cv2.rectangle(image, top_left, bottom_right, color, thickness)
-
-# 이미지 로드
-image = cv2.imread('path_to_image.jpg')
-
-# 바운딩 박스 정보, 예시: [x_min, y_min, width, height]
-bbox = [100, 50, 200, 300]  # 실제 사용할 때는 COCO 데이터셋에서 얻은 값으로 대체
-
-# 바운딩 박스 그리기
-draw_bbox(image, bbox)
-
-# 이미지 보여주기
-cv2.imshow('Image with Bounding Box', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+	1.	Sports Events: Besides baseball, other sports like soccer, basketball, and rugby often display logos on stadiums, uniforms, equipment, etc.
+	2.	Auto Racing: Events like Formula 1, NASCAR, or rally races are rich in logos on cars, driver outfits, and track billboards.
+	3.	Music Festivals and Concerts: Logos of sponsors and brands are commonly displayed on stage backdrops, equipment, and advertising banners.
+	4.	Commercial Advertisements: TV commercials or YouTube ad clips intensely showcase product and brand logos.
+	5.	Fashion Shows: Runway events or fashion-related videos prominently feature designer and brand logos on clothing, accessories, and backgrounds.
+	6.	Tech Expos: Large-scale tech exhibitions like CES or MWC display various technology brand logos on exhibition booths, products, and promotional materials.
+	7.	News Broadcasts: Logos in news studios, tickers, and lower thirds are also good sources of data.
