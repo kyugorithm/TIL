@@ -209,3 +209,6 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [b_link004]: <https://pytorch.org/tutorials/beginner/pytorch_with_examples.html#nn-module>
 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
+
+
+https://drive.google.com/file/d/1eKQPxxd54H3sgV4laHIEe7yfHykIMQad/view?usp=sharing
