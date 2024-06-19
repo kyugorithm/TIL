@@ -58,4 +58,8 @@ Dlib: C++로 작성된 오픈소스 라이브러리로, face recognition을 위�
 각 모델은 독특한 특성과 장점을 가지고 있으며, 사용자의 요구사항에 따라 적합한 모델을 선택할 수 있습니다.
 
 
-R@1 is more practical as it reflects the accuracy of the first search result, aligning closely with user expectations and experiences. It simplifies evaluation without needing a threshold and ensures immediate relevance. Hence, R@1 is used as the primary metric in real-world scenarios. However, since our actual pipeline will generate results for multiple image queries considered as the same logo, we utilize this redundancy and refer to R@4 as well.
+I had the pleasure of working with Abdul Muqeet at VIVESTUDIOS, where he demonstrated a strong understanding of AI technologies and an ability to grasp new concepts quickly. His proactive approach and problem-solving skills were valuable assets to our team.
+
+Abdul's collaborative spirit and willingness to share his knowledge with others made him a valuable team player. His contributions were crucial to the successful completion of our project, and his diverse experiences provided unique insights.
+
+Furthermore, he is an outstanding individual with impressive academic achievements, evidenced over 290 citations. I believe that his joining our team will provide great value.
