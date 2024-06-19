@@ -102,3 +102,63 @@ fourcc_codes = [
 
 for code, fourcc in fourcc_codes:
     print(f"{code}: {fourcc}")
+
+
+
+
+
+# curl을 사용하여 /usr/local/lib 디렉토리에 OpenH264 라이브러리 다운로드
+cd /usr/local/lib
+sudo curl -L -O https://github.com/cisco/openh264/releases/download/v1.8.0/libopenh264-1.8.0-linux64.4.so.bz2
+
+# 압축 해제
+sudo bzip2 -d libopenh264-1.8.0-linux64.4.so.bz2
+
+# 압축 해제된 파일을 이동하여 이름 변경
+sudo mv libopenh264-1.8.0-linux64.4.so libopenh264.so
+
+# 라이브러리 캐시 업데이트
+sudo ldconfig
+
+
+
+
+0---
+
+
+
+# 필수 패키지 설치
+sudo yum update -y
+sudo yum install -y epel-release
+sudo yum install -y ffmpeg ffmpeg-devel
+sudo yum install -y gcc gcc-c++ cmake3 git python3-devel
+sudo yum install -y libjpeg-devel libpng-devel libtiff-devel jasper-devel
+sudo yum install -y openexr-devel libwebp-devel
+sudo yum install -y libv4l-devel v4l-utils
+sudo yum install -y eigen3-devel tbb-devel
+sudo yum install -y gstreamer1-devel gstreamer1-plugins-base-devel
+sudo yum install -y libdc1394-devel libavc1394-devel
+sudo yum install -y gtk2-devel
+
+# OpenCV 소스 다운로드
+cd ~
+git clone https://github.com/opencv/opencv.git
+git clone https://github.com/opencv/opencv_contrib.git
+
+# OpenCV 빌드 설정
+cd ~/opencv
+mkdir build
+cd build
+cmake3 -D CMAKE_BUILD_TYPE=Release \
+       -D CMAKE_INSTALL_PREFIX=/usr/local \
+       -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+       -D WITH_FFMPEG=ON \
+       -D WITH_GSTREAMER=ON \
+       -D WITH_V4L=ON \
+       -D BUILD_opencv_python3=ON \
+       -D BUILD_opencv_python2=OFF ..
+       
+# OpenCV 빌드 및 설치
+make -j$(nproc)
+sudo make install
+sudo ldconfig
