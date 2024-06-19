@@ -85,3 +85,20 @@ else:
     # VideoWriter 객체 해제
     out.release()
     print("Video saved successfully.")
+
+
+
+
+import cv2
+
+fourcc_codes = [
+    ('DIVX', cv2.VideoWriter_fourcc(*'DIVX')),
+    ('XVID', cv2.VideoWriter_fourcc(*'XVID')),
+    ('H264', cv2.VideoWriter_fourcc(*'H264')),
+    ('X264', cv2.VideoWriter_fourcc(*'X264')),
+    ('avc1', cv2.VideoWriter_fourcc(*'avc1')),
+    ('mp4v', cv2.VideoWriter_fourcc(*'mp4v'))
+]
+
+for code, fourcc in fourcc_codes:
+    print(f"{code}: {fourcc}")
