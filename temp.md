@@ -56,3 +56,32 @@ Dlib: C++로 작성된 오픈소스 라이브러리로, face recognition을 위�
 	•	높은 정확도 달성.
 
 각 모델은 독특한 특성과 장점을 가지고 있으며, 사용자의 요구사항에 따라 적합한 모델을 선택할 수 있습니다.
+
+
+
+import cv2
+import numpy as np
+
+# 비디오 저장 설정
+output_filename = 'output.mp4'
+frame_width = 640
+frame_height = 480
+fps = 30.0
+
+# FourCC 설정 (H.264 코덱 사용)
+fourcc = cv2.VideoWriter_fourcc(*'X264')  # 또는 'H264', 'avc1'
+
+# VideoWriter 객체 생성
+out = cv2.VideoWriter(output_filename, fourcc, fps, (frame_width, frame_height))
+
+if not out.isOpened():
+    print("Error: Could not open video writer.")
+else:
+    # 예제: 빈 프레임 생성 및 저장
+    for _ in range(100):
+        frame = 255 * np.ones((frame_height, frame_width, 3), np.uint8)
+        out.write(frame)
+
+    # VideoWriter 객체 해제
+    out.release()
+    print("Video saved successfully.")
