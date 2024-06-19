@@ -63,3 +63,6 @@ I had the pleasure of working with Abdul Muqeet at VIVESTUDIOS, where he demonst
 Abdul's collaborative spirit and willingness to share his knowledge with others made him a valuable team player. His contributions were crucial to the successful completion of our project, and his diverse experiences provided unique insights.
 
 Furthermore, he is an outstanding individual with impressive academic achievements, evidenced over 290 citations. I believe that his joining our team will provide great value.
+[Abdul_Muqeet_Resume_0618.pdf](https://github.com/user-attachments/files/15894784/Abdul_Muqeet_Resume_0618.pdf)
+
+
