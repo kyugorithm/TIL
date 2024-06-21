@@ -57,3 +57,23 @@ Dlib: C++로 작성된 오픈소스 라이브러리로, face recognition을 위�
 각 모델은 독특한 특성과 장점을 가지고 있으며, 사용자의 요구사항에 따라 적합한 모델을 선택할 수 있습니다.
 
 
+
+
+# My Detection Model
+
+This is a custom version of the original detection model. It includes various modifications and improvements.
+
+## Original Repository
+
+This project is a fork of the original detection model. You can find the original repository [here](https://github.com/original_author/original_detection_model).
+
+## Modifications
+
+- Custom feature 1
+- Improvement 2
+- Bug fix 3
+
+## Installation
+
+```bash
+pip install my_detection_model
