@@ -53,9 +53,7 @@ Dlib: C++로 작성된 오픈소스 라이브러리로, face recognition을 위�
 	•	소셜 미디어 플랫폼에서 수십억 장의 이미지를 통해 검증된 성능.
 	4.	ArcFace (InsightFace 프로젝트)
 	•	각도 마진 페널티를 추가하여 더욱 분리된 얼굴 특징 공간 생성.
-	•	높은 정확도 달성.
-[Coupang play - yohan.pdf](https://github.com/user-attachments/files/15924168/Coupang.play.-.yohan.pdf)
-
+	•	높은 정확도 달성
 각 모델은 독특한 특성과 장점을 가지고 있으며, 사용자의 요구사항에 따라 적합한 모델을 선택할 수 있습니다.
 
 
