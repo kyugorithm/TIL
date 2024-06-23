@@ -58,22 +58,17 @@ Dlib: C++로 작성된 오픈소스 라이브러리로, face recognition을 위�
 
 
 
+import os
+import shutil
 
-# My Detection Model
+def remove_checkpoints(directory):
+    for root, dirs, files in os.walk(directory):
+        for dir_name in dirs:
+            if dir_name == ".ipynb_checkpoints":
+                dir_path = os.path.join(root, dir_name)
+                shutil.rmtree(dir_path)
+                print(f"Removed {dir_path}")
 
-This is a custom version of the original detection model. It includes various modifications and improvements.
-
-## Original Repository
-
-This project is a fork of the original detection model. You can find the original repository [here](https://github.com/original_author/original_detection_model).
-
-## Modifications
-
-- Custom feature 1
-- Improvement 2
-- Bug fix 3
-
-## Installation
-
-```bash
-pip install my_detection_model
+# Usage
+directory = "/path/to/your/directory"
+remove_checkpoints(directory)
