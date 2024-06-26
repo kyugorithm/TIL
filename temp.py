@@ -9,7 +9,7 @@ Face recognition 모델에서 얼굴 벡터 간의 유사도를 측정하기 위
 조명이나 얼굴 크기 변화에 강인: 같은 사람의 얼굴이라도 조명이나 얼굴 크기에 따라 벡터의 크기가 달라질 수 있습니다. Cosine similarity는 이런 변화에 덜 민감하므로 더 안정적인 유사도 측정이 가능합니다.  
 벡터 정규화 과정과 잘 맞음: Face recognition 모델의 출력 벡터는 보통 L2 normalization을 통해 정규화됩니다. 이렇게 정규화된 벡터 간의 Cosine similarity는 [-1, 1] 범위의 값을 가지므로 해석하기 쉽습니다.  
 
-### 2. Face Embedding을 위한 좋은 모델
+### 2. Face Embedding을 위한 좋은 모델 
 Face embedding을 위한 좋은 모델로는 다음과 같은 것들이 있습니다:  
   
 FaceNet: Google에서 개발한 모델로, Triplet Loss를 사용하여 학습되었습니다. 높은 정확도를 보이며 널리 사용되고 있습니다.  
@@ -72,3 +72,7 @@ def remove_checkpoints(directory):
 # Usage
 directory = "/path/to/your/directory"
 remove_checkpoints(directory)
+
+
+
+I have completed the development of a logo detection pipeline since last week. Upon testing, the results show satisfactory performance on my test samples for OTT brand logos. However, as the test samples have not been labeled and the results have not been quantified, following Peter’s advice, I am considering extracting recall metrics to benchmark the performance more accurately. Additionally, I plan to validate the model using actual content received from the MO team. For this purpose, I will prioritize evaluating the performance of OTT platform and third-party OTT platform logos, as discussed with Hansol. Based on this prioritization, I will proceed with the tasks accordingly.
