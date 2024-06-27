@@ -6,16 +6,14 @@ from pydub import AudioSegment
 import re
 
 def convert_numbers_to_korean(text):
-    # 이 함수는 그대로 유지
+    # 기존 함수 유지
 
 def contains_english(text):
     return bool(re.search(r'[a-zA-Z]', text))
 
 def clean_text(text):
-    # 정규표현식을 사용하여 한 번에 처리
     text = re.sub(r'[!@#$%^&*(),.?":{}|<>]', '', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    return re.sub(r'\s+', ' ', text).strip()
 
 def process_audio_file(audio_path, label_path):
     audio = AudioSegment.from_wav(audio_path)
@@ -38,21 +36,31 @@ def extract_paths(audio_folder, label_folder):
                     paths.append((audio_path, label_path))
     return paths
 
+def merge_pair(pair):
+    (audio1, text1), (audio2, text2) = pair
+    return audio1 + audio2, text1 + " " + text2
+
+def hierarchical_merge(items, merge_func, batch_size=2):
+    while len(items) > 1:
+        merged = []
+        for i in range(0, len(items), batch_size):
+            batch = items[i:i+batch_size]
+            if len(batch) == 1:
+                merged.append(batch[0])
+            else:
+                merged.append(merge_func(batch))
+        items = merged
+    return items[0]
+
 def concatenate_audios_and_labels(paths):
     with ProcessPoolExecutor() as executor:
-        results = list(executor.map(process_audio_file, [p[0] for p in paths], [p[1] for p in paths]))
+        initial_items = list(executor.map(process_audio_file, [p[0] for p in paths], [p[1] for p in paths]))
     
-    combined_audio = AudioSegment.empty()
-    combined_text = ""
-    for audio, text in results:
-        combined_audio += audio
-        combined_text += text + " "
-    
-    return combined_audio, combined_text.strip()
+    return hierarchical_merge(initial_items, merge_pair)
 
 def add_background_music(combined_audio, music_path, music_level=-10):
     music = AudioSegment.from_mp3(music_path)
-    music = music - abs(music_level)  # Adjust music level
+    music = music - abs(music_level)
     return combined_audio.overlay(music, loop=True)
 
 def add_noise(audio_segment, noise_level=0.5):
