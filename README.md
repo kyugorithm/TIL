@@ -212,3 +212,6 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 
 https://drive.google.com/file/d/1eKQPxxd54H3sgV4laHIEe7yfHykIMQad/view?usp=sharing
+
+
+https://drive.google.com/file/d/1TQZJwH9WsJbPBOWcsAVrQ76ejXrr98g5/view?usp=drivesdk
