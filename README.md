@@ -210,8 +210,5 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 
+https://drive.google.com/drive/folders/11eZkjhPROH621o_POIqIx850KgkTmrR5
 
-https://drive.google.com/file/d/1eKQPxxd54H3sgV4laHIEe7yfHykIMQad/view?usp=sharing
-
-
-https://drive.google.com/file/d/1TQZJwH9WsJbPBOWcsAVrQ76ejXrr98g5/view?usp=drivesdk
