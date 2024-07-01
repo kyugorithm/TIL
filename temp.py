@@ -1,62 +1,74 @@
 import os
 import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
-from google_images_download import google_images_download
-import cv2
-import numpy as np
+from PIL import Image
+from io import BytesIO
+import hashlib
 
-def download_images(query, limit=100, output_directory='downloaded_images'):
-    response = google_images_download.googleimagesdownload()
-    arguments = {
-        "keywords": query,
-        "limit": limit,
-        "format": "jpg",
-        "output_directory": output_directory,
-        "no_directory": True,
-        "silent_mode": True
-    }
-    paths = response.download(arguments)
-    return paths[0][query]
+# 로고 이미지를 저장할 디렉토리 생성
+def create_directory(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
-def is_logo(image_path, min_edge_ratio=0.1, max_edge_ratio=0.9):
-    img = cv2.imread(image_path)
-    if img is None:
-        return False
-    
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray, 100, 200)
-    
-    edge_ratio = np.sum(edges > 0) / (edges.shape[0] * edges.shape[1])
-    
-    return min_edge_ratio < edge_ratio < max_edge_ratio
+# 이미지 해시값으로 중복 이미지 체크
+def get_image_hash(image):
+    return hashlib.md5(image.tobytes()).hexdigest()
 
-def crawl_logo_images(brand_names, images_per_brand=100):
-    for brand in brand_names:
-        print(f"Crawling images for: {brand}")
+# 이미지를 다운로드하고 저장
+def save_image(url, directory, brand_name, seen_hashes):
+    try:
+        response = requests.get(url)
+        image = Image.open(BytesIO(response.content))
+        image_hash = get_image_hash(image)
         
-        # 로고 특화 키워드 추가
-        queries = [
-            f"{brand} logo",
-            f"{brand} brand logo",
-            f"{brand} official logo",
-            f"{brand} symbol"
-        ]
-        
-        for query in queries:
-            output_dir = os.path.join('logo_images', brand)
-            os.makedirs(output_dir, exist_ok=True)
-            
-            downloaded_images = download_images(query, limit=images_per_brand // len(queries), output_directory=output_dir)
-            
-            for img_path in downloaded_images:
-                if is_logo(img_path):
-                    print(f"  Kept logo image: {img_path}")
-                else:
-                    os.remove(img_path)
-                    print(f"  Removed non-logo image: {img_path}")
+        if image_hash not in seen_hashes:
+            seen_hashes.add(image_hash)
+            image_path = os.path.join(directory, f"{brand_name}_{len(seen_hashes)}.jpg")
+            image.save(image_path)
+            print(f"Saved image: {image_path}")
+        else:
+            print("Duplicate image found, skipping.")
+    except Exception as e:
+        print(f"Failed to save image from {url}: {e}")
 
-# 브랜드 리스트
-brand_names = ["Apple", "Nike", "Coca-Cola", "Microsoft", "Amazon"]
+# 메인 크롤링 함수
+def crawl_images(brand_name, num_images=100):
+    # Selenium 설정
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    search_url = f"https://www.google.com/search?q={brand_name}+logo&tbm=isch"
 
-# 크롤링 실행
-crawl_logo_images(brand_names)
+    driver.get(search_url)
+
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    driver.quit()
+    
+    image_tags = soup.find_all("img", {"class": "rg_i"})
+    
+    if not image_tags:
+        print("No images found.")
+        return
+
+    directory = f"logos/{brand_name}"
+    create_directory(directory)
+    seen_hashes = set()
+
+    for img_tag in image_tags[:num_images]:
+        try:
+            img_url = img_tag['src']
+            save_image(img_url, directory, brand_name, seen_hashes)
+        except KeyError:
+            continue
+
+# 사용 예제
+brand_names = ["Nike", "Adidas", "Apple"]
+for brand in brand_names:
+    crawl_images(brand, num_images=50)
