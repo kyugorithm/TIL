@@ -1,3 +1,12 @@
+Here's an English translation of the main content in the image:
+
+"The environment in which we use the model, especially video content and small objects, often occurs. However, the dataset only has 200,000 samples and does not consider these situations. Considering this situation, we aim to improve the overall performance for the situations we will use by learning Object Detection. Through this, we can specifically improve the following two things:
+
+1. FP is reduced. By selecting and labeling only the logo images we want in the video content, we can better understand the situations that should not be detected. For example, we only detect logos in videos, not cars.
+
+2. Small logos can be detected. In general, the YOLO we use is a 1-stage model, and low-level features are weak in detecting small objects. Therefore, to solve this problem effectively, we need to include more small logos in the data to enhance the small object detection performance of the model. By improving performance, we can raise the confidence threshold to increase Precision without losing Recall, and fundamentally reduce the number of candidate samples transferred to the image retrieval model, reducing optimal false positives."​​​​​​​​​​​​​​​​
+
+
 import argparse
 import os
 import tqdm
