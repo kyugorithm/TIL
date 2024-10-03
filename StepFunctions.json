@@ -1,5 +1,5 @@
 {
-  "Comment": "EventBridge-based Video Transcoding and ML Processing Workflow",
+  "Comment": "Simplified EventBridge-based Video Transcoding and ML Processing Workflow",
   "StartAt": "ReadCSVAndProcessTitles",
   "States": {
     "ReadCSVAndProcessTitles": {
@@ -11,44 +11,37 @@
       "Type": "Map",
       "ItemsPath": "$.titles",
       "Iterator": {
-        "StartAt": "SendToSQS",
+        "StartAt": "ProcessEpisodes",
         "States": {
-          "SendToSQS": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::sqs:sendMessage",
-            "Next": "StartTranscoding"
-          },
-          "StartTranscoding": {
-            "Type": "Task",
-            "Resource": "arn:aws:lambda:region:account-id:function:StartTranscodingFunction",
-            "Next": "WaitForCompletion"
-          },
-          "WaitForCompletion": {
-            "Type": "Wait",
-            "Next": "CheckCompletion",
-            "EventPattern": {
-              "source": ["custom.transcoding"],
-              "detail-type": ["EpisodeComplete"],
-              "detail": {
-                "titleId.$": "$.titleId"
+          "ProcessEpisodes": {
+            "Type": "Map",
+            "ItemsPath": "$.episodes",
+            "Iterator": {
+              "StartAt": "CheckS3",
+              "States": {
+                "CheckS3": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.transcoded",
+                      "BooleanEquals": true,
+                      "Next": "EpisodeComplete"
+                    }
+                  ],
+                  "Default": "StartMediaConvert"
+                },
+                "StartMediaConvert": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::mediaconvert:createJob.sync",
+                  "Next": "EpisodeComplete"
+                },
+                "EpisodeComplete": {
+                  "Type": "Pass",
+                  "End": true
+                }
               }
-            }
-          },
-          "CheckCompletion": {
-            "Type": "Task",
-            "Resource": "arn:aws:lambda:region:account-id:function:CheckCompletionFunction",
-            "Next": "IsAllComplete"
-          },
-          "IsAllComplete": {
-            "Type": "Choice",
-            "Choices": [
-              {
-                "Variable": "$.allComplete",
-                "BooleanEquals": true,
-                "Next": "StartMLBatchJob"
-              }
-            ],
-            "Default": "WaitForCompletion"
+            },
+            "Next": "StartMLBatchJob"
           },
           "StartMLBatchJob": {
             "Type": "Task",
