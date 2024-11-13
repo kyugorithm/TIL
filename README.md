@@ -281,3 +281,21 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 이 평가 방식은 비디오의 편차를 최소화하면서 모델의 포스터 이미지 검출 성능을 신뢰성 있게 평가할 수 있는 기준을 제공합니다.
 
+
+Sure! Here's a conversational English translation of your status update:
+
+"First, we finished the poster generation and validation work and applied it to prod. However, since the backend hasn't implemented the handling for the changed image asset types yet, Sean asked us to revert it until the next feature release. Since Sean is busy with other work, it looks like he won't be able to handle it right away, so we'll have to put the code changes on hold for now.
+
+Additionally, I defined metrics for poster generation. Based on Hansol's requirements, I thought about how to determine accuracy based on recall metrics. Since the CD team does manual recommendations for many titles, I think we can create test data based on this. In other words, we can recommend one image per title. Because of this, I thought it would be difficult to define recall or precision. So, to consider common precision together, I'm planning to design a ranking metric. Applying the MRR metric seems like it'll be part of our previous trust discretization work. Using the model, we're looking at scores with about 1-second sampling out of 10 evaluations. We'll combine these two approaches to create test sets based on data that has specific meaning.
+
+Also, Taylor launched a new project called PlayGround. The main issue is that CMS metadata and video info don't automatically map during the initial ingest stage, so this project aims to solve that. This will also help with episode number detection by enabling accurate file mapping and asset number utilization. I heard that the media pipeline can also do better transcoding work, including handling video loss. In conclusion, I'm thinking about ways to automatically map CMS metadata and video information. We're occasionally looking after the data. It seems like specific progress and plans will be decided after the data is cleaned up.
+
+For episode detection, we've received new requirements. Previously, we used a method that extracted results by measuring text similarity based on episode numbers in files, but this method doesn't work standalone. In other words, it can't properly detect when there are different episode numbers in the video. So there's a requirement to remove this dependency. We're planning to use a method that classifies whether images contain episode numbers based on standalone testing. This way, we can expose images that are considered to have episode numbers and get improved results based on that."​​​​​​​​​​​​​​​​
+
+
+
+
+
+
+
+
