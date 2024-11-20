@@ -212,93 +212,31 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
 
 
+Overall Score: 2.9 / 5
 
-해당 문서의 내용을 개선하여 더 명확하고 구조화된 형태로 재작성해드리겠습니다:
+Coding Test: 3.0 / 5
 
-# Metrics of Episode Detection
+The candidate managed to solve the coding problem with a functional solution but needed guidance to fully optimize it. While they showed logical thinking, the lack of immediate optimization awareness was a concern.
 
-## 배경
-우리는 콘텐츠 운영팀의 자동화 워크플로우를 개선하기 위해 ML 작업을 수행합니다. Eyeball QC를 대체할 수단으로서 Episode matching과 Media Operation 작업을 일부 자동화하는 데 초점을 맞추고 있습니다. 이러한 ML 작업의 성과를 정확하게 평가하기 위해서는 적절한 평가 지표(metrics)가 필수적입니다.
+Technical Understanding: 2.8 / 5
 
-## 현재 문제점과 해결 방안
-1. **비디오 내 에피소드 감지 문제**
-   - 현재는 burn-in된 에피소드 번호와 비디오 콘텐츠 내 실제 에피소드가 불일치하는 경우가 있음
-   - ML 모델을 활용하여 비디오 콘텐츠의 이미지와 텍스트를 종합적으로 분석
-   - 텍스트 기반 에피소드 번호 예측과 비교 검증 수행
+The candidate displayed a solid understanding of foundational concepts in computer vision but lacked depth in advanced areas. Their inability to explain attention mechanisms indicated a gap in understanding modern trends and key advancements in ML.
 
-2. **시스템 평가 방법**
-   - 시스템 성능에 따라 결과를 부분적으로 신뢰할 수 있음
-   - 다양한 케이스에서 비디오 내 텍스트 추출 정확도 검증 필요
-   - 차단된 것으로 확인된 결과는 재검토가 필요하지 않음
+Project Experience: 3.0 / 5
 
-3. **메타정보 검증 프로세스**
-   - 주어진 메타정보의 최초 정보와 유사한지의 관계 검증
-   - 독립성을 가진 검증 단계 구축:
-     a. 동영상 내의 검출된 최차정보
-     b. 과거의 최차정보
-     c. 두개 정보의 일치 여부
-   - 두 가지 방법에는 나눠진 차이가 있을 수 있으므로 순차적 개발 접근
+The candidate’s hands-on experience in multi-camera tracking and AI box deployment was notable. However, their problem-solving approach occasionally seemed exploratory rather than systematic. Additionally, they appeared less proactive in addressing certain challenges during the discussion.
 
-## 평가 지표 활용
-위에서 설명한 방법들의 성능을 정확하게 측정하고 비교하기 위해 명확한 평가 지표를 사용하며, 이를 통해 시스템의 신뢰성과 효율성을 지속적으로 모니터링합니다.
+Strengths:
 
-이렇게 구조화하고 내용을 보완하면 독자들이 더 쉽게 이해할 수 있으며, 각 섹션별로 중요 포인트를 명확하게 파악할 수 있습니다. 전문 용어들도 좀 더 일관성 있게 사용하였습니다. 필요하다면 특정 섹션에 대해 더 자세한 설명을 추가할 수 있습니다.​​​​​​​​​​​​​​​​
+	•	Practical experience in ML projects with a clear focus on deployment and optimization challenges.
+	•	Ability to communicate the overall workflow and key technical decisions effectively.
 
+Weaknesses:
 
-다음은 지금까지 논의한 내용을 바탕으로 포스터 이미지 검출 모델에 대한 평가 방식을 체계적으로 정리한 것입니다.
+	•	Limited knowledge of modern ML techniques, particularly attention mechanisms.
+	•	Lack of advanced cloud experience (e.g., AWS deployment).
+	•	Displayed a somewhat passive attitude during the interview, requiring significant prompting for deeper insights.
 
-1. 데이터 선정 방식
+Recommendation:
 
-	•	테스트셋 조건: 비디오에서 전문가가 5장 이상의 이미지를 선택한 경우에만 해당 비디오를 테스트셋에 포함합니다.
-	•	테스트셋 구성: 5장 이상의 정답 이미지가 있는 비디오로만 테스트셋을 구성하여, 평가의 공정성과 일관성을 유지합니다.
-
-2. 정답 산출 방식
-
-	•	전문가 기준 정답 이미지 세트:
-	•	각 비디오에 대해 전문가가 선택한 이미지들을 정답 이미지 세트로 설정합니다.
-	•	정답 이미지 수는 비디오마다 다를 수 있지만, 최소 5장 이상의 이미지가 포함됩니다.
-	•	모델 이미지 추출:
-	•	각 비디오에서 모델이 최대 TOP-10 이미지를 추출하여 평가합니다.
-	•	모델이 추출하는 이미지는 모든 비디오에서 동일하게 10장으로 고정하여 평가의 일관성을 확보합니다.
-	•	매칭 기준:
-	•	모델이 선택한 이미지와 전문가 정답 이미지 간의 시간적 근접성과 유사도 기준을 모두 만족해야 정답으로 평가합니다.
-	•	시간적 근접성: 모델 이미지와 전문가 이미지가 앞뒤 3초 이내에 위치해야 합니다.
-	•	이미지 유사도: 모델 이미지와 전문가 이미지의 코사인 유사도가 0.5 이상이어야 합니다.
-
-3. 리콜 계산 방식 (TOP-K Recall)
-
-	•	TOP-10 Recall 정의:
-	•	모델이 각 비디오에서 추출한 TOP-10 이미지 중 적어도 한 장이 전문가 정답 이미지 세트와 매칭되는 경우 해당 비디오를 정답으로 평가합니다.
-	•	TOP-10 Recall 계산:
-	•	테스트셋 내 모든 비디오에 대해 모델이 정답으로 평가된 비디오 수를 전체 비디오 수로 나누어 TOP-10 Recall을 계산합니다.
-	•	TOP-10 Recall = (정답으로 평가된 비디오 수) / (테스트셋 전체 비디오 수)
-
-요약
-
-	1.	데이터 선정: 전문가가 5장 이상의 이미지를 선택한 비디오로 테스트셋을 구성.
-	2.	정답 산출: 모델은 모든 비디오에서 TOP-10 이미지를 예측하고, 시간적 근접성(3초 이내)과 유사도(코사인 유사도 0.5 이상) 기준을 모두 만족하는 이미지를 정답으로 인정.
-	3.	리콜 계산: TOP-10 Recall을 사용하여, 각 비디오에서 모델이 한 장이라도 정답과 매칭되는 경우 정답으로 평가.
-
-이 평가 방식은 비디오의 편차를 최소화하면서 모델의 포스터 이미지 검출 성능을 신뢰성 있게 평가할 수 있는 기준을 제공합니다.
-
-
-Sure! Here's a conversational English translation of your status update:
-
-"First, we finished the poster generation and validation work and applied it to prod. However, since the backend hasn't implemented the handling for the changed image asset types yet, Sean asked us to revert it until the next feature release. Since Sean is busy with other work, it looks like he won't be able to handle it right away, so we'll have to put the code changes on hold for now.
-
-Additionally, I defined metrics for poster generation. Based on Hansol's requirements, I thought about how to determine accuracy based on recall metrics. Since the CD team does manual recommendations for many titles, I think we can create test data based on this. In other words, we can recommend one image per title. Because of this, I thought it would be difficult to define recall or precision. So, to consider common precision together, I'm planning to design a ranking metric. Applying the MRR metric seems like it'll be part of our previous trust discretization work. Using the model, we're looking at scores with about 1-second sampling out of 10 evaluations. We'll combine these two approaches to create test sets based on data that has specific meaning.
-
-Also, Taylor launched a new project called PlayGround. The main issue is that CMS metadata and video info don't automatically map during the initial ingest stage, so this project aims to solve that. This will also help with episode number detection by enabling accurate file mapping and asset number utilization. I heard that the media pipeline can also do better transcoding work, including handling video loss. In conclusion, I'm thinking about ways to automatically map CMS metadata and video information. We're occasionally looking after the data. It seems like specific progress and plans will be decided after the data is cleaned up.
-
-For episode detection, we've received new requirements. Previously, we used a method that extracted results by measuring text similarity based on episode numbers in files, but this method doesn't work standalone. In other words, it can't properly detect when there are different episode numbers in the video. So there's a requirement to remove this dependency. We're planning to use a method that classifies whether images contain episode numbers based on standalone testing. This way, we can expose images that are considered to have episode numbers and get improved results based on that."​​​​​​​​​​​​​​​​
-
-
-
-
-
-
-
-
-![IMG_367863BDE5B2-1](https://github.com/user-attachments/assets/8c39a90b-3ca9-4341-b7e4-954e85bc326e)
-
-
+While the candidate demonstrates potential and relevant experience, the gaps in technical understanding of modern ML advancements and their somewhat passive engagement suggest they are not a strong fit for an L5 role. Overall, a weak no for this position.
