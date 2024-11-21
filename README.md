@@ -212,31 +212,33 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
 
 
-Overall Score: 2.9 / 5
 
-Coding Test: 3.0 / 5
+Overall Score: 2 / 5
 
-The candidate managed to solve the coding problem with a functional solution but needed guidance to fully optimize it. While they showed logical thinking, the lack of immediate optimization awareness was a concern.
+Coding Test: 1 / 5
 
-Technical Understanding: 2.8 / 5
+The candidate struggled to explain their solution clearly and failed to demonstrate confidence in their approach. The implementation appeared unconventional and inconsistent, raising concerns about the originality of the solution.
 
-The candidate displayed a solid understanding of foundational concepts in computer vision but lacked depth in advanced areas. Their inability to explain attention mechanisms indicated a gap in understanding modern trends and key advancements in ML.
+Technical Understanding: 2.5 / 5
 
-Project Experience: 3.0 / 5
+The candidate exhibited a basic understanding of computer vision and machine learning concepts, including CNNs and attention mechanisms. However, explanations were often surface-level, with limited ability to address modern ML trends and advanced optimization strategies. Their knowledge of efficient deployment techniques and model optimization was insufficient for the L5 level.
 
-The candidate’s hands-on experience in multi-camera tracking and AI box deployment was notable. However, their problem-solving approach occasionally seemed exploratory rather than systematic. Additionally, they appeared less proactive in addressing certain challenges during the discussion.
+Project Experience: 2.5 / 5
+
+While the candidate has been involved in several projects, the overall impact and technical depth of their contributions were limited. Many solutions appeared exploratory and lacked systematic engineering rigor. The application of ML principles in real-world scenarios was functional but lacked innovation or standout results.
 
 Strengths:
 
-	•	Practical experience in ML projects with a clear focus on deployment and optimization challenges.
-	•	Ability to communicate the overall workflow and key technical decisions effectively.
+	•	Hands-on experience in ML projects involving depth cameras and deployment.
+	•	Adequate understanding of fundamental computer vision principles.
 
 Weaknesses:
 
-	•	Limited knowledge of modern ML techniques, particularly attention mechanisms.
-	•	Lack of advanced cloud experience (e.g., AWS deployment).
-	•	Displayed a somewhat passive attitude during the interview, requiring significant prompting for deeper insights.
+	•	Struggled with basic problem-solving during the coding test and lacked clear communication.
+	•	Limited knowledge of modern techniques like model quantization or advanced deployment practices.
+	•	Projects lacked significant impact or innovation, with outcomes often driven by trial and error rather than strategic engineering.
+	•	Displayed a lack of confidence and clarity during explanations.
 
 Recommendation:
 
-While the candidate demonstrates potential and relevant experience, the gaps in technical understanding of modern ML advancements and their somewhat passive engagement suggest they are not a strong fit for an L5 role. Overall, a weak no for this position.
+The candidate does not meet the expectations for an L5 position at our organization, particularly due to shortcomings in technical understanding and coding performance. Overall, a strong no for this role.
