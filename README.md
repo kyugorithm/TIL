@@ -210,35 +210,3 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
-
-
-
-Overall Score: 2 / 5
-
-Coding Test: 1 / 5
-
-The candidate struggled to explain their solution clearly and failed to demonstrate confidence in their approach. The implementation appeared unconventional and inconsistent, raising concerns about the originality of the solution.
-
-Technical Understanding: 2.5 / 5
-
-The candidate exhibited a basic understanding of computer vision and machine learning concepts, including CNNs and attention mechanisms. However, explanations were often surface-level, with limited ability to address modern ML trends and advanced optimization strategies. Their knowledge of efficient deployment techniques and model optimization was insufficient for the L5 level.
-
-Project Experience: 2.5 / 5
-
-While the candidate has been involved in several projects, the overall impact and technical depth of their contributions were limited. Many solutions appeared exploratory and lacked systematic engineering rigor. The application of ML principles in real-world scenarios was functional but lacked innovation or standout results.
-
-Strengths:
-
-	•	Hands-on experience in ML projects involving depth cameras and deployment.
-	•	Adequate understanding of fundamental computer vision principles.
-
-Weaknesses:
-
-	•	Struggled with basic problem-solving during the coding test and lacked clear communication.
-	•	Limited knowledge of modern techniques like model quantization or advanced deployment practices.
-	•	Projects lacked significant impact or innovation, with outcomes often driven by trial and error rather than strategic engineering.
-	•	Displayed a lack of confidence and clarity during explanations.
-
-Recommendation:
-
-The candidate does not meet the expectations for an L5 position at our organization, particularly due to shortcomings in technical understanding and coding performance. Overall, a strong no for this role.
