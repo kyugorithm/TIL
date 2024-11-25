@@ -210,3 +210,33 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
+
+
+
+FFmpeg를 사용해서 영상의 홀수/짝수 라인 간 PSNR을 측정하는 방법을 알려드리겠습니다:
+
+```bash
+ffmpeg -i input.mp4 -vf "split[a][b];[a]select='not(mod(n,2))',signalstats[even];[b]select='mod(n,2)',signalstats[odd];[even][odd]psnr" -f null -
+```
+
+이 커맨드의 동작 방식을 설명드리면:
+
+1. split[a][b] - 입력 영상을 두 스트림으로 나눕니다
+2. select='not(mod(n,2))' - 짝수 라인만 선택
+3. select='mod(n,2))' - 홀수 라인만 선택
+4. [even][odd]psnr - 홀수/짝수 라인 간 PSNR 계산
+
+더 자세한 메트릭을 보고 싶으시다면:
+
+```bash
+# JSON 형식으로 출력
+ffmpeg -i input.mp4 -vf "split[a][b];[a]select='not(mod(n,2))',signalstats[even];[b]select='mod(n,2)',signalstats[odd];[even][odd]psnr" -f null - 2>&1 | grep -i "PSNR"
+
+# 프레임별 상세 정보 출력
+ffmpeg -i input.mp4 -vf "split[a][b];[a]select='not(mod(n,2))',signalstats[even];[b]select='mod(n,2)',signalstats[odd];[even][odd]psnr=stats_file=psnr_stats.txt" -f null -
+```
+
+특정 구간이나 다른 메트릭을 보고 싶으시다면 말씀해 주세요.​​​​​​​​​​​​​​​​
+
+
+
