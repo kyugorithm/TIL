@@ -211,32 +211,100 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
 
+import ray
+import json
+import subprocess
+import numpy as np
+import os
+from glob import glob
+from typing import Dict, List, Tuple
 
+# Ray 액터를 사용하여 비디오 처리를 담당할 클래스 정의
+@ray.remote
+class VideoProcessor:
+    def __init__(self):
+        self.ffprobe_command = [
+            'ffprobe',
+            '-f', 'lavfi',
+            '-print_format', 'json',
+            '-show_frames'
+        ]
+    
+    def extract_signal_stats(self, input_video_path: str) -> Dict:
+        command = self.ffprobe_command + [
+            f"movie={input_video_path},signalstats=stat=tout+vrep+brng"
+        ]
+        
+        result = subprocess.run(command, capture_output=True, text=True)
+        return json.loads(result.stdout)['frames']
+    
+    def calculate_stats(self, frames_data: List) -> Dict:
+        stats_temp = {}
+        
+        # 프레임별 통계 수집
+        for frame in frames_data:
+            for key, value in frame['tags'].items():
+                if key not in stats_temp:
+                    stats_temp[key] = []
+                stats_temp[key].append(float(value))
+        
+        # 최종 통계 계산
+        stats = {}
+        for key, values in stats_temp.items():
+            values_array = np.array(values)
+            stats[f"{key}_mean"] = float(np.mean(values_array))
+            stats[f"{key}_std"] = float(np.std(values_array))
+            stats[f"{key}_min"] = float(np.min(values_array))
+            stats[f"{key}_max"] = float(np.max(values_array))
+            stats[f"{key}_25%"] = float(np.percentile(values_array, 25))
+            stats[f"{key}_50%"] = float(np.percentile(values_array, 50))
+            stats[f"{key}_75%"] = float(np.percentile(values_array, 75))
+            
+        return stats
+    
+    def process_video(self, input_path: str, scene_number: int) -> Dict:
+        frames_data = self.extract_signal_stats(input_path)
+        stats = self.calculate_stats(frames_data)
+        
+        # 메타데이터 추가
+        stats['scene_number'] = scene_number
+        stats['file_name'] = os.path.basename(input_path)
+        
+        return stats
 
-FFmpeg를 사용해서 영상의 홀수/짝수 라인 간 PSNR을 측정하는 방법을 알려드리겠습니다:
+def main():
+    ray.init()
+    
+    # 입력 비디오 경로 설정
+    input_video_paths = sorted(glob("temp_scenes2/*/*.mp4"))
+    output_json_path = "output.json"
+    
+    try:
+        # VideoProcessor 액터 인스턴스들 생성
+        processors = [VideoProcessor.remote() for _ in range(min(8, len(input_video_paths)))]
+        
+        # 작업 분배
+        futures = []
+        for i, video_path in enumeratep(input_video_paths):
+            processor = processors[i % len(processors)]
+            futures.append(processor.process_video.remote(video_path, i))
+            
+            # 진행상황 출력
+            if i % 10 == 0:
+                print(f"Processing: {i}/{len(input_video_paths)} ({i/len(input_video_paths)*100:.1f}%)")
+        
+        # 결과 수집
+        all_stats = ray.get(futures)
+        
+        # 결과 저장
+        with open(output_json_path, 'w') as f:
+            json.dump(all_stats, f, indent=2)
+            
+    finally:
+        ray.shutdown()
 
-```bash
-ffmpeg -i input.mp4 -vf "split[a][b];[a]select='not(mod(n,2))',signalstats[even];[b]select='mod(n,2)',signalstats[odd];[even][odd]psnr" -f null -
-```
-
-이 커맨드의 동작 방식을 설명드리면:
-
-1. split[a][b] - 입력 영상을 두 스트림으로 나눕니다
-2. select='not(mod(n,2))' - 짝수 라인만 선택
-3. select='mod(n,2))' - 홀수 라인만 선택
-4. [even][odd]psnr - 홀수/짝수 라인 간 PSNR 계산
-
-더 자세한 메트릭을 보고 싶으시다면:
-
-```bash
-# JSON 형식으로 출력
-ffmpeg -i input.mp4 -vf "split[a][b];[a]select='not(mod(n,2))',signalstats[even];[b]select='mod(n,2)',signalstats[odd];[even][odd]psnr" -f null - 2>&1 | grep -i "PSNR"
-
-# 프레임별 상세 정보 출력
-ffmpeg -i input.mp4 -vf "split[a][b];[a]select='not(mod(n,2))',signalstats[even];[b]select='mod(n,2)',signalstats[odd];[even][odd]psnr=stats_file=psnr_stats.txt" -f null -
-```
-
-특정 구간이나 다른 메트릭을 보고 싶으시다면 말씀해 주세요.​​​​​​​​​​​​​​​​
+if __name__ == "__main__":
+    main()
 
 
 
