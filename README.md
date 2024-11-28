@@ -212,94 +212,23 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
 
 
-import random
+FROM artifactory.coupang.net/oi/release/ciabaseimage/proxy-certified/ml/nvidia/cuda:11.8.0-devel-ubuntu22.04
 
-def generate_episode_texts(num_samples):
-    prefixes = [
-        "", "제", "에피소드 ", "Episode ", "Ep. ", "Epi ", "EP", "E", "S1E", "Season 1 Episode ",
-        "시즌1 에피소드 ", "시즌 1 에피소드 ", "시즌1 Episode ", "Season 1 Ep. ", "S1 Ep. "
-    ]
-    numbers = list(range(1, 101))  # 1부터 100까지의 숫자
-    suffixes = ["회", "화", "편", "", "번째 이야기", "번째 에피소드", "번째 편", "편성"]
+# Update and install dependencies, including tzdata to avoid timezone errors
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    python3 python3-pip libssl-dev gcc tzdata libgl1-mesa-glx && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-    episode_texts = []
-    for _ in range(num_samples):
-        prefix = random.choice(prefixes)
-        number = random.choice(numbers)
-        suffix = random.choice(suffixes)
-        episode_text = f"{prefix}{number}{suffix}"
-        episode_texts.append(episode_text)
+# Install Python dependencies
+COPY gpu_vision_requirements.txt .
+RUN python3 -m pip install -r gpu_vision_requirements.txt --no-cache-dir \
+    --trusted-host artifactory.coupang.net \
+    --index-url https://artifactory.coupang.net/artifactory/api/pypi/python-virtual/simple
 
-    return episode_texts
+RUN python3 -m pip install torch --no-cache-dir \
+    --trusted-host artifactory.coupang.net \
+    --index-url https://artifactory.coupang.net/artifactory/api/pypi/python-virtual/simple
 
-def generate_transition_texts(num_samples):
-    phrases = [
-        # 이전 이야기 관련
-        ["이전", "지난", "전"],
-        ["이야기", "회차", "에피소드", "편", "내용"],
-        # 다음 이야기 관련
-        ["다음", "후", "이어질", "이어지는", "계속"],
-        ["이야기", "회차", "에피소드", "편", "내용"],
-        # 영어 표현
-        ["Previous", "Next", "Last Time", "Next Time", "Previously On", "To Be Continued", "Coming Up Next", "Up Next", "Next Week On", "Continued"],
-        ["Episode", "Ep.", "Story", "Part", ""],
-        # 기타 표현
-        ["곧", "잠시 후", "곧 이어질", "계속해서"],
-        ["방송", "시작", "공개", "발매"],
-    ]
-
-    transition_texts = []
-    for _ in range(num_samples):
-        phrase_set = random.choice(phrases)
-        text = random.choice(phrase_set)
-        if text:
-            transition_texts.append(text)
-
-    return transition_texts
-
-def generate_release_dates(num_samples):
-    months = list(range(1, 13))  # 1월부터 12월까지
-    days = list(range(1, 32))    # 1일부터 31일까지
-    phrases = ["공개 예정", "발매 예정", "출시 예정", "방영 예정", "발표 예정", "예정", "온에어", "Coming Soon", "Releasing On", "Available On"]
-
-    release_dates = []
-    for _ in range(num_samples):
-        month = random.choice(months)
-        day = random.choice(days)
-        phrase = random.choice(phrases)
-        date_format = random.choice([
-            f"{month}월 {day}일 {phrase}",
-            f"{month}/{day} {phrase}",
-            f"{phrase} {month}월 {day}일",
-            f"{phrase} {month}/{day}",
-            f"{month}월 {day}일에 {phrase}",
-            f"{month}월 {day}일 공개",
-            f"{month}.{day} {phrase}",
-            f"{month}월 {day}일 오픈",
-            f"{phrase} on {month}/{day}",
-            f"Release Date: {month}/{day}"
-        ])
-        release_dates.append(date_format)
-
-    return release_dates
-
-# 사용 예시
-episode_samples = generate_episode_texts(10)
-transition_samples = generate_transition_texts(10)
-release_date_samples = generate_release_dates(10)
-
-print("에피소드 텍스트 샘플:")
-for text in episode_samples:
-    print(text)
-
-print("\n이전/다음 이야기 텍스트 샘플:")
-for text in transition_samples:
-    print(text)
-
-print("\n공개 예정일 텍스트 샘플:")
-for text in release_date_samples:
-    print(text)
-
-
-
-
+RUN python3 -m pip install gpen-1.0.0-py3-none-any.whl
