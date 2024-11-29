@@ -212,23 +212,36 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
 
 
-FROM artifactory.coupang.net/oi/release/ciabaseimage/proxy-certified/ml/nvidia/cuda:11.8.0-devel-ubuntu22.04
+아, 이해했습니다. 이 경우는 일반적인 파이썬 패키지 구조가 아닌 것 같네요. 
 
-# Update and install dependencies, including tzdata to avoid timezone errors
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    python3 python3-pip libssl-dev gcc tzdata libgl1-mesa-glx && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+PaddlePaddle을 설치하시려는 것으로 보이는데, 맞나요? 만약 그렇다면:
 
-# Install Python dependencies
-COPY gpu_vision_requirements.txt .
-RUN python3 -m pip install -r gpu_vision_requirements.txt --no-cache-dir \
-    --trusted-host artifactory.coupang.net \
-    --index-url https://artifactory.coupang.net/artifactory/api/pypi/python-virtual/simple
+1. 공식 pip 설치 방법을 먼저 시도해보시는 것을 추천드립니다:
+```dockerfile
+RUN pip install paddlepaddle
+# 또는 GPU 버전
+RUN pip install paddlepaddle-gpu
+```
 
-RUN python3 -m pip install torch --no-cache-dir \
-    --trusted-host artifactory.coupang.net \
-    --index-url https://artifactory.coupang.net/artifactory/api/pypi/python-virtual/simple
+2. 만약 특정 버전의 바이너리를 사용해야 하는 상황이라면, 수동 설치도 가능합니다:
+```dockerfile
+COPY paddle.tar.bz2 /tmp/
+RUN cd /tmp && \
+    tar xjf paddle.tar.bz2 && \
+    cp -r python3.10/site-packages/paddle* /usr/local/lib/python3.10/site-packages/ && \
+    rm -rf /tmp/paddle.tar.bz2 /tmp/python3.10
+```
 
-RUN python3 -m pip install gpen-1.0.0-py3-none-any.whl
+3. 설치 후에는 다음 환경변수들을 확인해주세요:
+```dockerfile
+ENV LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages:${PYTHONPATH}
+```
+
+설치가 제대로 되었는지 확인하려면:
+```python
+import paddle
+paddle.utils.run_check()
+```
+
+혹시 특정 버전이나 특별한 설치 요구사항이 있으신가요? 그리고 어떤 운영체제/환경에서 설치하시는지 알 수 있을까요?​​​​​​​​​​​​​​​​
