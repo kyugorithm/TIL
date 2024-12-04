@@ -211,66 +211,35 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
 
-![image](https://github.com/user-attachments/assets/25964d69-3b46-4566-b301-7ffb9b007a4f)
-
-
-
-발명의 효과
-
-자동화된 썸네일 생성으로 작업 시간 및 비용 절감
-인공지능 기반 품질 평가로 일관된 고품질 썸네일 제작
-다단계 필터링으로 최적의 썸네일 선정 정확도 향상
-주요 인물 자동 선정으로 콘텐츠의 핵심을 효과적으로 전달
-다양한 포맷 지원으로 플랫폼 호환성 확보
-
-청구항 작성 방향
-
-비디오로부터 썸네일을 자동 추출하는 방법
-얼굴 기반 클러스터링을 통한 주요 인물 선정 방법
-감정 추정 및 품질 평가 기반 썸네일 점수화 방법
-레터박스/필러박스 자동 검출 및 제거 방법
-다단계 필터링을 통한 최적 썸네일 선정 시스템
-
-이 특허의 핵심적인 특허성은 다음과 같은 부분에서 찾을 수 있습니다:
-
-다단계 필터링 시스템: 단순한 이미지 품질 평가를 넘어서 얼굴 인식, 감정 추정, 랜드마크 분석 등을 순차적으로 적용하는 복합적인 평가 시스템입니다.
-얼굴 임베딩 기반 클러스터링: 코사인 유사도를 활용한 클러스터링과 자동 클러스터 수 결정은 기존 방식과 차별화됩니다.
-통계적 접근의 감정 평가: 감정 벡터의 분포를 활용하여 극단적인 표정을 필터링하는 방식은 새로운 접근법입니다.
 
 
 
 
+Candidate Interview Evaluation
 
-네, 말씀하신 알고리즘을 체계적으로 정리해서 설명해드리겠습니다. 이 시스템은 비디오로부터 OTT 플랫폼에 적합한 썸네일을 자동으로 추출하는 지능형 시스템이네요.
+Overall Score: 3.7/5
 
-전체 알고리즘은 다음과 같은 주요 단계들로 구성됩니다:
+Coding Test (3.6/5):
+	•	Strengths: Demonstrated clear understanding of problem requirements and implemented a functional solution effectively. Showed awareness of time and space complexity trade-offs and proposed optimizations during follow-up discussions.
+	•	Weaknesses: Initial implementation took slightly longer than expected for a senior-level candidate due to some hesitation with constraints and setup.
 
-첫째, 비디오 샷 분할 및 기초 이미지 추출 단계입니다. 전체 비디오를 효율적으로 처리하기 위해 먼저 의미 있는 샷 단위로 분할합니다. 각 샷에서 1-3장 정도의 대표 이미지를 뽑아내는데, 이때 다음과 같은 기본적인 이미지 품질 지표들을 활용합니다:
+Technical Understanding (3.8/5):
+	•	Strengths: Deep technical expertise in model optimization and deployment, particularly in edge-based scenarios like drones. Provided detailed insights into frameworks (e.g., TensorRT, TorchScript) and optimization techniques such as pruning and tensor decomposition. Demonstrated solid understanding of convolution operations and their practical applications.
+	•	Weaknesses: Limited AWS experience could pose a challenge in environments requiring cloud-native solutions.
 
-이미지의 밝기값과 그 표준편차
-소벨 필터를 통한 그래디언트 분석
-이미지 선명도와 블러 정도 평가
-둘째, 얼굴 검출 및 품질 평가 단계입니다. 추출된 이미지들에 대해 얼굴 검출을 수행하고, 얼굴 랜드마크를 추출합니다. 이 정보를 바탕으로:
+Project Experience (3.9/5):
+	•	Strengths: Rich experience in applied machine learning for edge devices, with significant hands-on contributions to pipelines, including AutoML and model configuration management. Developed innovative tools like “Kindle” for modular and flexible model design.
+	•	Weaknesses: Some areas (e.g., model compression) were not published or formally documented, leaving room for a more impactful industry contribution.
 
-얼굴의 존재 여부 확인
-눈의 크기와 개폐 상태 분석
-얼굴 크기의 적절성 평가 이런 요소들을 통해 썸네일로서의 적합성을 1차적으로 판단합니다.
-셋째, 얼굴 인식 및 클러스터링 단계입니다. 검출된 얼굴들에 대해:
+Strengths:
+	•	Proficient in solving real-world ML problems with a strong focus on optimization and practical deployment.
+	•	Creative and resourceful, as evidenced by projects like “Kindle” and successful implementation of unique optimization strategies.
+	•	Strong grasp of mathematical and conceptual foundations (e.g., convolution mechanics, tensor decomposition).
 
-얼굴 영역의 임베딩 벡터 추출
-코사인 유사도 기반의 비지도 클러스터링 수행 (HDBScan 등 활용)
-주요 인물 클러스터 식별 이를 통해 영상 속 주요 인물들을 자동으로 그룹화합니다.
-넷째, 이미지 최적화 및 품질 향상 단계입니다:
+Weaknesses:
+	•	Hesitation in coding test setup and slower-than-expected performance in straightforward problems.
+	•	Limited exposure to cloud computing and related DevOps workflows.
+	•	Tendency to over-explain during technical discussions, potentially requiring concise articulation.
 
-레터박스/필라박스 검출 및 제거
-감정 추정 모델을 통한 표정 분석
-표정의 통계적 분포 평가 (극단적 표정 제외) 이 과정에서 썸네일로 부적합한 이미지들이 필터링됩니다.
-마지막으로, 최종 썸네일 생성 단계입니다:
-
-주요 인물 클러스터(2-3개)별 최적 이미지 선정
-품질 점수에 따른 이미지 랭킹
-가로형/세로형 포스터 형태로 변환
-이 시스템의 특징은 단순한 이미지 추출을 넘어서서, 영상의 문맥을 이해하고 주요 인물의 최적의 모습을 포착하려 한다는 점입니다. 특히 통계적 접근을 통해 극단적이거나 부적절한 표정을 제외하고, 자연스러운 표정의 이미지를 선호하도록 설계된 점이 주목할 만합니다.
-
-이렇게 도출된 썸네일들은 내부 작업자들이 최종 선택을 하는데 활용되며, 이는 완전 자동화가 아닌 반자동화 시스템으로 운영된다는 점에서 실용적인 접근이라고 볼 수 있습니다.
-
+Conclusion:
+The candidate demonstrates strong technical acumen and practical experience in machine learning and optimization. With a slightly higher coding performance and some focus on enhancing cloud-related skills, they would be a strong addition to the team.
