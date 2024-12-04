@@ -215,31 +215,264 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 
 
-Candidate Interview Evaluation
+import random
+from itertools import product
 
-Overall Score: 3.7/5
+def generate_episode_texts(num_samples):
+    # 시즌 범위 확장
+    season = random.randint(1, 30)
+    
+    # 더 다양한 접두사 패턴
+    basic_prefixes = ["", "제", "에피소드 ", "Episode ", "Ep. ", "Epi ", "EP", "E", "#"]
+    season_formats = [
+        f"S{season}E",
+        f"Season {season} Episode ",
+        f"시즌{season} 에피소드 ",
+        f"시즌 {season} ",
+        f"{season}기 ",
+        f"시즌 {season:02d} ",
+        f"Season {season:02d} Ep. ",
+        f"S{season:02d}E",
+        f"{season}시즌 ",
+        f"제{season}시즌 "
+    ]
+    prefixes = basic_prefixes + season_formats
+    
+    # 숫자 범위 및 형식 확장
+    numbers = []
+    for i in range(1, 201):  # 확장된 에피소드 범위
+        numbers.extend([
+            str(i),
+            f"{i:02d}",  # 01, 02, ...
+            f"{i:03d}",  # 001, 002, ...
+            str(i) + "화",
+            f"{i:02d}화",
+            f"{i:03d}화"
+        ])
+    
+    # 접미사 확장
+    suffixes = [
+        "화", "편", "", 
+        "번째 이야기", "번째 에피소드", "번째 편", "편째",
+        "회", "부", "절", "장",
+        " Part", " Story", " Chapter",
+        "-1", "-A", " (상)", " (하)",
+        " - 첫번째", " - 두번째"
+    ]
+    
+    # 특별편 포맷 추가
+    special_formats = [
+        "특별편 ",
+        "Special ",
+        "SP ",
+        "외전 ",
+        "Prologue ",
+        "Epilogue ",
+        "OVA ",
+        "예고편 "
+    ]
+    
+    episode_texts = []
+    for _ in range(num_samples):
+        if random.random() < 0.1:  # 10% 확률로 특별편 형식 사용
+            episode_text = random.choice(special_formats) + str(random.randint(1, 10))
+        else:
+            prefix = random.choice(prefixes)
+            number = random.choice(numbers)
+            suffix = random.choice(suffixes)
+            
+            # 다양한 구분자 추가
+            separator = random.choice(["", " ", "-", ".", "_"])
+            episode_text = f"{prefix}{separator}{number}{suffix}"
+            
+            # 부가 정보 추가 (20% 확률)
+            if random.random() < 0.2:
+                additional_info = random.choice([
+                    " (재방송)",
+                    " (본방송)",
+                    " (신작)",
+                    " (완결편)",
+                    " [HD]",
+                    " [4K]",
+                    " [자막]"
+                ])
+                episode_text += additional_info
+        
+        episode_texts.append(episode_text)
+    
+    return episode_texts
 
-Coding Test (3.6/5):
-	•	Strengths: Demonstrated clear understanding of problem requirements and implemented a functional solution effectively. Showed awareness of time and space complexity trade-offs and proposed optimizations during follow-up discussions.
-	•	Weaknesses: Initial implementation took slightly longer than expected for a senior-level candidate due to some hesitation with constraints and setup.
+def generate_rating_texts(num_samples):
+    age_ratings = ["전체", "7세", "12세", "15세", "18세", "19금"]
+    content_warnings = [
+        "폭력성",
+        "선정성",
+        "언어사용",
+        "공포",
+        "약물",
+        "차별",
+        "모방위험"
+    ]
+    
+    detail_phrases = [
+        "시청가능",
+        "이용가",
+        "관람가",
+        "등급",
+        "허용",
+        "권장"
+    ]
+    
+    descriptors = [
+        "다소",
+        "매우",
+        "경미한",
+        "심각한",
+        "일부",
+        "포함"
+    ]
+    
+    rating_texts = []
+    for _ in range(num_samples):
+        if random.random() < 0.3:  # 단순 등급
+            text = random.choice(age_ratings)
+        else:
+            # 복합 등급 설명 생성
+            age = random.choice(age_ratings)
+            
+            if random.random() < 0.5:  # 기본 등급 표현
+                phrase = random.choice(detail_phrases)
+                text = f"{age} {phrase}"
+            else:  # 상세 경고 포함
+                warnings = random.sample(content_warnings, random.randint(1, 3))
+                descriptor = random.choice(descriptors)
+                warning_text = ", ".join(warnings)
+                text = f"{age} 이상 - {descriptor} {warning_text} 요소 포함"
+                
+                # 부가 설명 추가 (30% 확률)
+                if random.random() < 0.3:
+                    additional = random.choice([
+                        "보호자 시청 권장",
+                        "주의 필요",
+                        "시청 전 확인 필요",
+                        "보호자와 함께 시청 권장"
+                    ])
+                    text += f" ({additional})"
+        
+        rating_texts.append(text)
+    
+    return rating_texts
 
-Technical Understanding (3.8/5):
-	•	Strengths: Deep technical expertise in model optimization and deployment, particularly in edge-based scenarios like drones. Provided detailed insights into frameworks (e.g., TensorRT, TorchScript) and optimization techniques such as pruning and tensor decomposition. Demonstrated solid understanding of convolution operations and their practical applications.
-	•	Weaknesses: Limited AWS experience could pose a challenge in environments requiring cloud-native solutions.
+def generate_previous_transition_texts(num_samples):
+    korean_prefixes = [
+        "이전", "지난", "전편", "앞편", "저번",
+        "직전", "바로 전", "이전의", "지난번"
+    ]
+    
+    english_prefixes = [
+        "Previous", "Last Time", "Previously On",
+        "Last Episode", "Earlier", "Before",
+        "Prior Episode", "Preceding"
+    ]
+    
+    episode_terms = [
+        "Episode", "Ep.", "Story", "Part", "편",
+        "화", "이야기", "에피소드", "회차", "파트"
+    ]
+    
+    time_expressions = [
+        "지난주", "저번주", "일주일 전", "전주",
+        "지난달", "저번달", "한달 전", "전월",
+        "작년", "작시즌", "이전 시즌"
+    ]
+    
+    transition_texts = []
+    for _ in range(num_samples):
+        if random.random() < 0.4:  # 단순 표현
+            text = random.choice(korean_prefixes + english_prefixes)
+        else:
+            # 복합 표현 생성
+            if random.random() < 0.5:
+                prefix = random.choice(korean_prefixes + english_prefixes)
+                term = random.choice(episode_terms)
+                text = f"{prefix} {term}"
+            else:
+                time_expr = random.choice(time_expressions)
+                term = random.choice(episode_terms)
+                text = f"{time_expr} {term}"
+            
+            # 부가 정보 추가 (20% 확률)
+            if random.random() < 0.2:
+                additional = random.choice([
+                    "요약", "하이라이트", "다시보기",
+                    "Recap", "Summary", "Review"
+                ])
+                text += f" ({additional})"
+        
+        transition_texts.append(text)
+    
+    return transition_texts
 
-Project Experience (3.9/5):
-	•	Strengths: Rich experience in applied machine learning for edge devices, with significant hands-on contributions to pipelines, including AutoML and model configuration management. Developed innovative tools like “Kindle” for modular and flexible model design.
-	•	Weaknesses: Some areas (e.g., model compression) were not published or formally documented, leaving room for a more impactful industry contribution.
-
-Strengths:
-	•	Proficient in solving real-world ML problems with a strong focus on optimization and practical deployment.
-	•	Creative and resourceful, as evidenced by projects like “Kindle” and successful implementation of unique optimization strategies.
-	•	Strong grasp of mathematical and conceptual foundations (e.g., convolution mechanics, tensor decomposition).
-
-Weaknesses:
-	•	Hesitation in coding test setup and slower-than-expected performance in straightforward problems.
-	•	Limited exposure to cloud computing and related DevOps workflows.
-	•	Tendency to over-explain during technical discussions, potentially requiring concise articulation.
-
-Conclusion:
-The candidate demonstrates strong technical acumen and practical experience in machine learning and optimization. With a slightly higher coding performance and some focus on enhancing cloud-related skills, they would be a strong addition to the team.
+def generate_next_transition_texts(num_samples):
+    korean_prefixes = [
+        "다음", "이어서", "계속", "후편", "다음편",
+        "뒤편", "차회", "다음번", "이후"
+    ]
+    
+    english_prefixes = [
+        "Next", "Coming Up", "Up Next",
+        "Following", "Continues", "Next Time",
+        "Later", "Upcoming"
+    ]
+    
+    episode_terms = [
+        "Episode", "Ep.", "Story", "Part", "편",
+        "화", "이야기", "에피소드", "회차", "파트"
+    ]
+    
+    preview_terms = [
+        "예고", "미리보기", "스포일러",
+        "Preview", "Teaser", "Sneak Peek"
+    ]
+    
+    time_hints = [
+        "곧", "잠시후", "다음주", "다음달",
+        "Soon", "Shortly", "Next Week",
+        "내일", "모레", "다음 방송"
+    ]
+    
+    transition_texts = []
+    for _ in range(num_samples):
+        if random.random() < 0.3:  # 단순 표현
+            text = random.choice(korean_prefixes + english_prefixes)
+        else:
+            # 복합 표현 생성
+            components = []
+            
+            if random.random() < 0.6:
+                components.append(random.choice(time_hints))
+            
+            components.append(random.choice(korean_prefixes + english_prefixes))
+            
+            if random.random() < 0.7:
+                components.append(random.choice(episode_terms))
+            
+            if random.random() < 0.3:
+                components.append(random.choice(preview_terms))
+            
+            text = " ".join(components)
+            
+            # 부가 정보 추가 (25% 확률)
+            if random.random() < 0.25:
+                additional = random.choice([
+                    "기대해주세요",
+                    "Don't Miss It",
+                    "놓치지 마세요",
+                    "특별편",
+                    "최종화"
+                ])
+                text += f" ({additional})"
+        
+        transition_texts.append(text)
+    
+    return transition_texts
