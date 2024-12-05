@@ -210,3 +210,272 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 [nam]: <https://github.com/namjunemy/TIL#%EC%9E%91%EC%84%B1-%EA%B7%9C%EC%B9%99>
 [VL_낭독체_001.zip](https://github.com/user-attachments/files/16045170/VL_._001.zip)
+
+
+
+Miramax
+Focus Features
+TriStar Pictures
+Orion Pictures
+Revolution Studios
+Relativity Media
+Anchor Bay Entertainment
+The Weinstein Company
+Roadside Attractions
+Alcon Entertainment
+Millennium Films
+Imagine Entertainment
+Scott Free Productions
+Participant Media
+Village Roadshow Pictures
+Castle Rock Entertainment
+Spyglass Media Group
+Regency Enterprises
+Plan B Entertainment
+Happy Madison Productions
+Blumhouse Television
+The Jim Henson Company
+Pure Flix Entertainment
+Hallmark Channel
+ShadowMachine
+Skydance Media
+Pinewood Studios
+Hammer Films
+Ealing Studios
+Carnaby International
+Revolution Films
+Kudos Film and Television
+Tiger Aspect Productions
+Hat Trick Productions
+Warp Films
+Vertigo Films
+Baby Cow Productions
+Channel 4 Productions
+BFI (British Film Institute)
+Mammoth Screen
+Big Talk Productions
+Nippon Animation
+OLM, Inc.
+J.C. Staff
+Pierrot
+Studio Ghibli
+Gonzo
+Studio DEEN
+Manglobe
+Tatsunoko Production
+Gainax
+LIDENFILMS
+Brain’s Base
+Studio Khara
+Silver Link
+Diomedéa
+카카오엔터테인먼트
+웨이브 오리지널 콘텐츠 (Wavve)
+쿠팡플레이 (Coupang Play)
+오파스픽쳐스
+팬엔터테인먼트
+글로빅엔터테인먼트
+리틀빅픽쳐스
+판타지오
+스토리웨이
+스튜디오 선데이
+더블유픽쳐스
+앤드마크
+롯데컬처웍스
+마당엔터테인먼트
+Baidu Video
+Le Vision Pictures
+DMG Entertainment
+Pearl Studio
+Beijing Hairun Pictures
+Light Chaser Animation Studios
+TF1 Films Production
+BAC Films
+Laika Films
+Haut et Court
+Memento Films
+SND Films
+Neue Constantin Film
+Studio Babelsberg
+Pandora Film
+X Filme Creative Pool
+Corus Entertainment
+Nelvana
+Shaftesbury Films
+Alliance Films
+Bell Media Studios
+Madman Entertainment
+Matchbox Pictures
+Southern Star Entertainment
+Titanus
+Lux Vide
+Palomar
+Wildside
+Tornasol Films
+Bambú Producciones
+La Zona Films
+Film i Väst
+Moviola Film och Television
+Paradox Film
+Helsinki-filmi
+Warner Bros Studios
+Universal Studios
+Disney Studios
+Paramount Pictures
+Sony Pictures
+MGM Studios
+20th Century Studios
+DreamWorks
+Lionsgate
+A24
+Amazon Studios
+Apple Studios
+Netflix Productions
+Hulu
+HBO
+CBS Studios
+NBC Universal
+AMC Studios
+Blumhouse Productions
+New Line Cinema
+Amblin Entertainment
+Bad Robot
+Lakeshore Entertainment
+Legendary Pictures
+Voltage Pictures
+STX Entertainment
+BBC Studios 
+ITV Studios
+Working Title Films
+Aardman Animations
+Film4
+Pathé UK
+Sky Studios
+Left Bank Pictures
+Red Production Company
+Raw TV
+Toho
+Toei
+TMS Entertainment
+Sunrise
+Aniplex
+Madhouse
+MAPPA
+Bones
+Production I.G
+Kyoto Animation
+TV Tokyo
+NHK Enterprises
+TV Asahi
+Fuji TV
+Dentsu
+A-1 Pictures
+CloverWorks
+WIT Studio
+Trigger
+ufotable
+Studio Dragon
+CJ ENM
+JTBC Studios
+키이스트
+NEW
+쇼박스
+에이스토리
+빅펀치픽쳐스
+초록뱀미디어
+화이브라더스
+SLL (Studio LuluLala)
+스튜디오N
+스튜디오& NEW
+영화사 문
+미디어플렉스
+필름모멘텀
+영화사 월광
+메가박스중앙플러스엠
+영화사 금월
+콘텐츠케이
+무스프로덕션
+더그루브컴퍼니
+사나이픽처스
+글앤그림미디어
+JS Pictures
+글라인
+스튜디오329
+크리에이티브그룹 잉그
+스튜디오테이크원
+바이포엠스튜디오
+모호필름
+히든시퀀스
+블라인드
+제이콘텐트리
+마운틴무브먼트
+비욘드제이
+스튜디오플렉스
+키사필름
+영화사 올
+영화사 조이
+필름케이
+영화사 호필름
+스튜디오앤뉴
+영화사 이스트드림
+베리굿스튜디오
+스튜디오피닉스
+피플스토리컴퍼니
+마인드마크
+영화사 청어람
+고고스튜디오
+Huayi Brothers
+Bona Film Group
+Wanda Pictures
+Beijing Enlight Media
+Alibaba Pictures
+Tencent Pictures
+China Film Group
+Shanghai Film Group
+Youku
+iQiyi
+Bilibili
+Mango TV
+Perfect World Pictures
+Gaumont
+Pathé
+StudioCanal
+EuropaCorp
+Wild Bunch
+Why Not Productions
+MK2
+Les Films du Losange
+Arte France
+Constantin Film
+Bavaria Film
+Studio Hamburg
+UFA GmbH
+Beta Film
+ZDF Enterprises
+Entertainment One
+Lionsgate Television
+Cineflix
+9 Story Media Group
+DHX Media
+Thunderbird Entertainment
+Breakthrough Entertainment
+Village Roadshow
+Screen Australia
+Animal Logic
+See-Saw Films
+Porchlight Films
+Rai Cinema
+Medusa Film
+Fandango
+Lucky Red
+Indiana Production
+Atresmedia Studios
+Mediapro
+Filmax
+Morena Films
+Telefonica Studios
+Nordisk Film
+SF Studios
+Yellow Bird
+Zentropa
+Nimbus Film
