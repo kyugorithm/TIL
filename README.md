@@ -216,3 +216,19 @@ Gradient vanishing을 사전학습으로 풀어낸다. 이를 통해 DL이 다�
 
 
 I have decided to give a “Yes” for this candidate. The candidate has extensive experience in the field of vision and demonstrates a deep understanding of the overall process and projects, such as model optimization. Candidates with significant experience in optimization tasks often tend to be familiar with low-level coding, and this candidate also showcased proficiency in coding despite not having extensively practiced for coding tests. While it took some time, the candidate was able to solve the coding test problems effectively, providing optimal solutions in terms of both space and time complexity. Their explanations were clear and there were no issues with communication. Therefore, I have decided to pass this candidate.
+
+
+
+
+
+Here's the revised version with "I" as the subject:
+
+Regarding Episode Detection, I have been working on OCR model training. When creating the dataset, I initially combined both word and sentence-level data for training, but the Recognition model's performance was relatively low. Even with sufficient training, accuracy remained below 85%. As a result, I'm currently retraining the model using word-based data following conventional OCR training methods. I aim to complete this model training this week and build a pipeline using the trained models.
+
+I have completed training the text classification model that categorizes detected text. I defined various classes including Episode Number, Previous Story, Rating, Next Story, Time Notice, Subtitle, Title, Description, Human Name, and Content Provider - a total of 10 classes. The model performs classification on text inputs using synthetic data for training. I used a SIMCS-based Sentence Embedder, feeding the embedding vectors into my designed classifier. The validation accuracy on synthetic data reached 97%, and I also achieved good quality results when testing with actual use cases. Through hyperparameter optimization using Optuna, I selected a model with optimal parameters, which will be used in the pipeline.
+
+For Auto Matching, which involves linking the latest files in the ingestion out bucket with CMS data, I started this work this week since I've made good progress with Episode Detection. The first step was retrieving the file list from the ingestion out bucket. I found that there's an inventory system that stores file lists, so I'm using this CSV file to filter the file list and link the latest files with CMS data. I will continue this work through further discussions with Tyler.​​​​​​​​​​​​​​​​
+
+
+
+
