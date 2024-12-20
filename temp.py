@@ -1,106 +1,25 @@
-import torch
-from torch.utils.data import Dataset, DataLoader
-from torch.optim import AdamW
-from sklearn.model_selection import train_test_split
-import numpy as np
-from tqdm import tqdm
+Here's the English translation:
 
-# 데이터셋 클래스
-class EmbeddingDataset(Dataset):
-    def __init__(self, embeddings, labels):
-        self.embeddings = torch.FloatTensor(embeddings)
-        self.labels = torch.LongTensor(labels)
-        
-    def __len__(self):
-        return len(self.labels)
-        
-    def __getitem__(self, idx):
-        return self.embeddings[idx], self.labels[idx]
+Introduction
+I have reviewed unfinished tasks from this year and thought about additional features that need to be developed, such as poster-related work, along with other potential initiatives. Since a new team member is expected to join in February, I've expanded my thinking to include tasks for them to work on, which has resulted in more items than initially planned. While some tasks may not be high priority, I've considered projects that could be interesting from a long-term perspective.
 
-def train_model(model, train_embeddings, train_labels, val_size=0.2, 
-                batch_size=32, epochs=10, lr=2e-5):
-    # 데이터 분할
-    X_train, X_val, y_train, y_val = train_test_split(
-        train_embeddings, train_labels, test_size=val_size
-    )
-    
-    # 데이터로더 생성
-    train_dataset = EmbeddingDataset(X_train, y_train)
-    val_dataset = EmbeddingDataset(X_val, y_val)
-    
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size)
-    
-    # 옵티마이저와 손실함수
-    optimizer = AdamW(model.parameters(), lr=lr)
-    criterion = torch.nn.CrossEntropyLoss()
-    
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    
-    best_val_acc = 0
-    
-    for epoch in range(epochs):
-        # 학습
-        model.train()
-        train_loss = 0
-        for batch in tqdm(train_loader, desc=f'Epoch {epoch+1}/{epochs}'):
-            embeddings, labels = [b.to(device) for b in batch]
-            
-            optimizer.zero_grad()
-            outputs = model(embeddings)
-            loss = criterion(outputs, labels)
-            
-            loss.backward()
-            optimizer.step()
-            
-            train_loss += loss.item()
-            
-        # 검증
-        model.eval()
-        val_correct = 0
-        val_total = 0
-        val_loss = 0
-        
-        with torch.no_grad():
-            for batch in val_loader:
-                embeddings, labels = [b.to(device) for b in batch]
-                outputs = model(embeddings)
-                loss = criterion(outputs, labels)
-                
-                val_loss += loss.item()
-                _, predicted = torch.max(outputs.data, 1)
-                val_total += labels.size(0)
-                val_correct += (predicted == labels).sum().item()
-        
-        val_acc = 100 * val_correct / val_total
-        
-        print(f'Epoch {epoch+1}:')
-        print(f'Training Loss: {train_loss/len(train_loader):.4f}')
-        print(f'Validation Loss: {val_loss/len(val_loader):.4f}')
-        print(f'Validation Accuracy: {val_acc:.2f}%')
-        
-        # 모델 저장
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            torch.save(model.state_dict(), 'best_model.pth')
-            
-    return model
+1. Episodes
+Episode detection is the first priority. We've spent considerable time developing the model, and now that the pipeline development is complete, we're in the performance evaluation phase. Once we finish performance evaluation and confirm quality standards, the next step will be batch processing for production implementation. While this won't take long, it requires effort from the Backend side to integrate with CMS, and since a developer hasn't been assigned yet, discussion with the PO will be necessary. We're also considering publishing a blog post about the results and filing patents to secure intellectual property rights. Poster-related work is divided into three main areas: improving output image quality, reducing poster generation processing time, and exploring better images.
 
-# 사용 예시:
-if __name__ == "__main__":
-    # 데이터 준비 (예시)
-    embeddings = np.random.randn(100000, 768)  # BERT 임베딩
-    labels = np.random.randint(0, 2, 100000)   # 이진 분류
-    
-    # 모델 선택
-    model = TransformerClassifier()  # 또는 다른 모델
-    
-    # 학습
-    trained_model = train_model(
-        model=model,
-        train_embeddings=embeddings,
-        train_labels=labels,
-        batch_size=32,
-        epochs=10
-    )
+2. Regarding image quality, we received feedback about poster image trends from the CD team, indicating that images need to be brighter and clearer. We plan to address this quickly in a short period. We can either use statistical measures or libraries like cv2 to increase overall brightness and enhance clarity. We'll also consider advanced methods for creating better images.
+
+3. Next, poster generation currently takes at least 20 minutes per episode, causing significant user inconvenience and potential instance usage cost issues. Therefore, optimizing speed from both CD member UX and cost perspectives is crucial.
+
+4. Another aspect is improving image selection quality. The first goal is to create a regression model for rating image attractiveness. Currently, we show about 60 images (10 images each for 3 characters in both vertical and horizontal types). Since many images don't require evaluation, we aim to show only the better images to reduce designers' time and help make more rational decisions.
+
+5. Next is the auto-matching component of the PTSD project initiated by Tyler. Currently, the ingestion bucket and CMS titles aren't connected in real-time. Development is needed to enable immediate CMS integration based on file triggers in the ingestion bucket. This requires building CMS site functionality for uploading content and meta information during onboarding. While important, this needs more discussion, especially since Tyler's departure. This integration would benefit ML tasks by providing episode information for detection, eliminating the need to parse filenames for episode numbers, and providing necessary transcoding information.
+
+6. Regarding video QC, besides episode detection, we've received various requirements. Some features like Aspect Ratio estimation for detecting pillarbox/letterbox are already developed, while others like voice-lip sync need development. These tasks should be prioritized and listed for development in 2025 according to PO items. I believe we can completely save the 30 minutes per episode currently spent on QC when we can fully replace these QC tasks.
+
+7. Next is transcoding parameter optimization. This task aims to find optimal transcoding/encoding parameters considering cost and video quality. It's Joy's project, and I heard a new streaming team expert has joined. We can proceed with discussions about POC content with Joy. The ultimate goal is to extract temporal-aware embeddings from videos, measure shot similarity through these embeddings, and develop methodologies for parameter optimization.
+
+8. For 2024, one of Steve's items with significant business impact is automatic sports highlight generation. While our company heavily features sports broadcasting, the lack of ML functionality in this area is a concern. Creating a feature for sports highlight generation this year could have substantial business impact.
+
+9. Lastly, while lower in priority, I've considered this as an Open Problem. With recent developments like OpenAI's Sora and Google's VEO2 in video generation models, and as a video content company, we should consider the potential value of this technology. We could potentially generate attractive preview screens for hero or rail titles, or use them for marketing on YouTube and other channels. If possible, we could try open-source models or develop in-house technology with fine-tuning as a long-term project. This could be an interesting initiative.
+
+I've shared these nine proposed items, and that concludes my presentation.
