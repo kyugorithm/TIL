@@ -3,6 +3,10 @@ import numpy as np
 from typing import Tuple, Optional, Union
 
 class ImagePreprocessor:
+    """
+    이미지 전처리를 위한 클래스
+    그림자 효과가 있는 흰색 텍스트를 위한 처리 기능 포함
+    """
     def __init__(self):
         self.clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     
@@ -35,24 +39,71 @@ class ImagePreprocessor:
 
     def enhance_edges(self, 
                      image: np.ndarray, 
+                     method: str = 'unsharp',
                      blur_size: float = 2.0,
                      alpha: float = 2.0,
-                     beta: float = -1.0) -> np.ndarray:
+                     beta: float = -1.0,
+                     kernel_size: int = 3) -> np.ndarray:
         """
-        언샤프 마스킹을 사용하여 엣지를 강화합니다.
+        다양한 방법으로 엣지를 강화합니다.
         
         Args:
             image: 입력 이미지
+            method: 엣지 강화 방법 ('unsharp', 'sobel', 'laplacian', 'canny')
             blur_size: 가우시안 블러의 시그마 값
-            alpha: 원본 이미지 가중치
-            beta: 블러 이미지 가중치
+            alpha: 원본 이미지 가중치 (unsharp masking용)
+            beta: 블러 이미지 가중치 (unsharp masking용)
+            kernel_size: Sobel/Laplacian 커널 크기
         
         Returns:
             엣지가 강화된 이미지
         """
-        gaussian = cv2.GaussianBlur(image, (0,0), blur_size)
-        unsharp = cv2.addWeighted(image, alpha, gaussian, beta, 0)
-        return unsharp
+        if method == 'unsharp':
+            gaussian = cv2.GaussianBlur(image, (0,0), blur_size)
+            return cv2.addWeighted(image, alpha, gaussian, beta, 0)
+            
+        elif method == 'sobel':
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image
+            
+            sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=kernel_size)
+            sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=kernel_size)
+            gradient = np.sqrt(sobelx**2 + sobely**2)
+            gradient = np.uint8(gradient * 255 / np.max(gradient))
+            
+            if len(image.shape) == 3:
+                gradient = cv2.cvtColor(gradient, cv2.COLOR_GRAY2BGR)
+            return cv2.addWeighted(image, 1.5, gradient, 0.5, 0)
+            
+        elif method == 'laplacian':
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image
+                
+            laplacian = cv2.Laplacian(gray, cv2.CV_64F, ksize=kernel_size)
+            laplacian = np.uint8(np.absolute(laplacian))
+            
+            if len(image.shape) == 3:
+                laplacian = cv2.cvtColor(laplacian, cv2.COLOR_GRAY2BGR)
+            return cv2.addWeighted(image, 1.5, laplacian, 0.5, 0)
+            
+        elif method == 'canny':
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image
+                
+            edges = cv2.Canny(gray, 100, 200)
+            
+            if len(image.shape) == 3:
+                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+            return cv2.addWeighted(image, 1.0, edges, 1.0, 0)
+            
+        else:
+            raise ValueError(f"Unknown edge enhancement method: {method}")
 
     def binarize(self, 
                  image: np.ndarray,
@@ -110,6 +161,64 @@ class ImagePreprocessor:
             return cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
         else:
             raise ValueError(f"Unknown operation: {operation}")
+
+    def enhance_shadow(self,
+                        image: np.ndarray,
+                        gamma: float = 1.5,
+                        saturation_factor: float = 1.2) -> np.ndarray:
+        """
+        그림자 효과를 강화하기 위한 함수
+        
+        Args:
+            image: 입력 이미지
+            gamma: 감마 보정값 (더 높은 값은 어두운 부분을 더 강조)
+            saturation_factor: 채도 증가 비율
+            
+        Returns:
+            그림자가 강화된 이미지
+        """
+        # 감마 보정으로 그림자 부분 강조
+        gamma_corrected = np.power(image / 255.0, gamma) * 255.0
+        gamma_corrected = np.uint8(np.clip(gamma_corrected, 0, 255))
+        
+        # HSV 변환 후 채도 증가
+        if len(image.shape) == 3:
+            hsv = cv2.cvtColor(gamma_corrected, cv2.COLOR_BGR2HSV)
+            hsv[:,:,1] = np.clip(hsv[:,:,1] * saturation_factor, 0, 255)
+            enhanced = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+        else:
+            enhanced = gamma_corrected
+            
+        return enhanced
+
+    def adaptive_threshold(self,
+                         image: np.ndarray,
+                         block_size: int = 11,
+                         c: int = 2) -> np.ndarray:
+        """
+        적응형 임계값 처리를 적용하는 함수
+        
+        Args:
+            image: 입력 이미지
+            block_size: 적응형 임계값 처리를 위한 블록 크기
+            c: 평균이나 가중평균에서 뺄 상수
+            
+        Returns:
+            적응형 임계값이 적용된 이미지
+        """
+        if len(image.shape) == 3:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = image
+            
+        return cv2.adaptiveThreshold(
+            gray,
+            255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            block_size,
+            c
+        )
 
     def process_image(self,
                      image: np.ndarray,
