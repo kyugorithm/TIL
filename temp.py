@@ -1,127 +1,143 @@
-from typing import List
+from typing import List, Tuple
 from PIL import Image
 
+def adjust_row_images(row_images: List[Tuple[Image.Image, int, int]], target_width: int, spacing: int) -> List[Image.Image]:
+    """한 행의 이미지들이 target_width에 맞도록 크기를 조정"""
+    total_width = sum(w for _, w, _ in row_images) + (len(row_images) - 1) * spacing
+    if total_width <= target_width:
+        return [img for img, _, _ in row_images]
+    
+    # 비율을 유지하면서 전체 너비를 맞추기 위한 스케일 계산
+    scale = (target_width - (len(row_images) - 1) * spacing) / sum(w for _, w, _ in row_images)
+    resized_images = []
+    
+    for img, w, h in row_images:
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+        resized_images.append(img.resize((new_w, new_h), Image.Resampling.LANCZOS))
+    
+    return resized_images
+
 def create_collage_with_margin(images: List[Image.Image], text_length: int, margin: int = 30, fixed_width: int = 1000) -> Image.Image:
-    """
-    마진이 있는 콜라주를 생성하는 함수
-    """
+    """마진이 있는 콜라주를 생성하는 함수"""
     if not images:
         raise ValueError("이미지 리스트가 비어있습니다.")
 
-    min_image_size = text_length * 10
     collage_width = fixed_width
+    available_width = collage_width - 2 * margin
     
-    # 이미지 전처리
+    # 이미지 전처리 및 초기 스케일링
     processed_images = []
     for img in images:
-        scale = min(collage_width/3/img.width, collage_width/3/img.height)
+        scale = min(available_width/3/img.width, available_width/3/img.height)
         if scale < 1:
-            new_width = int(0.9*img.width * scale)
-            new_height = int(0.9*img.height * scale)
+            new_width = int(0.9 * img.width * scale)
+            new_height = int(0.9 * img.height * scale)
             img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        processed_images.append(img)
+        processed_images.append((img, img.width, img.height))
 
-    class Region:
-        def __init__(self, x, y, width, height):
-            self.x = x
-            self.y = y
-            self.width = width
-            self.height = height
-
-        def intersects(self, other):
-            return not (self.x + self.width + margin <= other.x or
-                       other.x + other.width + margin <= self.x or
-                       self.y + self.height + margin <= other.y or
-                       other.y + other.height + margin <= self.y)
-
-    placed_regions = []
-    current_x = margin
-    current_y = margin
-    max_row_height = 0
-    row_start_x = margin
-
-    for img in processed_images:
-        new_region = Region(current_x, current_y, img.width, img.height)
+    # 행별로 이미지 배치
+    rows = []
+    current_row = []
+    current_row_width = 0
+    
+    for img, width, height in processed_images:
+        # 새 이미지를 추가했을 때의 총 너비 계산
+        new_row_width = current_row_width + width + (len(current_row) * margin)
         
-        while any(new_region.intersects(placed) for placed in placed_regions):
-            current_x += margin
-            if current_x + img.width + margin > collage_width:
-                current_x = row_start_x
-                current_y += max_row_height + margin
-                max_row_height = 0
-            new_region = Region(current_x, current_y, img.width, img.height)
+        if new_row_width <= available_width or not current_row:
+            current_row.append((img, width, height))
+            current_row_width = new_row_width
+        else:
+            # 현재 행이 가득 차면, 조정 후 새 행 시작
+            rows.append(adjust_row_images(current_row, available_width, margin))
+            current_row = [(img, width, height)]
+            current_row_width = width
+    
+    # 마지막 행 처리
+    if current_row:
+        rows.append(adjust_row_images(current_row, available_width, margin))
 
-        placed_regions.append(new_region)
-        max_row_height = max(max_row_height, img.height)
-        current_x += img.width + margin
+    # 전체 높이 계산 및 캔버스 생성
+    total_height = margin
+    for row in rows:
+        total_height += max(img.height for img in row) + margin
 
-    collage_height = max(region.y + region.height for region in placed_regions) + margin
-    canvas = Image.new('RGB', (collage_width, collage_height), 'black')
-
-    for img, region in zip(processed_images, placed_regions):
-        canvas.paste(img, (region.x, region.y))
+    canvas = Image.new('RGB', (collage_width, total_height), 'black')
+    
+    # 이미지 배치
+    current_y = margin
+    for row in rows:
+        current_x = margin
+        row_height = max(img.height for img in row)
+        
+        for img in row:
+            canvas.paste(img, (current_x, current_y))
+            current_x += img.width + margin
+        
+        current_y += row_height + margin
 
     return canvas
 
 def create_collage_compact(images: List[Image.Image], text_length: int, fixed_width: int = 1000) -> Image.Image:
-    """
-    마진 없이 이미지 간 10픽셀 간격으로 콜라주를 생성하는 함수
-    """
+    """마진 없이 이미지 간 10픽셀 간격으로 콜라주를 생성하는 함수"""
     if not images:
         raise ValueError("이미지 리스트가 비어있습니다.")
 
-    SPACING = 10  # 이미지 간 고정 간격
-    min_image_size = text_length * 10
+    SPACING = 10
     collage_width = fixed_width
     
-    # 이미지 전처리
+    # 이미지 전처리 및 초기 스케일링
     processed_images = []
     for img in images:
         scale = min(collage_width/3/img.width, collage_width/3/img.height)
         if scale < 1:
-            new_width = int(0.95*img.width * scale)  # 더 큰 이미지 허용
-            new_height = int(0.95*img.height * scale)
+            new_width = int(0.95 * img.width * scale)
+            new_height = int(0.95 * img.height * scale)
             img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        processed_images.append(img)
+        processed_images.append((img, img.width, img.height))
 
-    class Region:
-        def __init__(self, x, y, width, height):
-            self.x = x
-            self.y = y
-            self.width = width
-            self.height = height
-
-        def intersects(self, other):
-            return not (self.x + self.width + SPACING <= other.x or
-                       other.x + other.width + SPACING <= self.x or
-                       self.y + self.height + SPACING <= other.y or
-                       other.y + other.height + SPACING <= self.y)
-
-    placed_regions = []
-    current_x = 0  # 마진 없음
-    current_y = 0
-    max_row_height = 0
-    row_start_x = 0
-
-    for img in processed_images:
-        new_region = Region(current_x, current_y, img.width, img.height)
+    # 행별로 이미지 배치
+    rows = []
+    current_row = []
+    current_row_width = 0
+    
+    for img, width, height in processed_images:
+        new_row_width = current_row_width + width + (len(current_row) * SPACING)
         
-        while any(new_region.intersects(placed) for placed in placed_regions):
-            current_x += SPACING
-            if current_x + img.width > collage_width:
-                current_x = row_start_x
-                current_y += max_row_height + SPACING
-                max_row_height = 0
-            new_region = Region(current_x, current_y, img.width, img.height)
+        if new_row_width <= collage_width or not current_row:
+            current_row.append((img, width, height))
+            current_row_width = new_row_width
+        else:
+            # 현재 행이 가득 차면, 조정 후 새 행 시작
+            rows.append(adjust_row_images(current_row, collage_width, SPACING))
+            current_row = [(img, width, height)]
+            current_row_width = width
+    
+    # 마지막 행 처리
+    if current_row:
+        rows.append(adjust_row_images(current_row, collage_width, SPACING))
 
-        placed_regions.append(new_region)
-        max_row_height = max(max_row_height, img.height)
-        current_x += img.width + SPACING
+    # 전체 높이 계산 및 캔버스 생성
+    total_height = 0
+    for row in rows:
+        total_height += max(img.height for img in row) + SPACING
+    
+    if total_height > SPACING:
+        total_height -= SPACING  # 마지막 spacing 제거
 
-    collage_height = max(region.y + region.height for region in placed_regions) + SPACING
-    canvas = Image.new('RGB', (collage_width, collage_height), 'black')
-
-    for img, region in zip(processed_images, placed_regions):
-        canvas.paste(img, (region.x, region.y))
+    canvas = Image.new('RGB', (collage_width, total_height), 'black')
+    
+    # 이미지 배치
+    current_y = 0
+    for row in rows:
+        current_x = 0
+        row_height = max(img.height for img in row)
+        
+        for img in row:
+            canvas.paste(img, (current_x, current_y))
+            current_x += img.width + SPACING
+        
+        current_y += row_height + SPACING
 
     return canvas
