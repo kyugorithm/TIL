@@ -1,33 +1,6 @@
-from PIL import Image, ImageCms
-from io import BytesIO
-import numpy as np
-import cv2
+Hello, I have made adjustments in poster validation to address color discrepancies between the original source images and newly generated images. Poster images often use the Adobe RGB color space, whereas the standard is typically the sRGB color space. This mismatch in color spaces tends to make colors appear darker. To resolve this issue, I implemented a process to read the color profile from the image. If it uses a color space like Adobe RGB, I applied a transformation to convert it properly to sRGB, processed the entire image, and then reverted it back to Adobe RGB through inverse transformation. This ensures the image retains its original color space and displays correctly.
 
-def convert_to_adobe_rgb(image_path):
-    # PIL로 이미지 열기
-    img = Image.open(image_path)
-    
-    # Adobe RGB 프로파일 생성
-    adobe_rgb_profile = ImageCms.createProfile('AdobeRGB1998')
-    
-    # 현재 이미지의 프로파일 확인
-    if 'icc_profile' in img.info:
-        # 현재 프로파일이 있는 경우
-        current_profile = ImageCms.ImageCmsProfile(BytesIO(img.info['icc_profile']))
-    else:
-        # 프로파일이 없으면 sRGB로 가정
-        current_profile = ImageCms.createProfile('sRGB')
-    
-    # 색 공간 변환
-    transform = ImageCms.buildTransformFromOpenProfiles(
-        current_profile, adobe_rgb_profile, 'RGB', 'RGB')
-    img_adobe = ImageCms.applyTransform(img, transform)
-    
-    # 프로파일 포함해서 저장
-    img_adobe.save('output_adobe.png', icc_profile=adobe_rgb_profile.tobytes())
-    
-    return "변환 완료"
+Regarding episode detection, I have shared the test results with the MO team and am running batch tasks. I am also working on video quality assessment using a Video Quality Assessment (VQA) model to evaluate the quality of video shots. The model has two branches: one for assessing aesthetic quality and the other for evaluating technical quality. For the technical quality branch, I extract features, perform dimensionality reduction using an autoencoder, and analyze the trends in these features. This analysis will help investigate pixel errors and other issues provided by the MO team.
 
-# 사용 예
-result = convert_to_adobe_rgb('input.jpg')
-print(result)
+Additionally, an idea suggested by Rohee was to use FFmpeg for video transcoding, intentionally downscaling the quality to synthesize a test dataset. Using this method, I plan to synthesize test sets and evaluate whether the issues can be detected accurately.
+That’s all for now.
