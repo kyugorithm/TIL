@@ -1,33 +1,46 @@
 from psd_tools import PSDImage
+from PIL import Image
 
-def analyze_layer(layer, depth=0):
-    indent = "  " * depth
+def composite_without_text(psd_path):
+    # PSD 파일 열기
+    psd = PSDImage.open(psd_path)
     
-    # is_group() 메서드로 그룹 체크
-    if layer.is_group():
-        print(f"{indent}그룹 레이어: {layer.name}")
-        # descendants() 메서드를 사용하여 모든 하위 레이어에 접근
-        for child in layer.descendants():
-            analyze_layer(child, depth + 1)
+    # 모든 레이어를 순회하면서 텍스트가 아닌 레이어만 저장
+    visible_layers = []
     
-    # 텍스트 레이어인 경우
-    elif layer.kind == 'type':
-        print(f"{indent}텍스트 레이어: {layer.name}")
-        print(f"{indent}텍스트 내용: {layer.text}")
-        if hasattr(layer, 'font'):
-            print(f"{indent}폰트: {layer.font}")
+    for layer in psd:
+        if layer.is_group():
+            # 그룹의 경우 하위 레이어들을 확인
+            for sublayer in layer.descendants():
+                if sublayer.kind != 'type' and sublayer.visible:
+                    # 텍스트가 아니고 보이는 레이어만 저장
+                    layer_image = sublayer.composite()
+                    if layer_image:
+                        visible_layers.append({
+                            'image': layer_image,
+                            'position': (sublayer.left, sublayer.top)
+                        })
+        elif layer.kind != 'type' and layer.visible:
+            # 텍스트가 아니고 보이는 레이어만 저장
+            layer_image = layer.composite()
+            if layer_image:
+                visible_layers.append({
+                    'image': layer_image,
+                    'position': (layer.left, layer.top)
+                })
     
-    # 기타 일반 레이어
-    else:
-        print(f"{indent}일반 레이어: {layer.name}")
-        
-    print(f"{indent}위치: x={layer.left}, y={layer.top}")
-    print(f"{indent}크기: {layer.width} x {layer.height}")
-    print(f"{indent}---")
+    # 최종 이미지 생성 (PSD 크기와 동일하게)
+    result = Image.new('RGBA', (psd.width, psd.height), (0, 0, 0, 0))
+    
+    # 저장된 레이어들을 순서대로 합성
+    for layer_info in visible_layers:
+        if layer_info['image'].mode == 'RGBA':
+            result.paste(layer_info['image'], layer_info['position'], layer_info['image'])
+        else:
+            result.paste(layer_info['image'], layer_info['position'])
+    
+    return result
 
-# PSD 파일 열기
-psd = PSDImage.open('example.psd')
-
-# 최상위 레이어부터 분석 시작
-for layer in psd:
-    analyze_layer(layer)
+# 사용 예시
+result_image = composite_without_text('example.psd')
+result_image.save('result_without_text.png')
