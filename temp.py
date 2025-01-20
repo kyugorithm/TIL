@@ -1,115 +1,18 @@
-def process_layer(layer: PSDImage, canvas_size: tuple, depth: int = 0) -> Optional[Image.Image]:
-    """
-    레이어를 처리하고 결과를 합성합니다.
-    투명도를 올바르게 처리합니다.
-    """
-    indent = "  " * depth
-    print(f"{indent}{'='*30}")
+I am pleased to recommend Abdul Muqeet for your PhD program. As his team leader at Vive Studios, I had the privilege of working closely with him for over a year. During this time, he consistently demonstrated strong research skills and a deep commitment to driving innovation.
 
-    # 텍스트 레이어 체크
-    if not layer.is_group() and layer.kind == 'type':
-        print(f"{indent}This is a text layer: {layer.name}")
-        return None
+Abdul graduated with excellent grades from Kyung Hee University, one of South Korea's top institutions and a dream university for many. His academic accomplishments reflect his dedication, intellectual curiosity, and his ability to thrive in a highly competitive environment.
 
-    try:
-        if not layer.is_group():
-            if layer.kind == 'type':
-                return None
-            
-            # 일반 레이어 처리
-            layer_image = layer.composite()
-            if layer_image is None:
-                print(f"{indent}Failed to composite layer: {layer.name}")
-                return None
+At Vive Studios, Abdul made notable contributions to several impactful projects. In the Video Face Re-aging project, he introduced a new approach that reduced processing time by 30% while maintaining temporal consistency and preserving identity. His work was successfully integrated into our production pipeline, adding commercial value. In the ToonAging project, he developed a one-step pipeline that outperformed traditional methods, with 45% of users favoring his results. These projects demonstrated his ability to solve complex challenges and deliver innovative, practical solutions.
 
-            print(f"{indent}Processing layer: {layer.name}")
-            
-            # 레이어 이미지 위치 설정
-            if layer_image:
-                left = int(layer.left) if layer.left is not None else 0
-                top = int(layer.top) if layer.top is not None else 0
-                
-                # 투명한 캔버스 생성
-                full_image = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
-                
-                # 원본 이미지의 알파 채널 보존
-                r, g, b, a = layer_image.split()
-                
-                # 레이어 opacity 적용
-                if layer.opacity < 255:
-                    a = a.point(lambda x: int(x * layer.opacity / 255))
-                
-                # 알파 채널 재결합
-                layer_image = Image.merge('RGBA', (r, g, b, a))
-                
-                # 올바른 위치에 이미지 배치
-                full_image.paste(layer_image, (left, top), layer_image)
-                
-                return full_image
-            
-        else:
-            # 그룹 레이어 처리
-            print(f"{indent}Processing group: {layer.name}")
-            group_image = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
-            
-            # 그룹 내의 각 레이어 처리
-            for sublayer in layer:
-                sublayer_image = process_layer(sublayer, canvas_size, depth + 1)
-                if sublayer_image:
-                    # 알파 채널을 고려한 합성
-                    r, g, b, a = sublayer_image.split()
-                    if sublayer.opacity < 255:
-                        a = a.point(lambda x: int(x * sublayer.opacity / 255))
-                    sublayer_image = Image.merge('RGBA', (r, g, b, a))
-                    group_image = Image.alpha_composite(group_image, sublayer_image)
-            
-            # 그룹 전체의 투명도 적용
-            if layer.opacity < 255:
-                r, g, b, a = group_image.split()
-                a = a.point(lambda x: int(x * layer.opacity / 255))
-                group_image = Image.merge('RGBA', (r, g, b, a))
-            
-            return group_image
+Abdul’s greatest strengths lie in his systematic approach to problem-solving and his technical integration skills. As his team leader, I witnessed his ability to listen to and integrate diverse viewpoints from team members to identify key issues and propose creative, practical solutions. For example, in the face re-aging project, while others focused on improving generative quality, he emphasized the importance of temporal consistency and identity-preserving generation, developing actionable strategies to address these challenges. These abilities will be crucial for the Development of a 3D Morphable Model of Prenatal Human Faces, where capturing subtle morphological changes is essential.
 
-    except Exception as e:
-        print(f"{indent}Error processing layer {layer.name}: {e}")
-        return None
+One standout example of Abdul's interdisciplinary thinking was his work on virtual production environments at Vive Studios. This project combined computer vision and computer graphics, requiring a deep understanding of virtual production techniques. Abdul proposed a cost-effective alternative to traditional LED walls, which are expensive and resource-heavy. By using generative AI and advanced rendering methods, he created a solution that reduced operational costs while maintaining high visual quality. His ability to bridge these two fields and deliver a practical, innovative solution showcases his interdisciplinary expertise, which will be invaluable for your proposed PhD project.
 
-def extract_full_size_groups(psd_path: str) -> Optional[Image.Image]:
-    """
-    PSD 파일에서 전체 크기의 레이어를 추출하고 합성합니다.
-    """
-    try:
-        psd = PSDImage.open(psd_path)
-        print(f"Processing PSD: {psd_path}")
-        print(f"Canvas size: {psd.size}")
-        
-        # 최종 이미지를 위한 투명한 캔버스 생성
-        canvas = Image.new('RGBA', psd.size, (0, 0, 0, 0))
-        
-        # 모든 레이어 처리
-        for layer in list(psd):
-            layer_image = process_layer(layer, psd.size)
-            if layer_image:
-                # 알파 채널을 고려한 합성
-                canvas = Image.alpha_composite(canvas, layer_image)
-        
-        return canvas
+In conclusion, Abdul is a highly skilled and motivated researcher with a strong record of academic excellence and innovative contributions. His ability to tackle interdisciplinary challenges and deliver results makes him an ideal candidate for your program. I am confident that he will thrive in the proposed PhD project and make valuable contributions to your academic community.
 
-    except Exception as e:
-        print(f"Failed to process PSD file {psd_path}: {e}")
-        return None
 
-if __name__ == "__main__":
-    file_paths = sorted(glob("psd_files/*"))
-    print(f"Found {len(file_paths)} PSD files")
-    
-    for file_path in file_paths:
-        canvas = extract_full_size_groups(file_path)
-        if canvas:
-            output_path = file_path.replace("psd_files", "psd_files_extracted").lower().replace(".psd", ".png")
-            # PNG 저장 시 알파 채널 유지
-            canvas.save(output_path, 'PNG')
-            print(f"Successfully saved: {output_path}")
-        else:
-            print(f"Failed to process: {file_path}")
+
+
+
+
+
