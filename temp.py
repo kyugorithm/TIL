@@ -1,8 +1,7 @@
 def process_layer(layer: PSDImage, canvas_size: tuple, depth: int = 0) -> Optional[Image.Image]:
     """
     레이어를 처리하고 결과를 합성합니다.
-    스마트 오브젝트와 텍스트 레이어를 구분하여 처리합니다.
-    canvas_size: 전체 PSD 캔버스 크기 (width, height)
+    투명도를 올바르게 처리합니다.
     """
     indent = "  " * depth
     print(f"{indent}{'='*30}")
@@ -23,28 +22,30 @@ def process_layer(layer: PSDImage, canvas_size: tuple, depth: int = 0) -> Option
                 print(f"{indent}Failed to composite layer: {layer.name}")
                 return None
 
-            # 투명한 캔버스 생성
-            full_image = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
+            print(f"{indent}Processing layer: {layer.name}")
             
             # 레이어 이미지 위치 설정
             if layer_image:
                 left = int(layer.left) if layer.left is not None else 0
                 top = int(layer.top) if layer.top is not None else 0
                 
-                # 알파 채널이 있는 임시 이미지 생성
-                temp_image = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
-                temp_image.paste(layer_image, (left, top))
+                # 투명한 캔버스 생성
+                full_image = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
                 
-                # 알파 채널을 고려한 합성
-                if layer.opacity != 255:  # 투명도가 있는 경우
-                    # 투명도 적용
-                    alpha = Image.new('RGBA', canvas_size, (255, 255, 255, int(layer.opacity)))
-                    temp_image = Image.composite(temp_image, full_image, alpha)
+                # 원본 이미지의 알파 채널 보존
+                r, g, b, a = layer_image.split()
                 
-                # 최종 이미지에 합성
-                full_image = Image.alpha_composite(full_image, temp_image)
-            
-            return full_image
+                # 레이어 opacity 적용
+                if layer.opacity < 255:
+                    a = a.point(lambda x: int(x * layer.opacity / 255))
+                
+                # 알파 채널 재결합
+                layer_image = Image.merge('RGBA', (r, g, b, a))
+                
+                # 올바른 위치에 이미지 배치
+                full_image.paste(layer_image, (left, top), layer_image)
+                
+                return full_image
             
         else:
             # 그룹 레이어 처리
@@ -56,13 +57,17 @@ def process_layer(layer: PSDImage, canvas_size: tuple, depth: int = 0) -> Option
                 sublayer_image = process_layer(sublayer, canvas_size, depth + 1)
                 if sublayer_image:
                     # 알파 채널을 고려한 합성
+                    r, g, b, a = sublayer_image.split()
+                    if sublayer.opacity < 255:
+                        a = a.point(lambda x: int(x * sublayer.opacity / 255))
+                    sublayer_image = Image.merge('RGBA', (r, g, b, a))
                     group_image = Image.alpha_composite(group_image, sublayer_image)
             
             # 그룹 전체의 투명도 적용
-            if layer.opacity != 255:
-                alpha = Image.new('RGBA', canvas_size, (255, 255, 255, int(layer.opacity)))
-                blank = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
-                group_image = Image.composite(group_image, blank, alpha)
+            if layer.opacity < 255:
+                r, g, b, a = group_image.split()
+                a = a.point(lambda x: int(x * layer.opacity / 255))
+                group_image = Image.merge('RGBA', (r, g, b, a))
             
             return group_image
 
@@ -82,7 +87,7 @@ def extract_full_size_groups(psd_path: str) -> Optional[Image.Image]:
         # 최종 이미지를 위한 투명한 캔버스 생성
         canvas = Image.new('RGBA', psd.size, (0, 0, 0, 0))
         
-        # 모든 레이어 처리 (순서대로 처리)
+        # 모든 레이어 처리
         for layer in list(psd):
             layer_image = process_layer(layer, psd.size)
             if layer_image:
@@ -104,7 +109,7 @@ if __name__ == "__main__":
         if canvas:
             output_path = file_path.replace("psd_files", "psd_files_extracted").lower().replace(".psd", ".png")
             # PNG 저장 시 알파 채널 유지
-            canvas.save(output_path, "PNG")
+            canvas.save(output_path, 'PNG')
             print(f"Successfully saved: {output_path}")
         else:
             print(f"Failed to process: {file_path}")
