@@ -1,57 +1,30 @@
 import numpy as np
 from PIL import Image
 
-def convert_5d_cmyka_to_3d_rgb_optimized(layer_array):
-    # 5차원 배열을 3차원으로 압축 (1, h, w, 5, 1) -> (h, w, 5)
-    working_array = np.squeeze(layer_array)
+def convert_cmyka_to_rgb(layer_array):
+    # layer_array의 shape은 (height, width, 5)
+    # 채널별로 분리 (이미 3차원이므로 추가적인 squeeze가 필요 없음)
+    c = layer_array[..., 0]  # Cyan 채널
+    m = layer_array[..., 1]  # Magenta 채널
+    y = layer_array[..., 2]  # Yellow 채널
+    k = layer_array[..., 3]  # Key(Black) 채널
+    a = layer_array[..., 4]  # Alpha 채널
     
-    # CMYK 채널과 알파 채널을 한번에 분리
-    c, m, y, k, alpha = np.moveaxis(working_array, -1, 0)
-    
-    # CMYK to RGB 변환을 벡터화된 연산으로 처리
-    # 255를 곱하기 전에 먼저 계산하여 정밀도 유지
+    # CMYK에서 RGB로 변환 (벡터화된 연산 사용)
+    # 0~1 범위의 값을 가정
     r = 1.0 - np.minimum(1.0, c + k)
     g = 1.0 - np.minimum(1.0, m + k)
     b = 1.0 - np.minimum(1.0, y + k)
     
-    # 알파 블렌딩을 벡터화된 연산으로 처리
-    alpha = alpha.clip(0, 1)  # 알파값을 0~1 범위로 제한
+    # 알파 채널 적용 (배경은 흰색)
+    r = r * a + (1.0 - a)
+    g = g * a + (1.0 - a)
+    b = b * a + (1.0 - a)
     
-    # 이미지 선명도를 위한 대비 향상
-    contrast_factor = 1.2  # 대비 증가 factor
-    r = ((r - 0.5) * contrast_factor + 0.5).clip(0, 1)
-    g = ((g - 0.5) * contrast_factor + 0.5).clip(0, 1)
-    b = ((b - 0.5) * contrast_factor + 0.5).clip(0, 1)
-    
-    # alpha 블렌딩 적용 (배경은 흰색)
-    r = r * alpha + (1.0 - alpha)
-    g = g * alpha + (1.0 - alpha)
-    b = b * alpha + (1.0 - alpha)
-    
-    # 최종 RGB 배열 생성
+    # RGB 채널을 하나의 배열로 합치기
     rgb_array = np.stack([r, g, b], axis=-1)
     
-    # 0~1 범위의 float를 0~255 범위의 uint8로 변환
+    # 0~1 범위를 0~255 범위로 변환
     rgb_array = (rgb_array * 255).astype(np.uint8)
     
     return rgb_array
-
-# 노이즈 제거와 선명도 향상을 위한 후처리 함수
-def enhance_image(rgb_array):
-    # 이진화를 위한 임계값 설정 (적응형)
-    threshold = np.mean(rgb_array) * 0.9  # 평균값의 90%를 임계값으로 사용
-    
-    # 채널별로 이진화 적용
-    binary_mask = np.mean(rgb_array, axis=2) < threshold
-    enhanced = np.zeros_like(rgb_array)
-    
-    # 마스크를 기반으로 값 설정
-    enhanced[binary_mask] = 0  # 어두운 부분은 완전한 검정
-    enhanced[~binary_mask] = 255  # 밝은 부분은 완전한 흰색
-    
-    return enhanced
-
-# 사용 예시
-converted_rgb = convert_5d_cmyka_to_3d_rgb_optimized(layer_array)
-enhanced_rgb = enhance_image(converted_rgb)
-rgb_image = Image.fromarray(enhanced_rgb)
