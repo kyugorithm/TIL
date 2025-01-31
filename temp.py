@@ -1,30 +1,39 @@
-import numpy as np
-from PIL import Image
+import boto3
+import json
 
-def convert_cmyka_to_rgb(layer_array):
-    # layer_array의 shape은 (height, width, 5)
-    # 채널별로 분리 (이미 3차원이므로 추가적인 squeeze가 필요 없음)
-    c = layer_array[..., 0]  # Cyan 채널
-    m = layer_array[..., 1]  # Magenta 채널
-    y = layer_array[..., 2]  # Yellow 채널
-    k = layer_array[..., 3]  # Key(Black) 채널
-    a = layer_array[..., 4]  # Alpha 채널
+def invoke_media_convert_lambda(source_s3_key):
+    # Lambda 클라이언트 생성
+    lambda_client = boto3.client('lambda')
     
-    # CMYK에서 RGB로 변환 (벡터화된 연산 사용)
-    # 0~1 범위의 값을 가정
-    r = 1.0 - np.minimum(1.0, c + k)
-    g = 1.0 - np.minimum(1.0, m + k)
-    b = 1.0 - np.minimum(1.0, y + k)
+    # Lambda 함수에 전달할 payload
+    payload = {
+        "sourceS3Key": source_s3_key
+    }
     
-    # 알파 채널 적용 (배경은 흰색)
-    r = r * a + (1.0 - a)
-    g = g * a + (1.0 - a)
-    b = b * a + (1.0 - a)
-    
-    # RGB 채널을 하나의 배열로 합치기
-    rgb_array = np.stack([r, g, b], axis=-1)
-    
-    # 0~1 범위를 0~255 범위로 변환
-    rgb_array = (rgb_array * 255).astype(np.uint8)
-    
-    return rgb_array
+    try:
+        # Lambda 함수 호출
+        response = lambda_client.invoke(
+            FunctionName='arn:aws:lambda:region:streaming-account:function:your-function-name',  # Lambda ARN을 실제 값으로 변경하세요
+            InvocationType='RequestResponse',  # 동기 호출
+            Payload=json.dumps(payload)
+        )
+        
+        # 응답 처리
+        response_payload = json.loads(response['Payload'].read().decode('utf-8'))
+        
+        # Lambda 함수가 에러를 반환했는지 확인
+        if 'FunctionError' in response:
+            print(f"Lambda function error: {response_payload}")
+            return None
+            
+        return response_payload
+        
+    except Exception as e:
+        print(f"Error invoking Lambda function: {str(e)}")
+        return None
+
+# 사용 예시
+if __name__ == "__main__":
+    source_key = "s3://ingestion-out-bucket/your/path/here"
+    result = invoke_media_convert_lambda(source_key)
+    print(f"Lambda execution result: {result}")
