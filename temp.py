@@ -1,32 +1,26 @@
-import cv2
-import numpy as np
+import boto3
+import json
 
-def continuous_vibrance(image, threshold=150, base_factor=1.5):
-    # BGR을 HSV로 변환
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    
-    # 채도 채널을 실수형으로 변환하여 작업
-    saturation = hsv[:,:,1].astype(float)
-    
-    # 부드러운 로컬 채도 맵 생성 (큰 커널 사용)
-    smooth_local_sat = cv2.GaussianBlur(saturation, (61,61), 0)
-    
-    # 임계값과의 차이에 기반한 조정 계수 계산
-    # threshold를 기준으로 위아래로 연속적으로 변화하는 조정값 생성
-    relative_diff = (threshold - smooth_local_sat) / threshold
-    
-    # 부드러운 전이를 위해 조정 계수에 추가 블러 적용
-    adjustment_map = cv2.GaussianBlur(relative_diff, (31,31), 0)
-    
-    # 최종 조정값 계산 (base_factor로 전체적인 강도 조절)
-    final_adjustment = base_factor * adjustment_map
-    
-    # 채도 조정 적용
-    new_saturation = saturation * (1 + final_adjustment)
-    new_saturation = np.clip(new_saturation, 0, 255)
-    
-    # 수정된 채도 값을 HSV 이미지에 적용
-    hsv_result = hsv.copy()
-    hsv_result[:,:,1] = new_saturation.astype(np.uint8)
-    
-    return cv2.cvtColor(hsv_result, cv2.COLOR_HSV2BGR)
+# Lambda 클라이언트 생성
+lambda_client = boto3.client('lambda')
+
+# Lambda 함수 호출할 데이터 준비
+payload = {
+   "key1": "value1",
+   "key2": "value2"
+}
+
+try:
+   # Lambda 함수 호출 - ARN 사용 및 동기식
+   response = lambda_client.invoke(
+       FunctionName='arn:aws:lambda:region:account-id:function:function-name',  # 실제 Lambda ARN으로 교체
+       InvocationType='RequestResponse',  # 동기식 호출
+       Payload=json.dumps(payload)
+   )
+   
+   # 응답 처리
+   response_payload = json.loads(response['Payload'].read().decode('utf-8'))
+   print("Lambda 함수 응답:", response_payload)
+   
+except Exception as e:
+   print("Error:", str(e))
