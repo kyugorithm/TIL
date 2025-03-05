@@ -1,61 +1,110 @@
+import os
 import torch
-import torch.nn as nn
-import torchvision.models as models
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
+from PIL import Image
+import numpy as np
+from sklearn.model_selection import train_test_split
 
-class BinaryClassifier(nn.Module):
-    def __init__(self, model_name='efficientnet_b0', pretrained=True):
+class ImageClassificationDataset(Dataset):
+    def __init__(self, image_paths, labels, transform=None):
         """
-        Initialize a binary classifier based on a pretrained model.
+        Custom dataset for image classification.
         
         Args:
-            model_name (str): Name of the base model to use ('efficientnet_b0' or 'mobilenet_v3_small')
-            pretrained (bool): Whether to use pretrained weights
+            image_paths (list): List of paths to images
+            labels (list): List of labels corresponding to image_paths
+            transform (callable, optional): Optional transform to be applied to images
         """
-        super(BinaryClassifier, self).__init__()
-        
-        # Select base model
-        if model_name == 'efficientnet_b0':
-            # Load pretrained EfficientNet B0
-            weights = models.EfficientNet_B0_Weights.IMAGENET1K_V1 if pretrained else None
-            self.base_model = models.efficientnet_b0(weights=weights)
-            num_features = self.base_model.classifier[1].in_features
-            # Replace classifier with a binary classifier
-            self.base_model.classifier = nn.Sequential(
-                nn.Dropout(p=0.2, inplace=True),
-                nn.Linear(num_features, 2)
-            )
-        
-        elif model_name == 'mobilenet_v3_small':
-            # Load pretrained MobileNetV3 Small
-            weights = models.MobileNet_V3_Small_Weights.IMAGENET1K_V1 if pretrained else None
-            self.base_model = models.mobilenet_v3_small(weights=weights)
-            num_features = self.base_model.classifier[3].in_features
-            # Replace classifier with a binary classifier
-            self.base_model.classifier[3] = nn.Linear(num_features, 2)
-        
-        else:
-            raise ValueError(f"Unsupported model: {model_name}")
+        self.image_paths = image_paths
+        self.labels = labels
+        self.transform = transform
     
-    def forward(self, x):
-        """Forward pass through the network"""
-        return self.base_model(x)
+    def __len__(self):
+        return len(self.image_paths)
     
-    def save_model(self, path):
-        """Save the model weights to a file"""
-        torch.save(self.state_dict(), path)
-    
-    @classmethod
-    def load_model(cls, path, model_name='efficientnet_b0'):
-        """
-        Load a model from saved weights
+    def __getitem__(self, idx):
+        # Load image
+        img_path = self.image_paths[idx]
+        image = Image.open(img_path).convert('RGB')
         
-        Args:
-            path (str): Path to the saved model weights
-            model_name (str): Name of the base model used
-            
-        Returns:
-            BinaryClassifier: Loaded model
-        """
-        model = cls(model_name=model_name, pretrained=False)
-        model.load_state_dict(torch.load(path))
-        return model
+        # Apply transformations
+        if self.transform:
+            image = self.transform(image)
+        
+        # Get label
+        label = self.labels[idx]
+        
+        return image, label
+
+def create_dataloaders(data_dir, batch_size=32, img_size=640, test_size=0.2, random_state=42):
+    """
+    Create train and validation dataloaders from a directory structure.
+    
+    Args:
+        data_dir (str): Root directory containing class subdirectories
+        batch_size (int): Batch size for dataloaders
+        img_size (int): Size to resize images to
+        test_size (float): Proportion of data to use for validation
+        random_state (int): Random seed for reproducibility
+    
+    Returns:
+        tuple: (train_loader, val_loader, class_names)
+    """
+    # Get class names from directory structure
+    class_names = [d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))]
+    class_names.sort()  # Ensure consistent ordering
+    
+    # Create class to index mapping
+    class_to_idx = {cls_name: i for i, cls_name in enumerate(class_names)}
+    
+    # Collect all image paths and labels
+    image_paths = []
+    labels = []
+    
+    for class_name in class_names:
+        class_dir = os.path.join(data_dir, class_name)
+        class_idx = class_to_idx[class_name]
+        
+        # Get all image files in the class directory
+        for img_name in os.listdir(class_dir):
+            if img_name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                img_path = os.path.join(class_dir, img_name)
+                image_paths.append(img_path)
+                labels.append(class_idx)
+    
+    # Split into train and validation sets
+    train_paths, val_paths, train_labels, val_labels = train_test_split(
+        image_paths, labels, test_size=test_size, random_state=random_state, stratify=labels
+    )
+    
+    # Define transforms
+    # Training transforms with data augmentation
+    train_transform = transforms.Compose([
+        transforms.Resize((img_size, img_size)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(10),
+        transforms.ColorJitter(brightness=0.1, contrast=0.1),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    
+    # Validation transforms (no augmentation)
+    val_transform = transforms.Compose([
+        transforms.Resize((img_size, img_size)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+    
+    # Create datasets
+    train_dataset = ImageClassificationDataset(train_paths, train_labels, transform=train_transform)
+    val_dataset = ImageClassificationDataset(val_paths, val_labels, transform=val_transform)
+    
+    # Create dataloaders
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    
+    print(f"Dataset created with {len(train_dataset)} training samples and {len(val_dataset)} validation samples")
+    print(f"Class distribution - Training: {np.bincount(train_labels)}, Validation: {np.bincount(val_labels)}")
+    
+    return train_loader, val_loader, class_names
