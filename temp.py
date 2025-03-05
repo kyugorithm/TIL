@@ -102,3 +102,98 @@ def predict(model, image_tensor, class_names=None, device='cuda'):
         'confidence': confidence,
         'inference_time_ms': inference_time
     }
+
+def main():
+    """Main function to run inference on images"""
+    parser = argparse.ArgumentParser(description='Run inference with a trained model')
+    
+    # Model arguments
+    parser.add_argument('--model_path', type=str, required=True,
+                        help='Path to the trained model file')
+    parser.add_argument('--model_type', type=str, default='efficientnet_b0',
+                        choices=['efficientnet_b0', 'mobilenet_v3_small'],
+                        help='Model architecture type (default: efficientnet_b0)')
+    
+    # Input arguments
+    parser.add_argument('--input', type=str, required=True,
+                        help='Path to input image or directory of images')
+    parser.add_argument('--img_size', type=int, default=640,
+                        help='Image size for model input (default: 640)')
+    
+    # Output arguments
+    parser.add_argument('--output_dir', type=str, default=None,
+                        help='Directory to save prediction results (optional)')
+    
+    # Other arguments
+    parser.add_argument('--class_names', type=str, nargs='+', default=['Normal', 'Error'],
+                        help='Names of the classes (default: Normal, Error)')
+    parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu',
+                        help='Device to run inference on (default: cuda if available, else cpu)')
+    
+    args = parser.parse_args()
+    
+    # Load model
+    print(f"Loading model from {args.model_path}")
+    model = load_model(args.model_path, args.model_type, args.device)
+    
+    # Prepare input paths
+    if os.path.isdir(args.input):
+        # If input is a directory, get all image files
+        image_paths = []
+        for ext in ['*.jpg', '*.jpeg', '*.png']:
+            image_paths.extend(glob.glob(os.path.join(args.input, ext)))
+        print(f"Found {len(image_paths)} images in directory {args.input}")
+    else:
+        # If input is a single file
+        image_paths = [args.input]
+        print(f"Using single image: {args.input}")
+    
+    # Create output directory if specified
+    if args.output_dir:
+        os.makedirs(args.output_dir, exist_ok=True)
+    
+    # Process each image
+    results = []
+    
+    for image_path in image_paths:
+        print(f"Processing {image_path}")
+        
+        # Preprocess image
+        image_tensor = preprocess_image(image_path, args.img_size)
+        
+        # Make prediction
+        result = predict(model, image_tensor, args.class_names, args.device)
+        
+        # Add file path to result
+        result['image_path'] = image_path
+        results.append(result)
+        
+        # Print result
+        print(f"Prediction: {result['class_name']}, Confidence: {result['confidence']:.4f}, "
+              f"Time: {result['inference_time_ms']:.2f} ms")
+        
+    # Calculate average inference time
+    avg_time = sum(r['inference_time_ms'] for r in results) / len(results)
+    print(f"\nAverage inference time: {avg_time:.2f} ms ({1000/avg_time:.2f} FPS)")
+    
+    # Save results if output directory is specified
+    if args.output_dir:
+        import csv
+        import json
+        
+        # Save as CSV
+        csv_path = os.path.join(args.output_dir, 'predictions.csv')
+        with open(csv_path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=['image_path', 'class_idx', 'class_name', 'confidence', 'inference_time_ms'])
+            writer.writeheader()
+            writer.writerows(results)
+        
+        # Save as JSON
+        json_path = os.path.join(args.output_dir, 'predictions.json')
+        with open(json_path, 'w') as f:
+            json.dump(results, f, indent=4)
+        
+        print(f"Results saved to {csv_path} and {json_path}")
+
+if __name__ == "__main__":
+    main()
