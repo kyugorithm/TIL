@@ -1,110 +1,199 @@
-import os
 import torch
-from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms
-from PIL import Image
+import torch.nn as nn
+import torch.optim as optim
+import time
+import copy
 import numpy as np
-from sklearn.model_selection import train_test_split
+from tqdm import tqdm
 
-class ImageClassificationDataset(Dataset):
-    def __init__(self, image_paths, labels, transform=None):
-        """
-        Custom dataset for image classification.
-        
-        Args:
-            image_paths (list): List of paths to images
-            labels (list): List of labels corresponding to image_paths
-            transform (callable, optional): Optional transform to be applied to images
-        """
-        self.image_paths = image_paths
-        self.labels = labels
-        self.transform = transform
-    
-    def __len__(self):
-        return len(self.image_paths)
-    
-    def __getitem__(self, idx):
-        # Load image
-        img_path = self.image_paths[idx]
-        image = Image.open(img_path).convert('RGB')
-        
-        # Apply transformations
-        if self.transform:
-            image = self.transform(image)
-        
-        # Get label
-        label = self.labels[idx]
-        
-        return image, label
-
-def create_dataloaders(data_dir, batch_size=32, img_size=640, test_size=0.2, random_state=42):
+def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler=None, 
+                device='cuda', num_epochs=10, early_stopping_patience=5, save_path='model.pt'):
     """
-    Create train and validation dataloaders from a directory structure.
+    Train a PyTorch model with early stopping.
     
     Args:
-        data_dir (str): Root directory containing class subdirectories
-        batch_size (int): Batch size for dataloaders
-        img_size (int): Size to resize images to
-        test_size (float): Proportion of data to use for validation
-        random_state (int): Random seed for reproducibility
+        model: PyTorch model to train
+        train_loader: DataLoader for training data
+        val_loader: DataLoader for validation data
+        criterion: Loss function
+        optimizer: Optimizer
+        scheduler: Learning rate scheduler (optional)
+        device: Device to train on ('cuda' or 'cpu')
+        num_epochs: Maximum number of epochs to train for
+        early_stopping_patience: Number of epochs to wait for improvement before stopping
+        save_path: Path to save the best model to
     
     Returns:
-        tuple: (train_loader, val_loader, class_names)
+        model: The trained model
+        history: Dictionary containing training history
     """
-    # Get class names from directory structure
-    class_names = [d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))]
-    class_names.sort()  # Ensure consistent ordering
+    # Move model to device
+    model = model.to(device)
     
-    # Create class to index mapping
-    class_to_idx = {cls_name: i for i, cls_name in enumerate(class_names)}
+    # Initialize variables for early stopping
+    best_model_weights = copy.deepcopy(model.state_dict())
+    best_acc = 0.0
+    epochs_no_improve = 0
     
-    # Collect all image paths and labels
-    image_paths = []
-    labels = []
+    # Initialize history dictionary to store metrics
+    history = {
+        'train_loss': [],
+        'val_loss': [],
+        'train_acc': [],
+        'val_acc': []
+    }
     
-    for class_name in class_names:
-        class_dir = os.path.join(data_dir, class_name)
-        class_idx = class_to_idx[class_name]
+    # Track total training time
+    start_time = time.time()
+    
+    print(f"Starting training on {device}...")
+    
+    for epoch in range(num_epochs):
+        print(f'Epoch {epoch+1}/{num_epochs}')
+        print('-' * 10)
         
-        # Get all image files in the class directory
-        for img_name in os.listdir(class_dir):
-            if img_name.lower().endswith(('.png', '.jpg', '.jpeg')):
-                img_path = os.path.join(class_dir, img_name)
-                image_paths.append(img_path)
-                labels.append(class_idx)
+        # Training phase
+        model.train()
+        running_loss = 0.0
+        running_corrects = 0
+        
+        # Wrap train_loader with tqdm for progress bar
+        train_bar = tqdm(train_loader, desc="Training")
+        
+        for inputs, labels in train_bar:
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            
+            # Zero the parameter gradients
+            optimizer.zero_grad()
+            
+            # Forward pass
+            with torch.set_grad_enabled(True):
+                outputs = model(inputs)
+                _, preds = torch.max(outputs, 1)
+                loss = criterion(outputs, labels)
+                
+                # Backward pass + optimize
+                loss.backward()
+                optimizer.step()
+            
+            # Statistics
+            running_loss += loss.item() * inputs.size(0)
+            running_corrects += torch.sum(preds == labels.data)
+            
+            # Update progress bar
+            train_bar.set_postfix(loss=loss.item())
+        
+        if scheduler is not None:
+            scheduler.step()
+        
+        epoch_loss = running_loss / len(train_loader.dataset)
+        epoch_acc = running_corrects.double() / len(train_loader.dataset)
+        
+        print(f'Train Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
+        
+        history['train_loss'].append(epoch_loss)
+        history['train_acc'].append(epoch_acc.item())
+        
+        # Validation phase
+        model.eval()
+        running_loss = 0.0
+        running_corrects = 0
+        
+        # Wrap val_loader with tqdm for progress bar
+        val_bar = tqdm(val_loader, desc="Validation")
+        
+        with torch.no_grad():
+            for inputs, labels in val_bar:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+                
+                # Forward pass
+                outputs = model(inputs)
+                _, preds = torch.max(outputs, 1)
+                loss = criterion(outputs, labels)
+                
+                # Statistics
+                running_loss += loss.item() * inputs.size(0)
+                running_corrects += torch.sum(preds == labels.data)
+                
+                # Update progress bar
+                val_bar.set_postfix(loss=loss.item())
+        
+        epoch_loss = running_loss / len(val_loader.dataset)
+        epoch_acc = running_corrects.double() / len(val_loader.dataset)
+        
+        print(f'Val Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
+        
+        history['val_loss'].append(epoch_loss)
+        history['val_acc'].append(epoch_acc.item())
+        
+        # Check if this is the best model so far
+        if epoch_acc > best_acc:
+            best_acc = epoch_acc
+            best_model_weights = copy.deepcopy(model.state_dict())
+            epochs_no_improve = 0
+            
+            # Save the best model
+            torch.save(best_model_weights, save_path)
+            print(f"Best model saved with accuracy: {best_acc:.4f}")
+        else:
+            epochs_no_improve += 1
+            print(f"No improvement for {epochs_no_improve} epochs")
+        
+        # Early stopping check
+        if epochs_no_improve >= early_stopping_patience:
+            print(f"Early stopping triggered after {epoch+1} epochs")
+            break
     
-    # Split into train and validation sets
-    train_paths, val_paths, train_labels, val_labels = train_test_split(
-        image_paths, labels, test_size=test_size, random_state=random_state, stratify=labels
-    )
+    # Calculate total training time
+    total_time = time.time() - start_time
+    print(f'Training completed in {total_time // 60:.0f}m {total_time % 60:.0f}s')
+    print(f'Best validation accuracy: {best_acc:.4f}')
     
-    # Define transforms
-    # Training transforms with data augmentation
-    train_transform = transforms.Compose([
-        transforms.Resize((img_size, img_size)),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomRotation(10),
-        transforms.ColorJitter(brightness=0.1, contrast=0.1),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
+    # Load best model weights
+    model.load_state_dict(best_model_weights)
     
-    # Validation transforms (no augmentation)
-    val_transform = transforms.Compose([
-        transforms.Resize((img_size, img_size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
+    return model, history
+
+
+def evaluate_model(model, test_loader, device='cuda'):
+    """
+    Evaluate a trained model on a test set.
     
-    # Create datasets
-    train_dataset = ImageClassificationDataset(train_paths, train_labels, transform=train_transform)
-    val_dataset = ImageClassificationDataset(val_paths, val_labels, transform=val_transform)
+    Args:
+        model: Trained PyTorch model
+        test_loader: DataLoader for test data
+        device: Device to evaluate on
     
-    # Create dataloaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
+    Returns:
+        accuracy: Accuracy on test set
+        predictions: List of predictions
+        true_labels: List of true labels
+    """
+    model.eval()
+    model = model.to(device)
     
-    print(f"Dataset created with {len(train_dataset)} training samples and {len(val_dataset)} validation samples")
-    print(f"Class distribution - Training: {np.bincount(train_labels)}, Validation: {np.bincount(val_labels)}")
+    all_preds = []
+    all_labels = []
+    correct = 0
+    total = 0
     
-    return train_loader, val_loader, class_names
+    with torch.no_grad():
+        for inputs, labels in tqdm(test_loader, desc="Evaluating"):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            
+            outputs = model(inputs)
+            _, preds = torch.max(outputs, 1)
+            
+            total += labels.size(0)
+            correct += (preds == labels).sum().item()
+            
+            all_preds.extend(preds.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+    
+    accuracy = correct / total
+    print(f'Test Accuracy: {accuracy:.4f}')
+    
+    return accuracy, all_preds, all_labels
