@@ -1,157 +1,47 @@
-# Binary Image Classification Model
+1. Key Q&A Summary
 
-A PyTorch-based solution for binary image classification, specifically designed to distinguish between normal images and images with error patterns (small horizontal rectangular boxes).
+(1) Region Considerations
 
-## Project Overview
+	•	Question: “Do we need to use only the Seoul (ap-northeast-2) Region? Can we consider other Regions for better cost optimization? What are the pros and cons?”
+	•	Presenter (Kevin) Response
+	•	Currently, the default plan is to use the Seoul Region.
+	•	Other Regions could be considered for cost optimization, but data transfer costs, latency, and internal security policies must be taken into account.
+	•	Additional Follow-Up Needed
+	•	Investigate actual cost/latency differences if other Regions are used.
+	•	Clarify any security/regulatory implications for transferring data outside Seoul Region, in line with Coupang Play’s internal policies.
 
-This project implements a complete pipeline for training, optimizing, and deploying a lightweight and efficient binary image classifier using pretrained models from PyTorch's torchvision library. The solution includes:
+(2) Payment Integration
 
-- Custom dataset loading and preprocessing
-- Model definition and training pipeline
-- Model optimization for inference efficiency
-- Evaluation and visualization tools
-- Inference script for deployment
+	•	Question: “We handle iOS/Android in-app purchases and subscription flows. Does AWS offer any specific payment service for this?”
+	•	AWS Response
+	•	There is no dedicated AWS in-app payment service; typically, Apple/Google payment systems are used.
+	•	ProServe can share best practices or reference architectures if relevant.
+	•	Presenter (Coupang) Follow-Up
+	•	Determine whether the payment component is directly tied to the ML pipeline, or if it is a separate project requiring its own scope.
 
-## Requirements
+(3) ML Pipeline Integration with External Systems
 
-- Python 3.7+
-- PyTorch 1.10+ with CUDA support (recommended)
-- torchvision
-- Pillow
-- numpy
-- scikit-learn
-- matplotlib
-- seaborn
-- tqdm
+	•	Question: “If the results (e.g., poster generation, QC) are simply stored in S3, can we enable other teams or systems (e.g., CMS, recommendation engines) to easily access these results or re-trigger pipelines via events/triggers?”
+	•	AWS Response
+	•	There are multiple integration options (EventBridge, Lambda, etc.). ProServe can incorporate these features into the overall architecture.
+	•	Presenter (Kevin) Follow-Up
+	•	Specify the exact API or data format required by internal CMS or other systems.
+	•	Consider whether results should move from S3 into a database (DynamoDB, RDS) or be served via an API, and outline the approach.
 
-Install dependencies:
+(4) Cost & Performance Optimization
 
-```bash
-pip install torch torchvision tqdm numpy scikit-learn matplotlib seaborn Pillow
-```
+	•	Question: “How can we optimize both cost and performance in an ML pipeline using GPU instances?”
+	•	Presenter (Kevin) Explanation
+	•	Currently using G4dn or similar GPU instances but is also evaluating other options (SageMaker, Spot Instances, etc.).
+	•	Additional Follow-Up Needed
+	•	Provide metrics on daily/monthly processing volume, GPU usage, processing times, etc.
+	•	AWS can then assess potential cost savings, for example by using Spot, Reserved Instances, or a different Region.
 
-## Project Structure
+(5) Timeline and Next Steps
 
-```
-binary-classifier/
-├── model_definition.py        # Model architecture
-├── dataset_implementation.py  # Dataset and dataloader implementation
-├── training_pipeline.py       # Training and evaluation functions
-├── model_optimization.py      # Model quantization and optimization
-├── main.py                    # Main training script
-├── inference.py               # Inference script
-├── output/                    # Directory for training outputs
-│   ├── best_model.pt          # Best model from training
-│   ├── optimized_model.pt     # Optimized model for inference
-│   ├── training_history.png   # Training metrics plot
-│   └── confusion_matrix.png   # Confusion matrix visualization
-└── README.md                  # This documentation
-```
-
-## Dataset Preparation
-
-Organize your dataset in the following directory structure:
-
-```
-data/
-├── Normal/           # Class 1: Normal images
-│   ├── img001.jpg
-│   ├── img002.jpg
-│   └── ...
-└── Error/            # Class 2: Error images with small horizontal rectangular boxes
-    ├── img001.jpg
-    ├── img002.jpg
-    └── ...
-```
-
-## Usage Instructions
-
-### Training
-
-To train the model:
-
-```bash
-python main.py --data_dir path/to/data --model efficientnet_b0 --pretrained --batch_size 32 --epochs 20 --output_dir output
-```
-
-Key arguments:
-- `--data_dir`: Directory containing class subdirectories
-- `--model`: Model architecture (`efficientnet_b0` or `mobilenet_v3_small`)
-- `--pretrained`: Use pretrained weights
-- `--batch_size`: Batch size for training
-- `--epochs`: Maximum number of epochs to train
-- `--lr`: Learning rate
-- `--patience`: Early stopping patience
-- `--device`: Device to train on (cuda/cpu)
-- `--output_dir`: Directory to save output files
-
-### Inference
-
-To run inference on new images:
-
-```bash
-python inference.py --model_path output/optimized_model.pt --input path/to/image_or_directory --output_dir predictions
-```
-
-Key arguments:
-- `--model_path`: Path to the trained model file
-- `--model_type`: Model architecture type
-- `--input`: Path to input image or directory of images
-- `--img_size`: Image size for model input
-- `--class_names`: Names of the classes (default: "Normal", "Error")
-- `--output_dir`: Directory to save prediction results
-- `--device`: Device to run inference on
-
-## Model Selection
-
-This project supports two pretrained model architectures:
-
-1. **EfficientNet B0** (default)
-   - Balanced performance and efficiency
-   - Good accuracy with moderate parameter count
-   - Suitable for most deployment scenarios
-
-2. **MobileNetV3 Small**
-   - Extremely lightweight and fast
-   - Lower parameter count for mobile deployments
-   - Sacrifices some accuracy for speed
-
-To use MobileNetV3 Small:
-
-```bash
-python main.py --data_dir path/to/data --model mobilenet_v3_small --pretrained
-```
-
-## Model Optimization
-
-The `model_optimization.py` script provides functions to:
-
-1. Trace and serialize the model with TorchScript
-2. Quantize the model to reduce size and improve inference speed
-3. Benchmark inference performance
-
-These optimizations are automatically applied when training with `main.py` and the optimized model is saved to `output/optimized_model.pt`.
-
-## Performance Evaluation
-
-The training script produces:
-- Training/validation accuracy and loss curves
-- Confusion matrix visualization
-- Classification report with precision, recall, and F1-score
-- Inference speed benchmarks
-
-## Customization
-
-To adapt this solution for other binary classification tasks:
-
-1. Modify `create_dataloaders()` in `dataset_implementation.py` if your data structure is different
-2. Adjust preprocessing transforms based on your specific image characteristics
-3. Tune hyperparameters like learning rate, batch size, and image size to match your dataset
-4. For deployment to resource-constrained environments, consider using `mobilenet_v3_small`
-
-## Troubleshooting
-
-- **Out of memory errors**: Reduce batch size or image size
-- **Slow training**: Ensure CUDA is available and properly configured
-- **Poor performance**: Try different learning rates, increase training epochs, or add more data augmentation
-- **Overfitting**: Increase regularization, reduce model complexity, or add more training data
+	•	Question: “When can collaboration with ProServe start in practical terms, and how does the process work until the Statement of Work (SOW) is finalized?”
+	•	AWS Response
+	•	The typical flow is: additional Q&A → define detailed scope → draft SOW → internal reviews → contract signing.
+	•	The timeline can be expedited if Coupang Play is ready to move quickly.
+	•	Presenter (Coupang) Request
+	•	Wishes to proceed as soon as possible; they would like to receive a list of questions and provide answers promptly so that follow-up meetings can be scheduled right away.
