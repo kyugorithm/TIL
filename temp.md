@@ -1,62 +1,62 @@
-Here’s a structured summary in English of the discussed questions and answers, along with clear next steps:
+[Meeting Minutes] Initial Discussion on Implementing New Video ML QC Process
 
-Summary of Discussion:
+1. Meeting Objectives
+• Discuss the detailed implementation methods for the newly proposed video ML QC process.
+• Determine methods to verify ML QC results (e.g., leveraging OStream, new implementation within CMS).
+• Define player implementation approaches, required resources, responsible teams, and timelines.
+• Enhance mutual understanding and alignment among teams regarding the new QC process.
 
-Scope-Related Questions & Answers:
+2. Key Discussion Points
+• [Hansol] Shared background and objectives:
+  ◦ Aim to decide specific implementation details following the proposal for an ML-based video QC process.
+  ◦ Key decisions include: 
+	① OStream vs. CMS implementation, 
+	② Player implementation approach (possible reuse of OStream code), 
+	③ Defining development resources (team responsibilities, schedule, location).
+  ◦ [Joey] Noted potential lack of prior synchronization and differences in understanding among teams.
 
-	1.	Video Data Pipeline Start Point
-	•	Initially, the video ingestion trigger was S3 bucket-based.
-	•	Now changed to periodic batch processing. Video transcoding and delivery are already automated by Coupang.
-	2.	Legacy System Dependencies
-	•	Minimal dependencies exist. Current “Poster Generation” service integration is limited to input/output alignment only.
-	3.	Architecture Flexibility
-	•	AWS Proserve is free to redesign the architecture, as long as I/O formats are maintained.
-	4.	Model Development Status
-	•	Two existing services: Poster Generation (currently deployed) and Content QC (planned for near future).
-	•	VLM, LLM, Localization models are planned but currently undeveloped.
-	5.	Deployment Expectations
-	•	Priority is establishing robust preprocessing infrastructure. Deploying final task-specific ML models (VLM, Localization) within the current 6-month timeline is ideal but not mandatory.
-	6.	Inference Optimization Priority
-	•	Current priority is infrastructure development and preprocessing pipeline, rather than model serving optimization.
-	7.	Poster Generation Data Pipeline
-	•	Existing Poster Generation model currently faces inefficiencies in backend/frontend data handling.
-	•	Improving data delivery methods is desirable but lower in priority compared to infrastructure setup.
-	8.	Project Deliverables & Goals
-	•	Main goal: Build a general-purpose, reusable data preprocessing pipeline.
-	•	Pipeline includes ML Ops setup with CI/CD automated deployment on AWS.
-	9.	Timeline
-	•	No fixed internal deadline from Coupang Play; however, starting ASAP is desired. The timeline can be determined collaboratively.
+• Current QC Process and Role of OStream:
+  ◦ [Aspyn] OStream player is currently used by the MO team for Post-QC (quality check of transcoded videos served to customers).
+  ◦ [Joey/Ping] Proposed ML QC seems aligned with Pre-QC (checking original file specifications/quality), requiring significant new development if integrated with OStream.
+  ◦ [Aspyn] Highlighted the need to distinguish clearly between Pre-QC and Post-QC, preferring to view Post-QC results via OStream (similar to the actual customer environment).
 
-Security-Related Questions & Answers:
+• Proposed ML QC Integration and Requirements:
+  ◦ ML QC Items: Defined by MO (led by Aspyn, Valley) and delivered to the ML team. Around 30 items including pixel issues, logo detection, etc.
+  ◦ Failure Handling: Remastering or requesting re-supply from CP (primarily CP re-supply).
+  ◦ Result Verification Requirements: Similar to Baton player, allowing ML QC report items to link directly to the relevant timecode for visual confirmation. Perfect accuracy is not mandatory but should be practical. Current manual Excel-based verification is inefficient.
+  ◦ ML Model Accuracy & Manual Review: Current ML model may yield false positives. MO team should manually review ML results before proceeding. (Formal agreement with MO team pending.)
 
-	1.	Work Devices & Network Access
-	•	Device provision or network access methods remain undecided.
-	•	Coupang Play prefers minimal friction: likely no physical device provisioning, assuming AWS cloud-based development only.
-	2.	Network & Internal Tool Access
-	•	If internal systems or network access (VPN/internal tools) are needed, AWS Proserve must use either client-provided devices or blank loaner devices due to security constraints.
-	3.	AWS Account Structure
-	•	Separate environments exist for Development, Staging, and Production.
-	•	AWS Proserve will primarily access the Development environment. Deployment to Production accounts will be managed by Coupang Play.
-	4.	GenAI & AWS Bedrock Use
-	•	Use of AWS Bedrock remains open; further internal discussions are planned to finalize the decision.
+• Implementation Method Discussions (OStream vs. CMS vs. In-house Development):
+  ◦ Leveraging OStream:
+    ▪ Advantages: Existing player available, alignment with current Post-QC workflow.
+    ▪ Considerations: Requires cooperation with GSN (player development), associated costs.
+    ▪ [Enoch] Short-term possibility: If ML team provides JSON-formatted results (timecode, messages), timecode-linked playback through a separate panel within OStream (similar to current VMAF/QVBR display) may be feasible.
 
-Long-term Project Vision:
+  ◦ CMS-based Player Development:
+    ▪ Advantages: Independent from OStream, customizable UI/UX specifically for QC purposes.
+    ▪ Considerations: New player development needed.
 
-	•	Coupang Play aims for complete automation (end-to-end video processing pipeline).
-	•	This preprocessing pipeline (PRISM) integrates with COSMOS (existing video streaming service).
-	•	Future projects include further automation and ML-based functionalities, integrated within this platform.
+  ◦ [Ping/Joey] In-house PoC Development:
+    ▪ Given current low ML model reliability, an interim solution before formal OStream or CMS implementation.
+    ▪ Quickly implement basic functionality (timecode navigation) using a simple API and open-source web player.
+    ▪ Low technical barriers by utilizing existing MP4 files (SD/HD) generated from the current pipeline.
+    ▪ Potential start around May-June.
 
-Next Steps:
+• Redefined Process Flow Discussion:
+  ◦ Pre-QC (ML) → Pass → Transcoding → Post-QC
+  ◦ [Joey/Hansol] Option 1: Original file → Transcode only highest quality version first → ML QC (26 items) → Verify via player (MO team) → If Pass: transcode all formats / If Fail: request re-supply from CP.
+    ▪ Benefit: Reduces unnecessary transcoding costs/time, efficient ML model feedback loop.
+  ◦ [Ping] Key Consideration: Ideally block transcoding upon Pre-QC failure in the long run, but initially focus on verification and feedback without blocking due to ML model accuracy concerns (Hansol agreed).
 
-	1.	AWS Proserve Action Items:
-	•	Finalize the draft SOW (Statement of Work) and send it to Coupang Play.
-	•	Provide a summary of previous projects (device/network setup) via email for Coupang Play’s internal review.
-	2.	Coupang Play Action Items:
-	•	Review the SOW draft promptly upon receipt. Provide comments and approval.
-	•	Facilitate internal communication between stakeholders (Segon, James, John F.) to expedite purchasing approval.
-	•	Clarify internal policies regarding AWS Proserve’s network access and device usage.
-	3.	Collaborative Next Steps:
-	•	Schedule a follow-up meeting (set up by Coupang Play) to provide AWS Proserve a comprehensive overview (high-level architecture & strategy) of PRISM, COSMOS, and other relevant infrastructure.
-	•	Confirm internal use of AWS Bedrock and GenAI services based on forthcoming discussions.
+• [Wooner] Project Urgency: Management request to complete within the year. Immediate need for a verification tool (player) to utilize currently developed ML models.
 
-This structured summary clearly defines responsibilities and the immediate next steps needed to efficiently progress with the project.
+3. Summary of Discussions/Consensus
+• Agreed on the necessity of ML-based QC implementation and achieving the completion goal within the year.
+• Given the current ML model accuracy, creating an efficient review environment (player) for ML results and model improvement is a priority. The player must support timecode-based navigation.
+• Implementation location for result verification (OStream, CMS, in-house PoC) has various pros and cons. Short-term, an in-house PoC (simple player + API) is a strongly considered solution.
+• Ideal process involves blocking transcoding at the Pre-QC stage upon detection of issues, but realistically starting with initial transcoding (single high-quality version) followed by ML QC result review.
+• Recognized current gaps in understanding between teams about Pre-QC/Post-QC definitions, specific ML QC roles, and OStream utilization scope. Clarification needed going forward.
+
+4. Future Plans / Action Items
+1. ML Team: Define and share ML QC result data format (JSON format including timecodes, error types, messages).
+2. All Teams: Design and propose optimal solutions for short-term verification player implementation.
