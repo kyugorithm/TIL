@@ -1,12 +1,5 @@
 # DB Indexing in System Design Interviews - B-tree, Geospatial, Inverted Index, and more!
 
-### 1. 📝 **high level overview**  
-- **Meaning**: 개괄적인 개요  
-- **Example**: *Today we're going to do a really quick high level overview on database indexing.*  
-- **Translation**: 오늘은 데이터베이스 인덱싱에 대한 매우 간단한 개괄적인 개요를 살펴보겠습니다.
-
----
-
 ### 2. 📝 **get after it**  
 - **Meaning**: 시작하다, 착수하다  
 - **Example**: *Let's get after it.*  
@@ -28,20 +21,6 @@
 
 ---
 
-### 5. 📝 **worth noting**  
-- **Meaning**: 주목할 가치가 있는, 언급할 만한  
-- **Example**: *Now, it's worth noting that in reality, there's prefetching and there's other database optimizations that would probably actually get this down closer to three to five seconds.*  
-- **Translation**: 실제로는 프리페칭과 다른 데이터베이스 최적화가 있어 이 시간을 3~5초 정도로 줄일 수 있다는 점을 언급할 가치가 있습니다.
-
----
-
-### 6. 📝 **excel at**  
-- **Meaning**: ~에 뛰어나다  
-- **Example**: *So B-trees really excel at one dimensional data.*  
-- **Translation**: B-트리는 1차원 데이터 처리에 정말 뛰어납니다.
-
----
-
 ### 7. 📝 **zoom out**  
 - **Meaning**: 전체적인 관점에서 보다, 확대 관점으로 벗어나다  
 - **Example**: *What's important to note as we zoom out and look at all three of these strategies is that geohashing is very popular today.*  
@@ -60,13 +39,6 @@
 - **Meaning**: 마무리하다, 결론짓다  
 - **Example**: *Okay, so to wrap up, I have a confession to make.*  
 - **Translation**: 자, 마무리하자면, 고백할 것이 있습니다.
-
----
-
-### 10. 📝 **keep in mind**  
-- **Meaning**: 명심하다, 기억하다  
-- **Example**: *And so this is a useful flow chart that you should keep in mind.*  
-- **Translation**: 그래서 이것은 여러분이 명심해야 할 유용한 흐름도입니다.
 
 ---
 
