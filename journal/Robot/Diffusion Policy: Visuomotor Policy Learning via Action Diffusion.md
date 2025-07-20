@@ -1,7 +1,7 @@
 ## Abstract
 
 ### Proposal  
-Propose a robot action generation method by modeling the visuomotor policy as a **conditional denoising diffusion probabilistic model (DDPM)**.
+Propose a robot action generation method by modeling the visuomotor policy as a **conditional DDPM**.
 
 ### Performance  
 Achieves an **average 46.9% improvement** over prior state-of-the-art methods across **15 tasks** spanning **4 robot manipulation benchmarks**.
